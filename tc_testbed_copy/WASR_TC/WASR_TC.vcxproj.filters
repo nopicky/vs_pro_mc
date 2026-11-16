@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{47780709-2c2a-4523-9777-02dbbbc0e06d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{302539b5-360a-4af3-9d93-91217271c06f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="TwinCAT RT Files">
+      <UniqueIdentifier>{69872ba4-18a9-40f6-ae56-9f8e8a83fc83}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="TwinCAT OS Files">
+      <UniqueIdentifier>{6917db32-5614-4fbe-8287-791f673997c8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="TMC Files">
+      <UniqueIdentifier>{000c33f6-25ca-4d5a-b977-1789ef4120ce}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Configs">
+      <UniqueIdentifier>{a305adfd-0493-4f17-831f-faf68305d146}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="TcPch.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="WASR_TCClassFactory.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="WASR_TCInterfaces.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="WASR_TCDriver.h">
+      <Filter>TwinCAT RT Files</Filter>
+    </ClInclude>
+    <ClInclude Include="WASR_TC.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="EncoderDebounce.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CoeSdo.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CoeSdoConfig.h">
+      <Filter>Configs</Filter>
+    </ClInclude>
+    <ClInclude Include="SpeedTestSequencer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="MiniSpdLoop.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="TestScriptConfig.h">
+      <Filter>Configs</Filter>
+    </ClInclude>
+    <ClInclude Include="ServoPlatformConfig.h">
+      <Filter>Configs</Filter>
+    </ClInclude>
+    <ClInclude Include="WASR_ControlConfig.h">
+      <Filter>Configs</Filter>
+    </ClInclude>
+    <ClInclude Include="WASR_TCServices.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="TestScanTables.h">
+      <Filter>Configs</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="TcPch.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="WASR_TCClassFactory.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="WASR_TCDriver.cpp">
+      <Filter>TwinCAT RT Files</Filter>
+    </ClCompile>
+    <ClCompile Include="WASR_TCMain.cpp">
+      <Filter>TwinCAT OS Files</Filter>
+    </ClCompile>
+    <ClCompile Include="WASR_TC.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SpeedTestSequencer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CoeSdo.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="WASR_TC.rc">
+      <Filter>Source Files</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="WASR_TC.tmc">
+      <Filter>TMC Files</Filter>
+    </None>
+  </ItemGroup>
+</Project>

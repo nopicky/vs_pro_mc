@@ -1,0 +1,2124 @@
+<?xml version="1.0"?>
+<TcSmProject xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.beckhoff.com/schemas/2012/07/TcSmProject" TcSmVersion="1.0" TcVersion="3.1.4026.25">
+	<DataTypes>
+		<DataType>
+			<Name GUID="{3EA188CF-A9B9-4934-9F74-3938A094C484}" AutoDeleteType="true">ServoInputs</Name>
+			<BitSize>128</BitSize>
+			<SubItem>
+				<Name>Error_code</Name>
+				<Type GUID="{18071995-0000-0000-0000-000000000005}">UINT</Type>
+				<BitSize>16</BitSize>
+				<BitOffs>0</BitOffs>
+			</SubItem>
+			<SubItem>
+				<Name>Status_word</Name>
+				<Type GUID="{18071995-0000-0000-0000-000000000005}">UINT</Type>
+				<BitSize>16</BitSize>
+				<BitOffs>16</BitOffs>
+			</SubItem>
+			<SubItem>
+				<Name>Position_actual_value</Name>
+				<Type GUID="{18071995-0000-0000-0000-000000000009}">DINT</Type>
+				<BitSize>32</BitSize>
+				<BitOffs>32</BitOffs>
+			</SubItem>
+			<SubItem>
+				<Name>Torque_actual_value</Name>
+				<Type GUID="{18071995-0000-0000-0000-000000000006}">INT</Type>
+				<BitSize>16</BitSize>
+				<BitOffs>64</BitOffs>
+			</SubItem>
+			<SubItem>
+				<Name>Velocity_actual_value</Name>
+				<Type GUID="{18071995-0000-0000-0000-000000000009}">DINT</Type>
+				<BitSize>32</BitSize>
+				<BitOffs>80</BitOffs>
+			</SubItem>
+			<SubItem>
+				<Name>Torque_demand</Name>
+				<Type GUID="{18071995-0000-0000-0000-000000000006}">INT</Type>
+				<BitSize>16</BitSize>
+				<BitOffs>112</BitOffs>
+			</SubItem>
+			<Hides>
+				<Hide GUID="{CEB17EF3-3352-48A7-9733-E07A8EFDBF5F}"/>
+				<Hide GUID="{3CD78E58-1DFD-4BC4-8A10-07BFA445D2C5}"/>
+				<Hide GUID="{8C8621D8-A3C9-4345-8946-C72D62995208}"/>
+				<Hide GUID="{6F53DAA2-0963-48FA-B9A8-2E814B61931C}"/>
+				<Hide GUID="{62ACA03C-9DE4-48BF-8BD4-5D5A42B97A3E}"/>
+				<Hide GUID="{39CE18E1-8D08-4435-9128-5E0DC355BB5A}"/>
+				<Hide GUID="{833BEDB9-097F-49E8-97E2-43447650AFF6}"/>
+				<Hide GUID="{35FB91F9-43E9-4427-A083-FFF655DAE0BB}"/>
+				<Hide GUID="{37540F0D-39F1-48E9-A3A7-CBF3ADDD5E2D}"/>
+				<Hide GUID="{AC79AAF5-B920-44E9-8041-FF338E379846}"/>
+				<Hide GUID="{9FEB0389-635A-457D-9D04-A3FA6C349A89}"/>
+				<Hide GUID="{8F71F502-A4A4-4029-90C4-296BB04532C2}"/>
+				<Hide GUID="{AF4C8D9B-FF12-49FA-BBEA-81772338A568}"/>
+				<Hide GUID="{D03C70BD-D4D1-4C24-8D84-664367D1AA8B}"/>
+				<Hide GUID="{120AAAE2-7C00-4E45-BCF6-C4242565E8CD}"/>
+				<Hide GUID="{C9B7194D-327B-491C-BE6E-2345D7FEF2CC}"/>
+				<Hide GUID="{5599EC67-8337-4157-BF04-44DD1DCFC431}"/>
+			</Hides>
+		</DataType>
+		<DataType>
+			<Name GUID="{B2423A46-CA74-4CEB-90A5-4087FA1A95A1}">ServoOutputs</Name>
+			<BitSize>168</BitSize>
+			<SubItem>
+				<Name>Controlword</Name>
+				<Type GUID="{18071995-0000-0000-0000-000000000005}">UINT</Type>
+				<BitSize>16</BitSize>
+				<BitOffs>0</BitOffs>
+			</SubItem>
+			<SubItem>
+				<Name>Target_position</Name>
+				<Type GUID="{18071995-0000-0000-0000-000000000009}">DINT</Type>
+				<BitSize>32</BitSize>
+				<BitOffs>16</BitOffs>
+			</SubItem>
+			<SubItem>
+				<Name>Target_velocity</Name>
+				<Type GUID="{18071995-0000-0000-0000-000000000009}">DINT</Type>
+				<BitSize>32</BitSize>
+				<BitOffs>48</BitOffs>
+			</SubItem>
+			<SubItem>
+				<Name>Target_torque</Name>
+				<Type GUID="{18071995-0000-0000-0000-000000000006}">INT</Type>
+				<BitSize>16</BitSize>
+				<BitOffs>80</BitOffs>
+			</SubItem>
+			<SubItem>
+				<Name>Modes_of_operation</Name>
+				<Type GUID="{18071995-0000-0000-0000-000000000003}">SINT</Type>
+				<BitSize>8</BitSize>
+				<BitOffs>96</BitOffs>
+			</SubItem>
+			<SubItem>
+				<Name>Motor_revolutions</Name>
+				<Type GUID="{18071995-0000-0000-0000-000000000008}">UDINT</Type>
+				<BitSize>32</BitSize>
+				<BitOffs>104</BitOffs>
+			</SubItem>
+			<SubItem>
+				<Name>Shaft_revolutions</Name>
+				<Type GUID="{18071995-0000-0000-0000-000000000008}">UDINT</Type>
+				<BitSize>32</BitSize>
+				<BitOffs>136</BitOffs>
+			</SubItem>
+			<Hides>
+				<Hide GUID="{B8510173-70AC-4EB4-839D-8EA04478273D}"/>
+				<Hide GUID="{32F10400-8B99-492F-8A6B-ABF894D81ED3}"/>
+				<Hide GUID="{9E1AB995-80AE-447E-9210-EAC0386D80DA}"/>
+				<Hide GUID="{15524453-DE30-46EE-B4A8-A23ED2774062}"/>
+				<Hide GUID="{87B7391F-B87E-442E-B6C6-132DAD60EF00}"/>
+				<Hide GUID="{DA1BE7B9-2C5A-4A1D-BE48-62BB2C1A1F7B}"/>
+				<Hide GUID="{4198D6AB-D7B5-45D7-8980-EDC29CA411FD}"/>
+				<Hide GUID="{17315BEB-1FBD-4721-8942-65C19D0FF1AA}"/>
+				<Hide GUID="{FFEB4580-D507-4FE3-A032-A05E9D3674CD}"/>
+				<Hide GUID="{D5519D93-4719-4165-B240-3C5913D49465}"/>
+				<Hide GUID="{D2BF5C20-F9E3-471D-8959-D155545F9161}"/>
+				<Hide GUID="{43AA7432-8C17-414E-A420-64241E0738AA}"/>
+				<Hide GUID="{AE8301D6-1848-4E95-BF43-350ADC9DDBDB}"/>
+				<Hide GUID="{8747089C-D338-43C2-8306-9F5EAFE8070D}"/>
+				<Hide GUID="{5B20F12C-D23D-40E1-A973-85C19CA8D268}"/>
+				<Hide GUID="{82BD95D3-8E81-42DD-9060-3C500F22D41B}"/>
+			</Hides>
+		</DataType>
+		<DataType>
+			<Name GUID="{D7752026-2E94-4B66-BA6C-CD15D3EE3EA4}">ServoStatus</Name>
+			<BitSize>192</BitSize>
+			<SubItem>
+				<Name>SpdCmd</Name>
+				<Type GUID="{18071995-0000-0000-0000-00000000000D}">REAL</Type>
+				<BitSize>32</BitSize>
+				<BitOffs>0</BitOffs>
+			</SubItem>
+			<SubItem>
+				<Name>SpdFb_ServoSend</Name>
+				<Type GUID="{18071995-0000-0000-0000-00000000000D}">REAL</Type>
+				<BitSize>32</BitSize>
+				<BitOffs>32</BitOffs>
+			</SubItem>
+			<SubItem>
+				<Name>SpdFb_PcCalc</Name>
+				<Type GUID="{18071995-0000-0000-0000-00000000000D}">REAL</Type>
+				<BitSize>32</BitSize>
+				<BitOffs>64</BitOffs>
+			</SubItem>
+			<SubItem>
+				<Name>TorCmd_PcSend</Name>
+				<Type GUID="{18071995-0000-0000-0000-00000000000D}">REAL</Type>
+				<BitSize>32</BitSize>
+				<BitOffs>96</BitOffs>
+			</SubItem>
+			<SubItem>
+				<Name>TorCmd_ServoRecv</Name>
+				<Type GUID="{18071995-0000-0000-0000-00000000000D}">REAL</Type>
+				<BitSize>32</BitSize>
+				<BitOffs>128</BitOffs>
+			</SubItem>
+			<SubItem>
+				<Name>TorFb</Name>
+				<Type GUID="{18071995-0000-0000-0000-00000000000D}">REAL</Type>
+				<BitSize>32</BitSize>
+				<BitOffs>160</BitOffs>
+			</SubItem>
+			<Hides>
+				<Hide GUID="{4CA2FC43-2C8F-4E24-855E-EE4D56D16773}"/>
+				<Hide GUID="{B1A8F0D7-7A9E-4738-91A6-89077CDDAFB6}"/>
+				<Hide GUID="{7C929CBF-665A-481B-8AE8-A27E7A90628C}"/>
+				<Hide GUID="{383A73DA-D81F-454E-9781-2A61057E8CF2}"/>
+				<Hide GUID="{539761D7-C385-458F-8794-1D61E646FA9E}"/>
+				<Hide GUID="{5C0DADB3-2001-41E4-A079-C7450F252D23}"/>
+				<Hide GUID="{A1D9653B-0B56-49CE-808C-6631DE219C59}"/>
+				<Hide GUID="{64C3C367-B49A-4843-A882-E5328BF89D57}"/>
+				<Hide GUID="{532D2484-CECF-413B-B8B5-C170207231DF}"/>
+				<Hide GUID="{7E1799D0-19D6-4288-9AF9-11D6E14EE3A2}"/>
+				<Hide GUID="{3F679F77-05A3-40CD-81F8-696C62AA281E}"/>
+				<Hide GUID="{624F6730-E50F-4F53-8666-33752497B607}"/>
+				<Hide GUID="{9CBA76CA-3C3F-4435-8E41-AD3BF0B8103E}"/>
+				<Hide GUID="{A745EEE0-D752-4C1F-9EF5-B3F7C5A603F1}"/>
+				<Hide GUID="{66389D0D-9201-4BA1-8005-7FCE9BAC9625}"/>
+				<Hide GUID="{02C3D096-CCA3-4AE3-A2F7-128B3FCE67FE}"/>
+				<Hide GUID="{D6C632CE-4BE1-4A3C-AA80-2A0EB71B7253}"/>
+				<Hide GUID="{B6FE1C1A-B793-4C53-8794-A7E071820886}"/>
+				<Hide GUID="{5E27A67D-7392-4F33-B370-682E92AC8DC4}"/>
+				<Hide GUID="{85F8089D-8FD6-4684-8291-DAB964A38DDC}"/>
+				<Hide GUID="{FE29CCB4-2AF7-4698-8E47-C5738262E1C0}"/>
+				<Hide GUID="{0F952DF7-AD46-4BD4-8E3E-38DBAA35E746}"/>
+				<Hide GUID="{0F62BB52-8740-4640-BBB4-27C41CF7F426}"/>
+				<Hide GUID="{BF6A9052-8E37-4051-B5EC-751DE7102F68}"/>
+				<Hide GUID="{ED3BB56E-CC8F-4213-B104-2AEB733D0547}"/>
+				<Hide GUID="{0326200A-5B70-4D04-9FC4-2D2171BA6735}"/>
+				<Hide GUID="{AC33ABA6-12DA-432F-A868-31E96B7BBED6}"/>
+				<Hide GUID="{6B5278E2-59C2-436C-8AA2-9E157747126C}"/>
+				<Hide GUID="{AF906A95-7DC0-49D6-9574-17C030DC9EFA}"/>
+			</Hides>
+		</DataType>
+		<DataType>
+			<Name GUID="{13CFE965-1F59-4DAC-9BCF-7A8F032B5230}">ServoParams</Name>
+			<BitSize>160</BitSize>
+			<SubItem>
+				<Name>EncCntPerRev</Name>
+				<Type GUID="{18071995-0000-0000-0000-000000000008}">UDINT</Type>
+				<Comment TxtId=""><![CDATA[编码器转一圈计数]]></Comment>
+				<BitSize>32</BitSize>
+				<BitOffs>0</BitOffs>
+			</SubItem>
+			<SubItem>
+				<Name>GearNum</Name>
+				<Type GUID="{18071995-0000-0000-0000-000000000008}">UDINT</Type>
+				<Comment TxtId=""><![CDATA[齿轮比分子]]></Comment>
+				<BitSize>32</BitSize>
+				<BitOffs>32</BitOffs>
+			</SubItem>
+			<SubItem>
+				<Name>GearDen</Name>
+				<Type GUID="{18071995-0000-0000-0000-000000000008}">UDINT</Type>
+				<Comment TxtId=""><![CDATA[齿轮比分母]]></Comment>
+				<BitSize>32</BitSize>
+				<BitOffs>64</BitOffs>
+			</SubItem>
+			<SubItem>
+				<Name>InertiaBase</Name>
+				<Type GUID="{18071995-0000-0000-0000-00000000000D}">REAL</Type>
+				<Comment TxtId=""><![CDATA[转子惯量]]></Comment>
+				<BitSize>32</BitSize>
+				<BitOffs>96</BitOffs>
+				<Unit><![CDATA[kg·m2]]></Unit>
+			</SubItem>
+			<SubItem>
+				<Name>RatedTorque</Name>
+				<Type GUID="{18071995-0000-0000-0000-00000000000D}">REAL</Type>
+				<Comment TxtId=""><![CDATA[电机额定转矩]]></Comment>
+				<BitSize>32</BitSize>
+				<BitOffs>128</BitOffs>
+				<Unit><![CDATA[N·m]]></Unit>
+			</SubItem>
+			<Hides>
+				<Hide GUID="{37E19463-4525-4EB9-AD74-60FC546741AA}"/>
+				<Hide GUID="{091D30F5-4A0C-41C9-A96A-CC66CA57BDC6}"/>
+				<Hide GUID="{BA8E4DA7-5206-49F8-871B-51D489DFE953}"/>
+				<Hide GUID="{36BE861F-C03B-4973-BD79-35A66DE82547}"/>
+				<Hide GUID="{56F6F2C2-D93C-4D03-B413-9B2AC11EF1E0}"/>
+				<Hide GUID="{C2AD151A-B74B-4329-9EC3-CAAB10C6F893}"/>
+				<Hide GUID="{78BBA202-FF83-4536-81E1-91A0012875E5}"/>
+				<Hide GUID="{C62F0DE5-87FC-4529-8120-B19BCB800AF1}"/>
+				<Hide GUID="{787ED84A-212B-46FF-AE81-3A70DF105751}"/>
+			</Hides>
+		</DataType>
+		<DataType>
+			<Name GUID="{E8FBC83C-DCBA-48A3-8F3C-DE0BFF168393}">ServoIO</Name>
+			<BitSize X64="480">416</BitSize>
+			<SubItem>
+				<Name>Inputs</Name>
+				<Type GUID="{3EA188CF-A9B9-4934-9F74-3938A094C484}" PointerTo="1">ServoInputs</Type>
+				<BitSize X64="64">32</BitSize>
+				<BitOffs>0</BitOffs>
+			</SubItem>
+			<SubItem>
+				<Name>Outputs</Name>
+				<Type GUID="{B2423A46-CA74-4CEB-90A5-4087FA1A95A1}" PointerTo="1">ServoOutputs</Type>
+				<BitSize X64="64">32</BitSize>
+				<BitOffs X64="64">32</BitOffs>
+			</SubItem>
+			<SubItem>
+				<Name>Status</Name>
+				<Type GUID="{D7752026-2E94-4B66-BA6C-CD15D3EE3EA4}">ServoStatus</Type>
+				<BitSize>192</BitSize>
+				<BitOffs X64="128">64</BitOffs>
+			</SubItem>
+			<SubItem>
+				<Name>Params</Name>
+				<Type GUID="{13CFE965-1F59-4DAC-9BCF-7A8F032B5230}">ServoParams</Type>
+				<BitSize>160</BitSize>
+				<BitOffs X64="320">256</BitOffs>
+			</SubItem>
+			<Hides>
+				<Hide GUID="{0B33AE30-2D82-40B2-9B68-1EA1432C6B67}"/>
+				<Hide GUID="{E981D35B-A707-4AA5-9B94-CD05084DF471}"/>
+				<Hide GUID="{C8417C24-FA62-44A6-AE4B-620D4B173C1E}"/>
+				<Hide GUID="{EA4FCDCC-8C85-441A-B6DF-51B915772BB5}"/>
+				<Hide GUID="{1DDC22BA-7C03-451D-96C3-7BA085A15E79}"/>
+				<Hide GUID="{DD079B10-636E-4FDD-B0A9-A28A44A4614F}"/>
+				<Hide GUID="{88388F72-CD1A-4D3C-83EF-30A65D9AC9D2}"/>
+				<Hide GUID="{CDD43A3D-C649-43C4-9F1E-2F3A00C25C72}"/>
+				<Hide GUID="{EFE662FF-4845-4955-91C5-5C1AF22D9B70}"/>
+				<Hide GUID="{817DC1A7-BD07-490B-97AC-A65EB01314B5}"/>
+				<Hide GUID="{3A916DB8-3CFA-4274-B3AA-A5DC05BF00BB}"/>
+				<Hide GUID="{7A7D4177-55A4-479C-8ED3-D46B74D3AF78}"/>
+				<Hide GUID="{CBA779CF-8764-4AC6-9FBB-FC922B6C9F32}"/>
+				<Hide GUID="{3492B193-A531-4552-8292-3F5B8A48ED47}"/>
+				<Hide GUID="{1C405F43-EC82-41AF-A216-CB59277E2229}"/>
+				<Hide GUID="{2A92641B-18D5-4296-8559-C3194108D3E1}"/>
+				<Hide GUID="{7E0CB16A-6F0F-4B3A-9AB8-088679514865}"/>
+				<Hide GUID="{2827F288-4ABC-49B0-88E1-015B042CEE0D}"/>
+				<Hide GUID="{ED24386A-3637-4B1E-A317-B5117F7C697D}"/>
+				<Hide GUID="{50A672E5-FB4A-43EF-8166-0D61C3D209CC}"/>
+			</Hides>
+		</DataType>
+		<DataType>
+			<Name GUID="{357956CC-D1A1-4576-B5A4-10FF5D8A9034}">ExperimentType_T</Name>
+			<BitSize>16</BitSize>
+			<BaseType GUID="{18071995-0000-0000-0000-000000000006}">INT</BaseType>
+			<EnumInfo>
+				<Text><![CDATA[ExperimentType_Manual]]></Text>
+				<Enum>0</Enum>
+				<Comment><![CDATA[手动实验]]></Comment>
+			</EnumInfo>
+			<EnumInfo>
+				<Text><![CDATA[ExperimentType_StepResponse]]></Text>
+				<Enum>1</Enum>
+				<Comment><![CDATA[阶跃响应实验]]></Comment>
+			</EnumInfo>
+			<EnumInfo>
+				<Text><![CDATA[ExperimentType_WaveResponse]]></Text>
+				<Enum>2</Enum>
+				<Comment><![CDATA[波形响应实验]]></Comment>
+			</EnumInfo>
+			<EnumInfo>
+				<Text><![CDATA[ExperimentType_VelocitySweep]]></Text>
+				<Enum>3</Enum>
+				<Comment><![CDATA[速度扫频实验]]></Comment>
+			</EnumInfo>
+			<EnumInfo>
+				<Text><![CDATA[ExperimentType_TorqueSweep]]></Text>
+				<Enum>4</Enum>
+				<Comment><![CDATA[转矩扫频实验]]></Comment>
+			</EnumInfo>
+			<EnumInfo>
+				<Text><![CDATA[ExperimentType_LoadDisturbScan]]></Text>
+				<Enum>5</Enum>
+				<Comment><![CDATA[负载扫描实验]]></Comment>
+			</EnumInfo>
+			<EnumInfo>
+				<Text><![CDATA[ExperimentType_PosLoopWave]]></Text>
+				<Enum>6</Enum>
+				<Comment><![CDATA[位置环波形响应实验]]></Comment>
+			</EnumInfo>
+			<EnumInfo>
+				<Text><![CDATA[ExperimentType_VelocityClosedLoopPRBS]]></Text>
+				<Enum>7</Enum>
+				<Comment><![CDATA[速度闭环PRBS实验]]></Comment>
+			</EnumInfo>
+			<EnumInfo>
+				<Text><![CDATA[ExperimentType_CurrentClosedLoopPRBS]]></Text>
+				<Enum>8</Enum>
+				<Comment><![CDATA[电流环PRBS实验]]></Comment>
+			</EnumInfo>
+			<Hides>
+				<Hide GUID="{607F3DD5-A6E7-477A-9EF1-53240F8703EA}"/>
+				<Hide GUID="{DFED6A86-459D-4DA1-AE45-AE1E6BD76328}"/>
+				<Hide GUID="{8D8E9699-BC7B-4458-8610-F23AE13721E5}"/>
+				<Hide GUID="{E79755B1-5CFB-40CB-AC06-AA4FF3E48545}"/>
+				<Hide GUID="{E277027C-E7B0-4D29-AB49-B9FC5B83338B}"/>
+				<Hide GUID="{4780D381-3A92-425D-9595-A23FA6078E80}"/>
+				<Hide GUID="{E34978F2-DB9F-4A95-B89E-9D90F3C62CD3}"/>
+				<Hide GUID="{617F8FAD-251A-40DA-A9D1-1D2938055C49}"/>
+				<Hide GUID="{6EC7FF81-7396-4454-A42B-892C6775D0B7}"/>
+				<Hide GUID="{E839798B-D263-44D3-9158-51D214830816}"/>
+				<Hide GUID="{E4E862B1-7B44-4697-904E-4E0C3E899886}"/>
+				<Hide GUID="{CA719973-518A-48AE-B0AA-47ED04D22A20}"/>
+				<Hide GUID="{4470F173-ED52-4BA3-B2F5-2DDF8A96FD9C}"/>
+				<Hide GUID="{E2ADEC1C-0825-42CC-B41B-FF22C032E8E2}"/>
+				<Hide GUID="{5180F05C-AAE9-4D23-B53B-F6000485DFB5}"/>
+				<Hide GUID="{098938E6-7766-4583-8797-150B6094644C}"/>
+				<Hide GUID="{D58FE9BE-27EE-4896-A90D-1D65D47D05AE}"/>
+				<Hide GUID="{41915AD9-5A0D-4CA5-A4B8-1B0AC7A6CBC3}"/>
+			</Hides>
+		</DataType>
+	</DataTypes>
+	<ImageDatas>
+		<ImageData Id="1000">424df8010000000000003600000028000000100000000e0000000100100000000000c2010000202e0000202e00000000000000000000590a590a5a0a3906390239065906390239023906590639063902590a59065a0e1902190219027a167a125a12f8017a169a163906390639065a12390219023906390239021802db325d53db32be73db2e1c433c4b9a1e3c4b5d53f80139023906390239021802fb327d5bfb36ff7fbb26390a7d5fdb329e63db36f8013902390639023902f801db2edf777d5b9e675d5339027d5f9e679e675a16190239023906390239021802db2ebe6ffc3abe6ffb369a221c439e677d5ffb3618023902390639023902390219065a1a1806590e1902f801f8015a0e190239023902390239063902390219029b225912bb26fc36db2edb2a7a1a19027a169a1e39023902390639023902f8011c3f9e671c3fbb267a163c473c479a1e5d4f5d5319023902390639023902f801bb26df73bb2eb701d801bb2a3c4bbb265d4f3c4f19023902390639023902f801db2ede6fbb2eb701d801bb2a3d4bbb265d4f5d4f19023902390639023902f801db2e7e5f3d4b1c3fdb32db2e1c43bb263d4b3d4b1902390239063902390239025a0e59069a16db2ebb265a0a590659065a0a590a39023902390639023902390219021902190218021802190219023902190219023902390239060000</ImageData>
+		<ImageData Id="1001">424dd6020000000000003600000028000000100000000e0000000100180000000000a0020000c30e0000c30e00000000000000000000f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8585858585858f0f0f0f8f8f8e8e8e0b0b048b0b048e8e8d8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8303838404048e8e8e8d8d8d8b8b8b0a8a830a8a830e8e8d8e0e0d0e8e8c8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8383840484848d0d0d0384048383830888810b0b048e0e0c0a8a848989810e0e0b8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8383840404048e8e8e8808088383830808010b0b040e8e8d8c0c078909008989820e0e0c0f8f8f8f8f8f8f8f8f8f8f8f8383840404048f0f0f0e8e8f0787878888810989828d8d8c0f8f8f8b8b860989808a0a020e8e8c8f8f8f8f8f8f8f8f8f8383840404048e8e8e8f8f8f8d8d8d8a8a830888810484858e0e0d8f8f8f8b8b858909008a0a028e0e0d0f8f8f8f8f8f8303840404048e8e8e8f8f8f8e8e8d0b0b038888810383830505070e8e8e0f8f8f8b0b050989808a0a038f8f8f8f8f8f8686868606868f8f8f8f8f8f8f0f0e0b8b860a0a048606060787880e8e8e8f8f8f8f0f0e8b0b050b0b058f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8</ImageData>
+	</ImageDatas>
+	<Project ProjectGUID="{2CC93405-99F2-4D4B-8D8C-1E5410171437}" Target64Bit="true" ShowHideConfigurations="#x6">
+		<System>
+			<Settings MaxCpus="20" NonWinCpus="1" CoreBoostActive="true">
+				<Cpu CpuId="19" BaseTime="1250"/>
+				<IoIdleTask CycleTime="1250"/>
+			</Settings>
+			<Tasks>
+				<Task Id="2" Priority="1" CycleTime="1250" AmsPort="350" AdtTasks="true">
+					<Name>WASR_Task</Name>
+				</Task>
+			</Tasks>
+		</System>
+		<Cpp>
+			<Project GUID="{049664A0-8452-41E5-A966-0529CE74E06E}" Name="WASR_TC" PrjFilePath="WASR_TC\WASR_TC.vcxproj" TmcFilePath="WASR_TC\WASR_TC.tmc">
+				<Instance Id="#x01010010" KeepUnrestoredLinks="2" ClassFactoryId="C++ Module Vendor|WASR_TC|0.0.0.1">
+					<Name>WASR_TC_Obj1 (WASR_TC)</Name>
+					<TmcDesc GUID="{ACD873DF-2063-4B77-9A90-AF0ED06810F6}" ClassFactoryId="C++ Module Vendor|WASR_TC|0.0.0.1">
+						<Name>WASR_TC</Name>
+						<CLSID ClassFactory="WASR_TC">{ACD873DF-2063-4B77-9A90-AF0ED06810F6}</CLSID>
+						<Licenses>
+							<License>
+								<LicenseId>{304D006A-8299-4560-AB79-438534B50288}</LicenseId>
+							</License>
+						</Licenses>
+						<InitSequence>PSO</InitSequence>
+						<Contexts>
+							<Context>
+								<Id>1</Id>
+								<ManualConfig>
+									<OTCID>#x02010020</OTCID>
+								</ManualConfig>
+								<Priority>1</Priority>
+								<CycleTime>125000</CycleTime>
+							</Context>
+						</Contexts>
+						<Interfaces>
+							<Interface DisableCodeGeneration="true">
+								<Type GUID="{00000012-0000-0000-E000-000000000064}">ITComObject</Type>
+							</Interface>
+							<Interface>
+								<Type GUID="{03000010-0000-0000-E000-000000000064}">ITcCyclic</Type>
+							</Interface>
+							<Interface DisableCodeGeneration="true">
+								<Type GUID="{03000012-0000-0000-E000-000000000064}">ITcADI</Type>
+							</Interface>
+							<Interface DisableCodeGeneration="true">
+								<Type GUID="{03000018-0000-0000-E000-000000000064}">ITcWatchSource</Type>
+							</Interface>
+						</Interfaces>
+						<Parameters>
+							<Parameter HideParameter="true">
+								<Name>TraceLevelMax</Name>
+								<Comment><![CDATA[Controls the amount of log messages.]]></Comment>
+								<BitSize>32</BitSize>
+								<BaseType GUID="{8007AE3B-86BB-40F2-B385-EF87FCC239A4}">TcTraceLevel</BaseType>
+								<PTCID>#x03002103</PTCID>
+								<ContextId>1</ContextId>
+							</Parameter>
+						</Parameters>
+						<DataAreas>
+							<DataArea>
+								<AreaNo AreaType="InputDst" CreateSymbols="true">0</AreaNo>
+								<Name>Inputs</Name>
+								<ContextId>1</ContextId>
+								<ByteSize>32</ByteSize>
+								<Symbol>
+									<Name>Servo0</Name>
+									<BitSize>128</BitSize>
+									<BaseType GUID="{3EA188CF-A9B9-4934-9F74-3938A094C484}">ServoInputs</BaseType>
+									<BitOffs>0</BitOffs>
+								</Symbol>
+								<Symbol>
+									<Name>Servo1</Name>
+									<BitSize>128</BitSize>
+									<BaseType GUID="{3EA188CF-A9B9-4934-9F74-3938A094C484}">ServoInputs</BaseType>
+									<BitOffs>128</BitOffs>
+								</Symbol>
+							</DataArea>
+							<DataArea>
+								<AreaNo AreaType="OutputSrc">1</AreaNo>
+								<Name>Outputs</Name>
+								<ContextId>1</ContextId>
+								<ByteSize>42</ByteSize>
+								<Symbol>
+									<Name>Servo0</Name>
+									<BitSize>168</BitSize>
+									<BaseType GUID="{B2423A46-CA74-4CEB-90A5-4087FA1A95A1}">ServoOutputs</BaseType>
+									<BitOffs>0</BitOffs>
+								</Symbol>
+								<Symbol>
+									<Name>Servo1</Name>
+									<BitSize>168</BitSize>
+									<BaseType GUID="{B2423A46-CA74-4CEB-90A5-4087FA1A95A1}">ServoOutputs</BaseType>
+									<BitOffs>168</BitOffs>
+								</Symbol>
+							</DataArea>
+							<DataArea>
+								<AreaNo AreaType="Standard">2</AreaNo>
+								<Name>Servos</Name>
+								<ContextId>1</ContextId>
+								<ByteSize X64="136">112</ByteSize>
+								<Symbol>
+									<Name>Servo0</Name>
+									<BitSize X64="480">416</BitSize>
+									<BaseType GUID="{E8FBC83C-DCBA-48A3-8F3C-DE0BFF168393}">ServoIO</BaseType>
+									<BitOffs>0</BitOffs>
+								</Symbol>
+								<Symbol>
+									<Name>Servo1</Name>
+									<BitSize X64="480">416</BitSize>
+									<BaseType GUID="{E8FBC83C-DCBA-48A3-8F3C-DE0BFF168393}">ServoIO</BaseType>
+									<BitOffs X64="480">416</BitOffs>
+								</Symbol>
+								<Symbol CreateSymbol="true">
+									<Name>DriveSide</Name>
+									<BitSize X64="64">32</BitSize>
+									<BaseType GUID="{E8FBC83C-DCBA-48A3-8F3C-DE0BFF168393}" PointerTo="1">ServoIO</BaseType>
+									<BitOffs X64="960">832</BitOffs>
+								</Symbol>
+								<Symbol CreateSymbol="true">
+									<Name>LoadSide</Name>
+									<BitSize X64="64">32</BitSize>
+									<BaseType GUID="{E8FBC83C-DCBA-48A3-8F3C-DE0BFF168393}" PointerTo="1">ServoIO</BaseType>
+									<BitOffs X64="1024">864</BitOffs>
+								</Symbol>
+							</DataArea>
+							<DataArea>
+								<AreaNo AreaType="Standard" CreateSymbols="true">3</AreaNo>
+								<Name>Status</Name>
+								<Comment><![CDATA[状态]]></Comment>
+								<ContextId>1</ContextId>
+								<ByteSize>25</ByteSize>
+								<Symbol>
+									<Name>Enable</Name>
+									<BitSize>8</BitSize>
+									<BaseType GUID="{18071995-0000-0000-0000-000000000002}">USINT</BaseType>
+									<BitOffs>0</BitOffs>
+								</Symbol>
+								<Symbol>
+									<Name>Driver_Servo_number</Name>
+									<BitSize>8</BitSize>
+									<BaseType GUID="{18071995-0000-0000-0000-000000000002}">USINT</BaseType>
+									<BitOffs>8</BitOffs>
+								</Symbol>
+								<Symbol>
+									<Name>Driver_Modes_of_operation</Name>
+									<BitSize>8</BitSize>
+									<BaseType GUID="{18071995-0000-0000-0000-000000000003}">SINT</BaseType>
+									<BitOffs>16</BitOffs>
+								</Symbol>
+								<Symbol>
+									<Name>Driver_Inertia_ratio</Name>
+									<BitSize>16</BitSize>
+									<BaseType GUID="{18071995-0000-0000-0000-000000000005}">UINT</BaseType>
+									<BitOffs>24</BitOffs>
+								</Symbol>
+								<Symbol>
+									<Name>Driver_Rigidity_level</Name>
+									<BitSize>16</BitSize>
+									<BaseType GUID="{18071995-0000-0000-0000-000000000005}">UINT</BaseType>
+									<BitOffs>40</BitOffs>
+								</Symbol>
+								<Symbol>
+									<Name>Driver_SpdLoop_Kp</Name>
+									<BitSize>16</BitSize>
+									<BaseType GUID="{18071995-0000-0000-0000-000000000005}">UINT</BaseType>
+									<BitOffs>56</BitOffs>
+								</Symbol>
+								<Symbol>
+									<Name>Driver_SpdLoop_Ti</Name>
+									<BitSize>16</BitSize>
+									<BaseType GUID="{18071995-0000-0000-0000-000000000005}">UINT</BaseType>
+									<BitOffs>72</BitOffs>
+								</Symbol>
+								<Symbol>
+									<Name>ExperimentType</Name>
+									<BitSize>16</BitSize>
+									<BaseType GUID="{357956CC-D1A1-4576-B5A4-10FF5D8A9034}">ExperimentType_T</BaseType>
+									<BitOffs>88</BitOffs>
+								</Symbol>
+								<Symbol CreateSymbol="true">
+									<Name>SigFreq</Name>
+									<Comment TxtId=""><![CDATA[扰动频率]]></Comment>
+									<BitSize>32</BitSize>
+									<BaseType GUID="{18071995-0000-0000-0000-00000000000D}">REAL</BaseType>
+									<BitOffs>104</BitOffs>
+								</Symbol>
+								<Symbol>
+									<Name>SigAmp</Name>
+									<Comment TxtId=""><![CDATA[扰动幅值: 速度波形 [rpm], 位置波形 [指令单位], 负载扫描回读 [% 负载额定], 只读]]></Comment>
+									<BitSize>32</BitSize>
+									<BaseType GUID="{18071995-0000-0000-0000-00000000000D}">REAL</BaseType>
+									<BitOffs>136</BitOffs>
+								</Symbol>
+								<Symbol CreateSymbol="true">
+									<Name>SigOffset</Name>
+									<Comment TxtId=""><![CDATA[负载侧基准转矩指令]]></Comment>
+									<BitSize>32</BitSize>
+									<BaseType GUID="{18071995-0000-0000-0000-00000000000D}">REAL</BaseType>
+									<Unit><![CDATA[0.1%RatedTorque]]></Unit>
+									<BitOffs>168</BitOffs>
+								</Symbol>
+							</DataArea>
+						</DataAreas>
+						<InterfacePointers>
+							<InterfacePointer>
+								<PTCID>#x03002060</PTCID>
+								<Name>CyclicCaller</Name>
+								<Type GUID="{0300001E-0000-0000-E000-000000000064}">ITcCyclicCaller</Type>
+							</InterfacePointer>
+						</InterfacePointers>
+						<ParameterValues>
+							<Value>
+								<Name>TraceLevelMax</Name>
+								<EnumText>tlAlways</EnumText>
+							</Value>
+						</ParameterValues>
+						<InterfacePointerValues>
+							<Value>
+								<Name>CyclicCaller</Name>
+								<OTCID>#x02010020</OTCID>
+							</Value>
+						</InterfacePointerValues>
+					</TmcDesc>
+					<UnrestoredVarLinks ImportTime="2026-10-21T17:33:24">
+						<OwnerA Name="Inputs" Prefix="TIXC^WASR_TC^WASR_TC_Obj1 (WASR_TC)" Type="1">
+							<OwnerB Name="TIID^主站^汇川SV680N">
+								<Link VarA="SV680N_AutoAdjustingMode" GrpA="Inputs" TypeA="UINT" InOutA="0" GuidA="{18071995-0000-0000-0000-000000000005}" VarB="Inputs^Auto-adjusting mode"/>
+								<Link VarA="SV680N_AverageValueOfLoadInertiaRatio" GrpA="Inputs" TypeA="UINT" InOutA="0" GuidA="{18071995-0000-0000-0000-000000000005}" VarB="Inputs^Average value of load inertia ratio"/>
+								<Link VarA="SV680N_ObtainedResonanceFrequency" GrpA="Inputs" TypeA="UINT" InOutA="0" GuidA="{18071995-0000-0000-0000-000000000005}" VarB="Inputs^Obtained resonance frequency"/>
+								<Link VarA="SV680N_RigidityLevelSelection" GrpA="Inputs" TypeA="UINT" InOutA="0" GuidA="{18071995-0000-0000-0000-000000000005}" VarB="Inputs^Rigidity level selection"/>
+								<Link VarA="SV680N_SpeedLoopGain" GrpA="Inputs" TypeA="UINT" InOutA="0" GuidA="{18071995-0000-0000-0000-000000000005}" VarB="Inputs^Speed-loop Gain"/>
+								<Link VarA="SV680N_SpeedLoopIntegralTimeConstant" GrpA="Inputs" TypeA="UINT" InOutA="0" GuidA="{18071995-0000-0000-0000-000000000005}" VarB="Inputs^Speed-loop integral time constant"/>
+								<Link VarA="SV680N_TorqueReferenceFilterTime1" GrpA="Inputs" TypeA="UINT" InOutA="0" GuidA="{18071995-0000-0000-0000-000000000005}" VarB="Inputs^Torque reference filter time 1"/>
+							</OwnerB>
+							<OwnerB Name="TIID^主站^维控VD5L">
+								<Link VarA="VD5L_InertiaRatioReal" GrpA="Inputs" TypeA="UINT" InOutA="0" GuidA="{18071995-0000-0000-0000-000000000005}" VarB="TxPDO^InerRatioReal"/>
+							</OwnerB>
+						</OwnerA>
+					</UnrestoredVarLinks>
+					<UnrestoredVarLinks ImportTime="2026-11-09T15:01:02">
+						<OwnerA Name="Inputs" Prefix="TIXC^WASR_TC^WASR_TC_Obj1 (WASR_TC)" Type="1">
+							<OwnerB Name="TIID^主站^汇川SV630N_03716">
+								<Link VarA="SV680N_InertiaRatio" GrpA="Inputs" TypeA="UINT" InOutA="0" GuidA="{18071995-0000-0000-0000-000000000005}" VarB="Inputs^Average value of load inertia ratio"/>
+							</OwnerB>
+							<OwnerB Name="TIID^主站^维控VD5L">
+								<Link VarA="VD5L_DobsOut" GrpA="Inputs" TypeA="UINT" InOutA="0" GuidA="{18071995-0000-0000-0000-000000000005}" VarB="TxPDO^DcBusVoltDisp "/>
+							</OwnerB>
+						</OwnerA>
+					</UnrestoredVarLinks>
+				</Instance>
+			</Project>
+		</Cpp>
+		<Io>
+			<Device Id="1" DevType="111" DevFlags="#x0003" AmsPort="28673" AmsNetId="172.31.226.166.2.1" RemoteName="主站" InfoImageId="2">
+				<Name>主站</Name>
+				<AddressInfo>
+					<Pnp>
+						<DeviceDesc>̫ 3 (TwinCAT-Intel PCI Ethernet Adapter (Gigabit))</DeviceDesc>
+						<DeviceName>\DEVICE\{52D9FC8B-0A49-436D-AE5C-040A05EFA338}</DeviceName>
+						<DeviceData>a010a2ba9a33</DeviceData>
+					</Pnp>
+				</AddressInfo>
+				<Image Id="1" AddrType="9" ImageType="3">
+					<Name>过程映像</Name>
+				</Image>
+				<Box Id="20" Disabled="true" BoxType="9099" BoxFlags="#x00000020" AmsPort="61456">
+					<Name>汇川SV630N_03713</Name>
+					<ImageId>1000</ImageId>
+					<EtherCAT SlaveType="2" PdiType="#x0c80" MboxDataLinkLayer="true" StateMBoxPolling="true" CycleMBoxPollingTime="0" CoeType="13" EoeType="2" VendorId="#x00100000" ProductCode="#x000c0112" RevisionNo="#x00010000" InfoDataAddr="true" InfoDataSoeDS401="true" InfoDataDcTimes="true" TimeoutStateChange2="9000" TimeoutMailbox2="2000" PortPhys="17" MaxSlotCount="256" MaxSlotGroupCount="1" SlotPdoIncrement="1" SlotIndexIncrement="16" Type="SV630N_1Axis_03713" Desc="InoSV630N" PortABoxInfo="#x00ffffff">
+						<SyncMan>001000012600010001000000220000020001001026010000</SyncMan>
+						<SyncMan>001400012200010002000000220000020001001422010000</SyncMan>
+						<SyncMan>00180f006400010003000000000000000c00001864010000</SyncMan>
+						<SyncMan>001c11002000010004000000000000001c00001c20010000</SyncMan>
+						<Fmmu>0000000000000000001800020100000001000000000000000000000000000000</Fmmu>
+						<Fmmu>0000000000000000001c00010100000002000000000000000000000000000000</Fmmu>
+						<Fmmu>00000000000000000d0800010100000003000000000000000000000000000000</Fmmu>
+						<SwitchPortData>01000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000</SwitchPortData>
+						<SuTask>#x02010020</SuTask>
+						<DcData>00030000000000000000000000000000010000000000feff0000000000000000</DcData>
+						<DcMode>4443000000000000000000000000000044432d53796e6368726f6e000000000000000000000000000000000000000000000000000000000000000000000000030100000000000000000000000000000000000000000000000000000000000000</DcMode>
+						<MBoxUserCmdData>02000300090000001200000000000000000000000000000000000000000000002060600001000000094d6f646573206f66206f7065726174696f6e00</MBoxUserCmdData>
+						<MBoxUserCmdData>020003000a0000003900000003000000000000000000000000000000000000002007201402000000b80b466f7277617264207370656564206c696d69742f5370656564206c696d6974203120696e206c6f63616c20746f7271756520636f6e74726f6c00</MBoxUserCmdData>
+						<MBoxUserCmdData>020003000a0000003900000003000000000000000000000000000000000000002007201502000000b80b52657665727365207370656564206c696d69742f5370656564206c696d6974203220696e206c6f63616c20746f7271756520636f6e74726f6c00</MBoxUserCmdData>
+						<Pdo Name="Inputs" Index="#x1a00" Flags="#x0000" SyncMan="3">
+							<ExcludePdo>#x1b01</ExcludePdo>
+							<ExcludePdo>#x1b02</ExcludePdo>
+							<ExcludePdo>#x1b03</ExcludePdo>
+							<ExcludePdo>#x1b04</ExcludePdo>
+							<Entry Name="Error code" Index="#x603f">
+								<Type>UINT</Type>
+							</Entry>
+							<Entry Name="Statusword" Index="#x6041">
+								<Type>UINT</Type>
+							</Entry>
+							<Entry Name="Position actual value" Index="#x6064">
+								<Type>DINT</Type>
+							</Entry>
+							<Entry Name="Torque actual value" Index="#x6077">
+								<Type>INT</Type>
+							</Entry>
+							<Entry Name="Velocity actual value" Index="#x606c">
+								<Type>DINT</Type>
+							</Entry>
+							<Entry Name="Modes of operation display" Index="#x6061">
+								<Type>SINT</Type>
+							</Entry>
+							<Entry Name="Torque demand" Index="#x6074">
+								<Type>INT</Type>
+							</Entry>
+						</Pdo>
+						<Pdo Name="Inputs" Index="#x1b01" Flags="#x0010">
+							<ExcludePdo>#x1a00</ExcludePdo>
+							<ExcludePdo>#x1b02</ExcludePdo>
+							<ExcludePdo>#x1b03</ExcludePdo>
+							<ExcludePdo>#x1b04</ExcludePdo>
+							<Entry Name="Error code" Index="#x603f">
+								<Type>UINT</Type>
+							</Entry>
+							<Entry Name="Statusword" Index="#x6041">
+								<Type>UINT</Type>
+							</Entry>
+							<Entry Name="Position actual value" Index="#x6064">
+								<Type>DINT</Type>
+							</Entry>
+							<Entry Name="Torque actual value" Index="#x6077">
+								<Type>INT</Type>
+							</Entry>
+							<Entry Name="Following error actual value" Index="#x60f4">
+								<Type>DINT</Type>
+							</Entry>
+							<Entry Name="Touch probe status" Index="#x60b9">
+								<Type>UINT</Type>
+							</Entry>
+							<Entry Name="Touch probe pos1 pos value" Index="#x60ba">
+								<Type>DINT</Type>
+							</Entry>
+							<Entry Name="Touch probe pos2 pos value" Index="#x60bc">
+								<Type>DINT</Type>
+							</Entry>
+							<Entry Name="Digital inputs" Index="#x60fd">
+								<Type>UDINT</Type>
+							</Entry>
+						</Pdo>
+						<Pdo Name="Inputs" Index="#x1b02" Flags="#x0010">
+							<ExcludePdo>#x1a00</ExcludePdo>
+							<ExcludePdo>#x1b01</ExcludePdo>
+							<ExcludePdo>#x1b03</ExcludePdo>
+							<ExcludePdo>#x1b04</ExcludePdo>
+							<Entry Name="Error code" Index="#x603f">
+								<Type>UINT</Type>
+							</Entry>
+							<Entry Name="Statusword" Index="#x6041">
+								<Type>UINT</Type>
+							</Entry>
+							<Entry Name="Position actual value" Index="#x6064">
+								<Type>DINT</Type>
+							</Entry>
+							<Entry Name="Torque actual value" Index="#x6077">
+								<Type>INT</Type>
+							</Entry>
+							<Entry Name="Modes of operation display" Index="#x6061">
+								<Type>SINT</Type>
+							</Entry>
+							<Entry Name="Touch probe status" Index="#x60b9">
+								<Type>UINT</Type>
+							</Entry>
+							<Entry Name="Touch probe pos1 pos value" Index="#x60ba">
+								<Type>DINT</Type>
+							</Entry>
+							<Entry Name="Touch probe pos2 pos value" Index="#x60bc">
+								<Type>DINT</Type>
+							</Entry>
+							<Entry Name="Digital inputs" Index="#x60fd">
+								<Type>UDINT</Type>
+							</Entry>
+						</Pdo>
+						<Pdo Name="Inputs" Index="#x1b03" Flags="#x0010">
+							<ExcludePdo>#x1a00</ExcludePdo>
+							<ExcludePdo>#x1b01</ExcludePdo>
+							<ExcludePdo>#x1b02</ExcludePdo>
+							<ExcludePdo>#x1b04</ExcludePdo>
+							<Entry Name="Error code" Index="#x603f">
+								<Type>UINT</Type>
+							</Entry>
+							<Entry Name="Statusword" Index="#x6041">
+								<Type>UINT</Type>
+							</Entry>
+							<Entry Name="Position actual value" Index="#x6064">
+								<Type>DINT</Type>
+							</Entry>
+							<Entry Name="Torque actual value" Index="#x6077">
+								<Type>INT</Type>
+							</Entry>
+							<Entry Name="Following error actual value" Index="#x60f4">
+								<Type>DINT</Type>
+							</Entry>
+							<Entry Name="Modes of operation display" Index="#x6061">
+								<Type>SINT</Type>
+							</Entry>
+							<Entry Name="Touch probe status" Index="#x60b9">
+								<Type>UINT</Type>
+							</Entry>
+							<Entry Name="Touch probe pos1 pos value" Index="#x60ba">
+								<Type>DINT</Type>
+							</Entry>
+							<Entry Name="Touch probe pos2 pos value" Index="#x60bc">
+								<Type>DINT</Type>
+							</Entry>
+							<Entry Name="Digital inputs" Index="#x60fd">
+								<Type>UDINT</Type>
+							</Entry>
+						</Pdo>
+						<Pdo Name="Inputs" Index="#x1b04" Flags="#x0010">
+							<ExcludePdo>#x1a00</ExcludePdo>
+							<ExcludePdo>#x1b01</ExcludePdo>
+							<ExcludePdo>#x1b02</ExcludePdo>
+							<ExcludePdo>#x1b03</ExcludePdo>
+							<Entry Name="Error code" Index="#x603f">
+								<Type>UINT</Type>
+							</Entry>
+							<Entry Name="Statusword" Index="#x6041">
+								<Type>UINT</Type>
+							</Entry>
+							<Entry Name="Position actual value" Index="#x6064">
+								<Type>DINT</Type>
+							</Entry>
+							<Entry Name="Torque actual value" Index="#x6077">
+								<Type>INT</Type>
+							</Entry>
+							<Entry Name="Modes of operation display" Index="#x6061">
+								<Type>SINT</Type>
+							</Entry>
+							<Entry Name="Following error actual value" Index="#x60f4">
+								<Type>DINT</Type>
+							</Entry>
+							<Entry Name="Touch probe status" Index="#x60b9">
+								<Type>UINT</Type>
+							</Entry>
+							<Entry Name="Touch probe pos1 pos value" Index="#x60ba">
+								<Type>DINT</Type>
+							</Entry>
+							<Entry Name="Touch probe pos2 pos value" Index="#x60bc">
+								<Type>DINT</Type>
+							</Entry>
+							<Entry Name="Velocity actual value" Index="#x606c">
+								<Type>DINT</Type>
+							</Entry>
+						</Pdo>
+						<Pdo Name="Outputs" Index="#x1600" InOut="1" Flags="#x0000" SyncMan="2">
+							<ExcludePdo>#x1701</ExcludePdo>
+							<ExcludePdo>#x1702</ExcludePdo>
+							<ExcludePdo>#x1703</ExcludePdo>
+							<ExcludePdo>#x1704</ExcludePdo>
+							<ExcludePdo>#x1705</ExcludePdo>
+							<Entry Name="Controlword" Index="#x6040">
+								<Type>UINT</Type>
+							</Entry>
+							<Entry Name="Target position" Index="#x607a">
+								<Type>DINT</Type>
+							</Entry>
+							<Entry Name="Target velocity" Index="#x60ff">
+								<Type>DINT</Type>
+							</Entry>
+							<Entry Name="Target torque" Index="#x6071">
+								<Type>INT</Type>
+							</Entry>
+							<Entry Name="Modes of operation" Index="#x6060">
+								<Type>SINT</Type>
+							</Entry>
+							<Entry Name="Touch probe function" Index="#x60b8">
+								<Type>UINT</Type>
+							</Entry>
+						</Pdo>
+						<Pdo Name="Outputs" Index="#x1701" InOut="1" Flags="#x0010">
+							<ExcludePdo>#x1600</ExcludePdo>
+							<ExcludePdo>#x1702</ExcludePdo>
+							<ExcludePdo>#x1703</ExcludePdo>
+							<ExcludePdo>#x1704</ExcludePdo>
+							<ExcludePdo>#x1705</ExcludePdo>
+							<Entry Name="Controlword" Index="#x6040">
+								<Type>UINT</Type>
+							</Entry>
+							<Entry Name="Target position" Index="#x607a">
+								<Type>DINT</Type>
+							</Entry>
+							<Entry Name="Touch probe function" Index="#x60b8">
+								<Type>UINT</Type>
+							</Entry>
+							<Entry Name="Physical outputs" Index="#x60fe" Sub="#x01">
+								<Type>UDINT</Type>
+							</Entry>
+						</Pdo>
+						<Pdo Name="Outputs" Index="#x1702" InOut="1" Flags="#x0010">
+							<ExcludePdo>#x1600</ExcludePdo>
+							<ExcludePdo>#x1701</ExcludePdo>
+							<ExcludePdo>#x1703</ExcludePdo>
+							<ExcludePdo>#x1704</ExcludePdo>
+							<ExcludePdo>#x1705</ExcludePdo>
+							<Entry Name="Controlword" Index="#x6040">
+								<Type>UINT</Type>
+							</Entry>
+							<Entry Name="Target position" Index="#x607a">
+								<Type>DINT</Type>
+							</Entry>
+							<Entry Name="Target velocity" Index="#x60ff">
+								<Type>DINT</Type>
+							</Entry>
+							<Entry Name="Target torque" Index="#x6071">
+								<Type>INT</Type>
+							</Entry>
+							<Entry Name="Modes of operation" Index="#x6060">
+								<Type>SINT</Type>
+							</Entry>
+							<Entry Name="Touch probe function" Index="#x60b8">
+								<Type>UINT</Type>
+							</Entry>
+							<Entry Name="Max profile velocity" Index="#x607f">
+								<Type>UDINT</Type>
+							</Entry>
+						</Pdo>
+						<Pdo Name="Outputs" Index="#x1703" InOut="1" Flags="#x0010">
+							<ExcludePdo>#x1600</ExcludePdo>
+							<ExcludePdo>#x1701</ExcludePdo>
+							<ExcludePdo>#x1702</ExcludePdo>
+							<ExcludePdo>#x1704</ExcludePdo>
+							<ExcludePdo>#x1705</ExcludePdo>
+							<Entry Name="Controlword" Index="#x6040">
+								<Type>UINT</Type>
+							</Entry>
+							<Entry Name="Target position" Index="#x607a">
+								<Type>DINT</Type>
+							</Entry>
+							<Entry Name="Target velocity" Index="#x60ff">
+								<Type>DINT</Type>
+							</Entry>
+							<Entry Name="Modes of operation" Index="#x6060">
+								<Type>SINT</Type>
+							</Entry>
+							<Entry Name="Touch probe function" Index="#x60b8">
+								<Type>UINT</Type>
+							</Entry>
+							<Entry Name="Positive torque limit value" Index="#x60e0">
+								<Type>UINT</Type>
+							</Entry>
+							<Entry Name="Negative torque limit value" Index="#x60e1">
+								<Type>UINT</Type>
+							</Entry>
+						</Pdo>
+						<Pdo Name="Outputs" Index="#x1704" InOut="1" Flags="#x0010">
+							<ExcludePdo>#x1600</ExcludePdo>
+							<ExcludePdo>#x1701</ExcludePdo>
+							<ExcludePdo>#x1702</ExcludePdo>
+							<ExcludePdo>#x1703</ExcludePdo>
+							<ExcludePdo>#x1705</ExcludePdo>
+							<Entry Name="Controlword" Index="#x6040">
+								<Type>UINT</Type>
+							</Entry>
+							<Entry Name="Target position" Index="#x607a">
+								<Type>DINT</Type>
+							</Entry>
+							<Entry Name="Target velocity" Index="#x60ff">
+								<Type>DINT</Type>
+							</Entry>
+							<Entry Name="Target torque" Index="#x6071">
+								<Type>INT</Type>
+							</Entry>
+							<Entry Name="Modes of operation" Index="#x6060">
+								<Type>SINT</Type>
+							</Entry>
+							<Entry Name="Touch probe function" Index="#x60b8">
+								<Type>UINT</Type>
+							</Entry>
+							<Entry Name="Max profile velocity" Index="#x607f">
+								<Type>UDINT</Type>
+							</Entry>
+							<Entry Name="Positive torque limit value" Index="#x60e0">
+								<Type>UINT</Type>
+							</Entry>
+							<Entry Name="Negative torque limit value" Index="#x60e1">
+								<Type>UINT</Type>
+							</Entry>
+						</Pdo>
+						<Pdo Name="Outputs" Index="#x1705" InOut="1" Flags="#x0010">
+							<ExcludePdo>#x1600</ExcludePdo>
+							<ExcludePdo>#x1701</ExcludePdo>
+							<ExcludePdo>#x1702</ExcludePdo>
+							<ExcludePdo>#x1703</ExcludePdo>
+							<ExcludePdo>#x1704</ExcludePdo>
+							<Entry Name="Controlword" Index="#x6040">
+								<Type>UINT</Type>
+							</Entry>
+							<Entry Name="Target position" Index="#x607a">
+								<Type>DINT</Type>
+							</Entry>
+							<Entry Name="Target velocity" Index="#x60ff">
+								<Type>DINT</Type>
+							</Entry>
+							<Entry Name="Modes of operation" Index="#x6060">
+								<Type>SINT</Type>
+							</Entry>
+							<Entry Name="Touch probe function" Index="#x60b8">
+								<Type>UINT</Type>
+							</Entry>
+							<Entry Name="Positive torque limit value" Index="#x60e0">
+								<Type>UINT</Type>
+							</Entry>
+							<Entry Name="Negative torque limit value" Index="#x60e1">
+								<Type>UINT</Type>
+							</Entry>
+							<Entry Name="Torque offset" Index="#x60b2">
+								<Type>INT</Type>
+							</Entry>
+						</Pdo>
+						<CoeProfile ProfileNo="402"/>
+					</EtherCAT>
+				</Box>
+				<Box Id="1" Disabled="true" BoxType="9099" BoxFlags="#x00000020">
+					<Name>维控VD3E</Name>
+					<ImageId>1001</ImageId>
+					<EtherCAT SlaveType="2" PdiType="#x0e08" MboxDataLinkLayer="true" StateMBoxPolling="true" CycleMBoxPollingTime="0" CoeType="15" VendorId="#x00000eff" ProductCode="#x0d3e0001" RevisionNo="#x00000073" InfoDataAddr="true" InfoDataSoeDS401="true" InfoDataDcTimes="true" TimeoutStateChange1="2000" TimeoutStateChange2="9000" TimeoutMailbox2="2000" PortPhys="17" MaxSlotCount="256" MaxSlotGroupCount="1" SlotPdoIncrement="1" SlotIndexIncrement="16" Type="Wecon VD3E EtherCAT Servo v1.15" Desc="Wecon VD3E EtherCAT Servo v1.15" PortABoxInfo="#x01000014">
+						<SyncMan>001080002600010001000000220000018000001026010000</SyncMan>
+						<SyncMan>801080002200010002000000220000018000801022010000</SyncMan>
+						<SyncMan>00110f006400010003000000000000000900001164010000</SyncMan>
+						<SyncMan>001411002000010004000000000000000f00001420010000</SyncMan>
+						<Fmmu>0000000000000000001100020100000001000000000000000000000000000000</Fmmu>
+						<Fmmu>0000000000000000001400010100000002000000000000000000000000000000</Fmmu>
+						<Fmmu>00000000000000000d0800010100000003000000000000000000000000000000</Fmmu>
+						<DcData>0003000000000000000000000000000001000000000000000000000000000000</DcData>
+						<DcMode>4443000000000000000000000000000044432d53796e6368726f6e000000000000000000000000000000000000000000000000000000000000000000000000030100000000000000000000000000000000000000000000000000000000000000</DcMode>
+						<DcMode>467265652052756e0000000000000000467265652052756e000000000000000000000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000</DcMode>
+						<MBoxUserCmdData>02000300090000001200000000000000000000000000000000000000000000002060600001000000094d6f646573206f66206f7065726174696f6e00</MBoxUserCmdData>
+						<MBoxUserCmdData>020003000a0000000d000000000000000000000000000000000000000000000020012009020000000000546f714d6f646553706453726300</MBoxUserCmdData>
+						<MBoxUserCmdData>020003000a0000000f00000000000000000000000000000000000000000000002001201102000000b80b50546f716d6f645370646c696d697400</MBoxUserCmdData>
+						<MBoxUserCmdData>020003000a0000000f00000000000000000000000000000000000000000000002001201202000000b80b4e546f716d6f645370646c696d697400</MBoxUserCmdData>
+						<MBoxUserCmdData>020003000c000000150000000000000000000000000000000000000000000000207f6000040000000000c8004d61782070726f66696c652076656c6f636974792000</MBoxUserCmdData>
+						<MBoxUserCmdData>020003000a00000010000000000000000000000000000000000000000000000020042012020000000a0053706446646246696c74657254696d6500</MBoxUserCmdData>
+						<Pdo Name="TxPDO" Index="#x1a00" Flags="#x0000">
+							<ExcludePdo>#x1b01</ExcludePdo>
+							<Entry Name="statusWord" Index="#x6041">
+								<Type>UINT</Type>
+							</Entry>
+							<Entry Name="Position actual value" Index="#x6064">
+								<Type>DINT</Type>
+							</Entry>
+							<Entry Name="Touch probe status" Index="#x60b9">
+								<Type>UINT</Type>
+							</Entry>
+							<Entry Name="Touch probe position1 positive value" Index="#x60ba">
+								<Type>DINT</Type>
+							</Entry>
+							<Entry Name="Touch probe position2 positive value" Index="#x60bc">
+								<Type>DINT</Type>
+							</Entry>
+							<Entry Name="Error Code" Index="#x603f">
+								<Type>UINT</Type>
+							</Entry>
+							<Entry Name="Modes of operation display" Index="#x6061">
+								<Type>SINT</Type>
+							</Entry>
+						</Pdo>
+						<Pdo Name="TxPDO" Index="#x1b01" Flags="#x0000" SyncMan="3">
+							<ExcludePdo>#x1a00</ExcludePdo>
+							<Entry Name="Error Code" Index="#x603f">
+								<Type>UINT</Type>
+							</Entry>
+							<Entry Name="statusWord" Index="#x6041">
+								<Type>UINT</Type>
+							</Entry>
+							<Entry Name="Position actual value" Index="#x6064">
+								<Type>DINT</Type>
+							</Entry>
+							<Entry Name="Torque actual value" Index="#x6077">
+								<Type>INT</Type>
+							</Entry>
+							<Entry Name="Velocity actual value" Index="#x606c">
+								<Type>DINT</Type>
+							</Entry>
+							<Entry Name="Modes of operation display" Index="#x6061">
+								<Type>SINT</Type>
+							</Entry>
+							<Entry Name="Torque demand " Index="#x6074">
+								<Type>INT</Type>
+							</Entry>
+						</Pdo>
+						<Pdo Name="RxPDO" Index="#x1600" InOut="1" Flags="#x0000">
+							<ExcludePdo>#x1701</ExcludePdo>
+							<ExcludePdo>#x1702</ExcludePdo>
+							<Entry Name="ControlWord" Index="#x6040">
+								<Type>UINT</Type>
+							</Entry>
+							<Entry Name="Target position" Index="#x607a">
+								<Type>DINT</Type>
+							</Entry>
+							<Entry Name="Touch probe function" Index="#x60b8">
+								<Type>UINT</Type>
+							</Entry>
+							<Entry Name="Modes of operation" Index="#x6060">
+								<Type>SINT</Type>
+							</Entry>
+						</Pdo>
+						<Pdo Name="RxPDO" Index="#x1701" InOut="1" Flags="#x0000">
+							<ExcludePdo>#x1600</ExcludePdo>
+							<ExcludePdo>#x1702</ExcludePdo>
+							<Entry Name="ControlWord" Index="#x6040">
+								<Type>UINT</Type>
+							</Entry>
+							<Entry Name="Target position" Index="#x607a">
+								<Type>DINT</Type>
+							</Entry>
+							<Entry Name="Touch probe function" Index="#x60b8">
+								<Type>UINT</Type>
+							</Entry>
+							<Entry Name="Modes of operation" Index="#x6060">
+								<Type>SINT</Type>
+							</Entry>
+						</Pdo>
+						<Pdo Name="RxPDO" Index="#x1702" InOut="1" Flags="#x0000" SyncMan="2">
+							<ExcludePdo>#x1600</ExcludePdo>
+							<ExcludePdo>#x1701</ExcludePdo>
+							<Entry Name="ControlWord" Index="#x6040">
+								<Type>UINT</Type>
+							</Entry>
+							<Entry Name="Target position" Index="#x607a">
+								<Type>DINT</Type>
+							</Entry>
+							<Entry Name="Target velocity" Index="#x60ff">
+								<Type>DINT</Type>
+							</Entry>
+							<Entry Name="Target torque" Index="#x6071">
+								<Type>INT</Type>
+							</Entry>
+							<Entry Name="Modes of operation" Index="#x6060">
+								<Type>SINT</Type>
+							</Entry>
+							<Entry Name="Touch probe function" Index="#x60b8">
+								<Type>UINT</Type>
+							</Entry>
+						</Pdo>
+						<CoeProfile ProfileNo="402"/>
+					</EtherCAT>
+				</Box>
+				<Box Id="4" Disabled="true" BoxType="9099" BoxFlags="#x00000020">
+					<Name>汇川SV680N</Name>
+					<ImageId>1000</ImageId>
+					<EtherCAT EtherCatAddr="1002" SlaveType="2" AdsServerAddress="000000000000ea03" PdiType="#x0c08" EtherCatAddrFixed="true" MboxDataLinkLayer="true" StateMBoxPolling="true" CycleMBoxPollingTime="0" CoeType="13" EoeType="1" VendorId="#x00100000" ProductCode="#x000c0116" RevisionNo="#x00010000" InfoDataAddr="true" InfoDataSoeDS401="true" InfoDataDcTimes="true" TimeoutStateChange2="9000" TimeoutMailbox2="2000" PortPhys="17" MaxSlotCount="256" MaxSlotGroupCount="1" SlotPdoIncrement="1" SlotIndexIncrement="16" Type="SV680N_1Axis_04002" Desc="InoSV680N" PortABoxInfo="#x01000001">
+						<SyncMan>001000012600010001000000220000020001001026010000</SyncMan>
+						<SyncMan>001400012200010002000000220000020001001422010000</SyncMan>
+						<SyncMan>001817006400010003000000000000000c00001864010000</SyncMan>
+						<SyncMan>001c1f002000010004000000000000001c00001c20010000</SyncMan>
+						<Fmmu>0000000000000000001800020100000001000000000000000000000000000000</Fmmu>
+						<Fmmu>0000000000000000001c00010100000002000000000000000000000000000000</Fmmu>
+						<Fmmu>00000000000000000d0800010100000003000000000000000000000000000000</Fmmu>
+						<SwitchPortData>00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000</SwitchPortData>
+						<SuTask>#x02010020</SuTask>
+						<DcData>0003000000000000000000000000000001000000000000000000000000000000</DcData>
+						<DcMode>4443000000000000000000000000000044432d53796e6300000000000000000000000000000000000000000000000000000000000000000000000000000000030100000000000000000000000000000000000000000000000000000000000000</DcMode>
+						<DcMode>53796e6368726f6e00000000000000004672656552756e00000000000000000000000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000</DcMode>
+						<MBoxUserCmdData>02000300090000001200000000000000000000000000000000000000000000002060600001000000094d6f646573206f66206f7065726174696f6e00</MBoxUserCmdData>
+						<MBoxUserCmdData>020003000a0000003900000000000000000000000000000000000000000000002007201402000000b80b466f7277617264207370656564206c696d69742f5370656564206c696d6974203120696e206c6f63616c20746f7271756520636f6e74726f6c00</MBoxUserCmdData>
+						<MBoxUserCmdData>020003000a0000003900000000000000000000000000000000000000000000002007201502000000b80b52657665727365207370656564206c696d69742f5370656564206c696d6974203220696e206c6f63616c20746f7271756520636f6e74726f6c00</MBoxUserCmdData>
+						<Pdo Name="Inputs" Index="#x1a00" Flags="#x0000" SyncMan="3">
+							<ExcludePdo>#x1a01</ExcludePdo>
+							<ExcludePdo>#x1b01</ExcludePdo>
+							<ExcludePdo>#x1b02</ExcludePdo>
+							<ExcludePdo>#x1b03</ExcludePdo>
+							<ExcludePdo>#x1b04</ExcludePdo>
+							<Entry Name="Error code" Index="#x603f">
+								<Type>UINT</Type>
+							</Entry>
+							<Entry Name="Status word" Index="#x6041">
+								<Type>UINT</Type>
+							</Entry>
+							<Entry Name="Position actual value" Index="#x6064">
+								<Type>DINT</Type>
+							</Entry>
+							<Entry Name="Torque actual value" Index="#x6077">
+								<Type>INT</Type>
+							</Entry>
+							<Entry Name="Velocity actual value" Index="#x606c">
+								<Type>DINT</Type>
+							</Entry>
+							<Entry Name="Modes of operation display" Index="#x6061">
+								<Type>SINT</Type>
+							</Entry>
+							<Entry Name="Torque demand" Index="#x6074">
+								<Type>INT</Type>
+							</Entry>
+							<Entry Name="Auto-adjusting mode" Index="#x2009" Sub="#x01">
+								<Type>UINT</Type>
+							</Entry>
+							<Entry Name="Rigidity level selection" Index="#x2009" Sub="#x02">
+								<Type>UINT</Type>
+							</Entry>
+							<Entry Name="Average value of load inertia ratio" Index="#x2008" Sub="#x10">
+								<Type>UINT</Type>
+							</Entry>
+							<Entry Name="Mechanical angle" Index="#x200b" Sub="#x0a">
+								<Type>UINT</Type>
+							</Entry>
+							<Entry Name="Electrical angle" Index="#x200b" Sub="#x0b">
+								<Type>UINT</Type>
+							</Entry>
+							<Entry Name="Speed-loop Gain" Index="#x2008" Sub="#x01">
+								<Type>UINT</Type>
+							</Entry>
+							<Entry Name="Speed-loop integral time constant" Index="#x2008" Sub="#x02">
+								<Type>UINT</Type>
+							</Entry>
+						</Pdo>
+						<Pdo Name="Inputs" Index="#x1a01" Flags="#x0000">
+							<ExcludePdo>#x1a00</ExcludePdo>
+							<ExcludePdo>#x1b01</ExcludePdo>
+							<ExcludePdo>#x1b02</ExcludePdo>
+							<ExcludePdo>#x1b03</ExcludePdo>
+							<ExcludePdo>#x1b04</ExcludePdo>
+							<Entry Name="Error code" Index="#x603f">
+								<Type>UINT</Type>
+							</Entry>
+							<Entry Name="Statusword" Index="#x6041">
+								<Type>UINT</Type>
+							</Entry>
+							<Entry Name="Modes of operation display" Index="#x6061">
+								<Type>SINT</Type>
+							</Entry>
+							<Entry Name="Position actual value" Index="#x6064">
+								<Type>DINT</Type>
+							</Entry>
+							<Entry Name="Velocity actual value" Index="#x606c">
+								<Type>DINT</Type>
+							</Entry>
+							<Entry Name="Torque actual value" Index="#x6077">
+								<Type>INT</Type>
+							</Entry>
+							<Entry Name="Touch probe status" Index="#x60b9">
+								<Type>UINT</Type>
+							</Entry>
+							<Entry Name="Touch probe pos1 pos value" Index="#x60ba">
+								<Type>DINT</Type>
+							</Entry>
+							<Entry Name="Touch probe pos2 pos value" Index="#x60bc">
+								<Type>DINT</Type>
+							</Entry>
+							<Entry Name="Following error actual value" Index="#x60f4">
+								<Type>DINT</Type>
+							</Entry>
+							<Entry Name="Digital inputs" Index="#x60fd">
+								<Type>UDINT</Type>
+							</Entry>
+						</Pdo>
+						<Pdo Name="Inputs" Index="#x1b01" Flags="#x0010">
+							<ExcludePdo>#x1a00</ExcludePdo>
+							<ExcludePdo>#x1a01</ExcludePdo>
+							<ExcludePdo>#x1b02</ExcludePdo>
+							<ExcludePdo>#x1b03</ExcludePdo>
+							<ExcludePdo>#x1b04</ExcludePdo>
+							<Entry Name="Error code" Index="#x603f">
+								<Type>UINT</Type>
+							</Entry>
+							<Entry Name="Statusword" Index="#x6041">
+								<Type>UINT</Type>
+							</Entry>
+							<Entry Name="Position actual value" Index="#x6064">
+								<Type>DINT</Type>
+							</Entry>
+							<Entry Name="Torque actual value" Index="#x6077">
+								<Type>INT</Type>
+							</Entry>
+							<Entry Name="Following error actual value" Index="#x60f4">
+								<Type>DINT</Type>
+							</Entry>
+							<Entry Name="Touch probe status" Index="#x60b9">
+								<Type>UINT</Type>
+							</Entry>
+							<Entry Name="Touch probe pos1 pos value" Index="#x60ba">
+								<Type>DINT</Type>
+							</Entry>
+							<Entry Name="Touch probe pos2 pos value" Index="#x60bc">
+								<Type>DINT</Type>
+							</Entry>
+							<Entry Name="Digital inputs" Index="#x60fd">
+								<Type>UDINT</Type>
+							</Entry>
+						</Pdo>
+						<Pdo Name="Inputs" Index="#x1b02" Flags="#x0010">
+							<ExcludePdo>#x1a00</ExcludePdo>
+							<ExcludePdo>#x1a01</ExcludePdo>
+							<ExcludePdo>#x1b01</ExcludePdo>
+							<ExcludePdo>#x1b03</ExcludePdo>
+							<ExcludePdo>#x1b04</ExcludePdo>
+							<Entry Name="Error code" Index="#x603f">
+								<Type>UINT</Type>
+							</Entry>
+							<Entry Name="Statusword" Index="#x6041">
+								<Type>UINT</Type>
+							</Entry>
+							<Entry Name="Position actual value" Index="#x6064">
+								<Type>DINT</Type>
+							</Entry>
+							<Entry Name="Torque actual value" Index="#x6077">
+								<Type>INT</Type>
+							</Entry>
+							<Entry Name="Modes of operation display" Index="#x6061">
+								<Type>SINT</Type>
+							</Entry>
+							<Entry Name="Touch probe status" Index="#x60b9">
+								<Type>UINT</Type>
+							</Entry>
+							<Entry Name="Touch probe pos1 pos value" Index="#x60ba">
+								<Type>DINT</Type>
+							</Entry>
+							<Entry Name="Touch probe pos2 pos value" Index="#x60bc">
+								<Type>DINT</Type>
+							</Entry>
+							<Entry Name="Digital inputs" Index="#x60fd">
+								<Type>UDINT</Type>
+							</Entry>
+						</Pdo>
+						<Pdo Name="Inputs" Index="#x1b03" Flags="#x0010">
+							<ExcludePdo>#x1a00</ExcludePdo>
+							<ExcludePdo>#x1a01</ExcludePdo>
+							<ExcludePdo>#x1b01</ExcludePdo>
+							<ExcludePdo>#x1b02</ExcludePdo>
+							<ExcludePdo>#x1b04</ExcludePdo>
+							<Entry Name="Error code" Index="#x603f">
+								<Type>UINT</Type>
+							</Entry>
+							<Entry Name="Statusword" Index="#x6041">
+								<Type>UINT</Type>
+							</Entry>
+							<Entry Name="Position actual value" Index="#x6064">
+								<Type>DINT</Type>
+							</Entry>
+							<Entry Name="Torque actual value" Index="#x6077">
+								<Type>INT</Type>
+							</Entry>
+							<Entry Name="Following error actual value" Index="#x60f4">
+								<Type>DINT</Type>
+							</Entry>
+							<Entry Name="Modes of operation display" Index="#x6061">
+								<Type>SINT</Type>
+							</Entry>
+							<Entry Name="Touch probe status" Index="#x60b9">
+								<Type>UINT</Type>
+							</Entry>
+							<Entry Name="Touch probe pos1 pos value" Index="#x60ba">
+								<Type>DINT</Type>
+							</Entry>
+							<Entry Name="Touch probe pos2 pos value" Index="#x60bc">
+								<Type>DINT</Type>
+							</Entry>
+							<Entry Name="Digital inputs" Index="#x60fd">
+								<Type>UDINT</Type>
+							</Entry>
+						</Pdo>
+						<Pdo Name="Inputs" Index="#x1b04" Flags="#x0010">
+							<ExcludePdo>#x1a00</ExcludePdo>
+							<ExcludePdo>#x1a01</ExcludePdo>
+							<ExcludePdo>#x1b01</ExcludePdo>
+							<ExcludePdo>#x1b02</ExcludePdo>
+							<ExcludePdo>#x1b03</ExcludePdo>
+							<Entry Name="Error code" Index="#x603f">
+								<Type>UINT</Type>
+							</Entry>
+							<Entry Name="Statusword" Index="#x6041">
+								<Type>UINT</Type>
+							</Entry>
+							<Entry Name="Position actual value" Index="#x6064">
+								<Type>DINT</Type>
+							</Entry>
+							<Entry Name="Torque actual value" Index="#x6077">
+								<Type>INT</Type>
+							</Entry>
+							<Entry Name="Modes of operation display" Index="#x6061">
+								<Type>SINT</Type>
+							</Entry>
+							<Entry Name="Following error actual value" Index="#x60f4">
+								<Type>DINT</Type>
+							</Entry>
+							<Entry Name="Touch probe status" Index="#x60b9">
+								<Type>UINT</Type>
+							</Entry>
+							<Entry Name="Touch probe pos1 pos value" Index="#x60ba">
+								<Type>DINT</Type>
+							</Entry>
+							<Entry Name="Touch probe pos2 pos value" Index="#x60bc">
+								<Type>DINT</Type>
+							</Entry>
+							<Entry Name="Velocity actual value" Index="#x606c">
+								<Type>DINT</Type>
+							</Entry>
+						</Pdo>
+						<Pdo Name="Outputs" Index="#x1600" InOut="1" Flags="#x0000" SyncMan="2">
+							<ExcludePdo>#x1601</ExcludePdo>
+							<ExcludePdo>#x1701</ExcludePdo>
+							<ExcludePdo>#x1702</ExcludePdo>
+							<ExcludePdo>#x1703</ExcludePdo>
+							<ExcludePdo>#x1704</ExcludePdo>
+							<ExcludePdo>#x1705</ExcludePdo>
+							<Entry Name="Controlword" Index="#x6040">
+								<Type>UINT</Type>
+							</Entry>
+							<Entry Name="Target position" Index="#x607a">
+								<Type>DINT</Type>
+							</Entry>
+							<Entry Name="Target velocity" Index="#x60ff">
+								<Type>DINT</Type>
+							</Entry>
+							<Entry Name="Target torque" Index="#x6071">
+								<Type>INT</Type>
+							</Entry>
+							<Entry Name="Modes of operation" Index="#x6060">
+								<Type>SINT</Type>
+							</Entry>
+							<Entry Name="Touch probe function" Index="#x60b8">
+								<Type>UINT</Type>
+							</Entry>
+							<Entry Name="Motor revolutions" Index="#x6091" Sub="#x01">
+								<Type>UDINT</Type>
+							</Entry>
+							<Entry Name="Shaft revolutions" Index="#x6091" Sub="#x02">
+								<Type>UDINT</Type>
+							</Entry>
+						</Pdo>
+						<Pdo Name="Outputs" Index="#x1601" InOut="1" Flags="#x0000">
+							<ExcludePdo>#x1600</ExcludePdo>
+							<ExcludePdo>#x1701</ExcludePdo>
+							<ExcludePdo>#x1702</ExcludePdo>
+							<ExcludePdo>#x1703</ExcludePdo>
+							<ExcludePdo>#x1704</ExcludePdo>
+							<ExcludePdo>#x1705</ExcludePdo>
+							<Entry Name="Controlword" Index="#x6040">
+								<Type>UINT</Type>
+							</Entry>
+							<Entry Name="Modes of operation" Index="#x6060">
+								<Type>SINT</Type>
+							</Entry>
+							<Entry Name="Target torque" Index="#x6071">
+								<Type>INT</Type>
+							</Entry>
+							<Entry Name="Target position" Index="#x607a">
+								<Type>DINT</Type>
+							</Entry>
+							<Entry Name="Max profile velocity" Index="#x607f">
+								<Type>UDINT</Type>
+							</Entry>
+							<Entry Name="profile velocity" Index="#x6081">
+								<Type>UDINT</Type>
+							</Entry>
+							<Entry Name="profile acceleration" Index="#x6083">
+								<Type>UDINT</Type>
+							</Entry>
+							<Entry Name="profile deceleration" Index="#x6084">
+								<Type>UDINT</Type>
+							</Entry>
+							<Entry Name="Torque Slope" Index="#x6087">
+								<Type>UDINT</Type>
+							</Entry>
+							<Entry Name="Touch probe function" Index="#x60b8">
+								<Type>UINT</Type>
+							</Entry>
+							<Entry Name="Target velocity" Index="#x60ff">
+								<Type>DINT</Type>
+							</Entry>
+						</Pdo>
+						<Pdo Name="Outputs" Index="#x1701" InOut="1" Flags="#x0010">
+							<ExcludePdo>#x1600</ExcludePdo>
+							<ExcludePdo>#x1601</ExcludePdo>
+							<ExcludePdo>#x1702</ExcludePdo>
+							<ExcludePdo>#x1703</ExcludePdo>
+							<ExcludePdo>#x1704</ExcludePdo>
+							<ExcludePdo>#x1705</ExcludePdo>
+							<Entry Name="Controlword" Index="#x6040">
+								<Type>UINT</Type>
+							</Entry>
+							<Entry Name="Target position" Index="#x607a">
+								<Type>DINT</Type>
+							</Entry>
+							<Entry Name="Touch probe function" Index="#x60b8">
+								<Type>UINT</Type>
+							</Entry>
+							<Entry Name="Physical outputs" Index="#x60fe" Sub="#x01">
+								<Type>UDINT</Type>
+							</Entry>
+						</Pdo>
+						<Pdo Name="Outputs" Index="#x1702" InOut="1" Flags="#x0010">
+							<ExcludePdo>#x1600</ExcludePdo>
+							<ExcludePdo>#x1601</ExcludePdo>
+							<ExcludePdo>#x1701</ExcludePdo>
+							<ExcludePdo>#x1703</ExcludePdo>
+							<ExcludePdo>#x1704</ExcludePdo>
+							<ExcludePdo>#x1705</ExcludePdo>
+							<Entry Name="Controlword" Index="#x6040">
+								<Type>UINT</Type>
+							</Entry>
+							<Entry Name="Target position" Index="#x607a">
+								<Type>DINT</Type>
+							</Entry>
+							<Entry Name="Target velocity" Index="#x60ff">
+								<Type>DINT</Type>
+							</Entry>
+							<Entry Name="Target torque" Index="#x6071">
+								<Type>INT</Type>
+							</Entry>
+							<Entry Name="Modes of operation" Index="#x6060">
+								<Type>SINT</Type>
+							</Entry>
+							<Entry Name="Touch probe function" Index="#x60b8">
+								<Type>UINT</Type>
+							</Entry>
+							<Entry Name="Max profile velocity" Index="#x607f">
+								<Type>UDINT</Type>
+							</Entry>
+						</Pdo>
+						<Pdo Name="Outputs" Index="#x1703" InOut="1" Flags="#x0010">
+							<ExcludePdo>#x1600</ExcludePdo>
+							<ExcludePdo>#x1601</ExcludePdo>
+							<ExcludePdo>#x1701</ExcludePdo>
+							<ExcludePdo>#x1702</ExcludePdo>
+							<ExcludePdo>#x1704</ExcludePdo>
+							<ExcludePdo>#x1705</ExcludePdo>
+							<Entry Name="Controlword" Index="#x6040">
+								<Type>UINT</Type>
+							</Entry>
+							<Entry Name="Target position" Index="#x607a">
+								<Type>DINT</Type>
+							</Entry>
+							<Entry Name="Target velocity" Index="#x60ff">
+								<Type>DINT</Type>
+							</Entry>
+							<Entry Name="Modes of operation" Index="#x6060">
+								<Type>SINT</Type>
+							</Entry>
+							<Entry Name="Touch probe function" Index="#x60b8">
+								<Type>UINT</Type>
+							</Entry>
+							<Entry Name="Positive torque limit value" Index="#x60e0">
+								<Type>UINT</Type>
+							</Entry>
+							<Entry Name="Negative torque limit value" Index="#x60e1">
+								<Type>UINT</Type>
+							</Entry>
+						</Pdo>
+						<Pdo Name="Outputs" Index="#x1704" InOut="1" Flags="#x0010">
+							<ExcludePdo>#x1600</ExcludePdo>
+							<ExcludePdo>#x1601</ExcludePdo>
+							<ExcludePdo>#x1701</ExcludePdo>
+							<ExcludePdo>#x1702</ExcludePdo>
+							<ExcludePdo>#x1703</ExcludePdo>
+							<ExcludePdo>#x1705</ExcludePdo>
+							<Entry Name="Controlword" Index="#x6040">
+								<Type>UINT</Type>
+							</Entry>
+							<Entry Name="Target position" Index="#x607a">
+								<Type>DINT</Type>
+							</Entry>
+							<Entry Name="Target velocity" Index="#x60ff">
+								<Type>DINT</Type>
+							</Entry>
+							<Entry Name="Target torque" Index="#x6071">
+								<Type>INT</Type>
+							</Entry>
+							<Entry Name="Modes of operation" Index="#x6060">
+								<Type>SINT</Type>
+							</Entry>
+							<Entry Name="Touch probe function" Index="#x60b8">
+								<Type>UINT</Type>
+							</Entry>
+							<Entry Name="Max profile velocity" Index="#x607f">
+								<Type>UDINT</Type>
+							</Entry>
+							<Entry Name="Positive torque limit value" Index="#x60e0">
+								<Type>UINT</Type>
+							</Entry>
+							<Entry Name="Negative torque limit value" Index="#x60e1">
+								<Type>UINT</Type>
+							</Entry>
+						</Pdo>
+						<Pdo Name="Outputs" Index="#x1705" InOut="1" Flags="#x0010">
+							<ExcludePdo>#x1600</ExcludePdo>
+							<ExcludePdo>#x1601</ExcludePdo>
+							<ExcludePdo>#x1701</ExcludePdo>
+							<ExcludePdo>#x1702</ExcludePdo>
+							<ExcludePdo>#x1703</ExcludePdo>
+							<ExcludePdo>#x1704</ExcludePdo>
+							<Entry Name="Controlword" Index="#x6040">
+								<Type>UINT</Type>
+							</Entry>
+							<Entry Name="Target position" Index="#x607a">
+								<Type>DINT</Type>
+							</Entry>
+							<Entry Name="Target velocity" Index="#x60ff">
+								<Type>DINT</Type>
+							</Entry>
+							<Entry Name="Modes of operation" Index="#x6060">
+								<Type>SINT</Type>
+							</Entry>
+							<Entry Name="Touch probe function" Index="#x60b8">
+								<Type>UINT</Type>
+							</Entry>
+							<Entry Name="Positive torque limit value" Index="#x60e0">
+								<Type>UINT</Type>
+							</Entry>
+							<Entry Name="Negative torque limit value" Index="#x60e1">
+								<Type>UINT</Type>
+							</Entry>
+							<Entry Name="Torque offset" Index="#x60b2">
+								<Type>INT</Type>
+							</Entry>
+						</Pdo>
+						<CoeProfile ProfileNo="402"/>
+					</EtherCAT>
+				</Box>
+				<Box Id="3" BoxType="9099" BoxFlags="#x00000020">
+					<Name>维控VD5L</Name>
+					<ImageId>1001</ImageId>
+					<EtherCAT EtherCatAddr="1001" SlaveType="2" AdsServerAddress="000000000000e903" PdiType="#x0e80" EtherCatAddrFixed="true" MboxDataLinkLayer="true" StateMBoxPolling="true" CycleMBoxPollingTime="0" CoeType="15" VendorId="#x00000eff" ProductCode="#x0d510001" RevisionNo="#x00000066" InfoDataAddr="true" InfoDataSoeDS401="true" InfoDataDcTimes="true" TimeoutStateChange1="2000" TimeoutStateChange2="9000" TimeoutMailbox2="2000" PortPhys="17" MaxSlotCount="256" MaxSlotGroupCount="1" SlotPdoIncrement="1" SlotIndexIncrement="16" Type="Wecon VD5 EtherCAT Servo V1.02" Desc="Wecon VD5 EtherCAT Servo V1.02" PortABoxInfo="#x00ffffff">
+						<SyncMan>001080002600010001000000240000018000001026010000</SyncMan>
+						<SyncMan>801080002200010002000000240000018000801022010000</SyncMan>
+						<SyncMan>001117006400010003000000000000000900001164010000</SyncMan>
+						<SyncMan>001415002000010004000000000000000f00001420010000</SyncMan>
+						<Fmmu>0000000000000000001100020100000001000000000000000000000000000000</Fmmu>
+						<Fmmu>0000000000000000001400010100000002000000000000000000000000000000</Fmmu>
+						<Fmmu>00000000000000000d0800010100000003000000000000000000000000000000</Fmmu>
+						<SuTask>#x02010020</SuTask>
+						<DcData>00030000000000000000000000000000010000000000feff0000000000000000</DcData>
+						<DcMode>4443000000000000000000000000000044432d53796e6368726f6e000000000000000000000000000000000000000000000000000000000000000000000000030100000000000000000000000000000000000000000000000000000000000000</DcMode>
+						<DcMode>467265652052756e0000000000000000467265652052756e000000000000000000000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000</DcMode>
+						<MBoxUserCmdData>02000300090000001200000000000000000000000000000000000000000000002060600001000000094d6f646573206f66206f7065726174696f6e00</MBoxUserCmdData>
+						<MBoxUserCmdData>020003000a0000000d000000000000000000000000000000000000000000000020012009020000000000546f714d6f646553706453726300</MBoxUserCmdData>
+						<MBoxUserCmdData>020003000a0000000f00000000000000000000000000000000000000000000002001201102000000b80b50546f716d6f645370646c696d697400</MBoxUserCmdData>
+						<MBoxUserCmdData>020003000a0000000f00000000000000000000000000000000000000000000002001201202000000b80b4e546f716d6f645370646c696d697400</MBoxUserCmdData>
+						<MBoxUserCmdData>020003000c000000150000000300000000000000000000000000000000000000207f600004000000000000324d61782070726f66696c652076656c6f636974792000</MBoxUserCmdData>
+						<MBoxUserCmdData>020003000a00000010000000000000000000000000000000000000000000000020042012020000000a0053706446646246696c74657254696d6500</MBoxUserCmdData>
+						<Pdo Name="TxPDO" Index="#x1a00" Flags="#x0000">
+							<ExcludePdo>#x1b01</ExcludePdo>
+							<Entry Name="statusWord" Index="#x6041">
+								<Type>UINT</Type>
+							</Entry>
+							<Entry Name="Position actual value" Index="#x6064">
+								<Type>DINT</Type>
+							</Entry>
+							<Entry Name="Touch probe status" Index="#x60b9">
+								<Type>UINT</Type>
+							</Entry>
+							<Entry Name="Touch probe position1 positive value" Index="#x60ba">
+								<Type>DINT</Type>
+							</Entry>
+							<Entry Name="Touch probe position2 positive value" Index="#x60bc">
+								<Type>DINT</Type>
+							</Entry>
+							<Entry Name="Error Code" Index="#x603f">
+								<Type>UINT</Type>
+							</Entry>
+							<Entry Name="Modes of operation display" Index="#x6061">
+								<Type>SINT</Type>
+							</Entry>
+							<Entry Name="DcBusVoltDisp " Index="#x201e" Sub="#x1f">
+								<Type>UINT</Type>
+							</Entry>
+						</Pdo>
+						<Pdo Name="TxPDO" Index="#x1b01" Flags="#x0000" SyncMan="3">
+							<ExcludePdo>#x1a00</ExcludePdo>
+							<Entry Name="Error Code" Index="#x603f">
+								<Type>UINT</Type>
+							</Entry>
+							<Entry Name="statusWord" Index="#x6041">
+								<Type>UINT</Type>
+							</Entry>
+							<Entry Name="Position actual value" Index="#x6064">
+								<Type>DINT</Type>
+							</Entry>
+							<Entry Name="Torque actual value" Index="#x6077">
+								<Type>INT</Type>
+							</Entry>
+							<Entry Name="Velocity actual value" Index="#x606c">
+								<Type>DINT</Type>
+							</Entry>
+							<Entry Name="Modes of operation display" Index="#x6061">
+								<Type>SINT</Type>
+							</Entry>
+							<Entry Name="Torque demand " Index="#x6074">
+								<Type>INT</Type>
+							</Entry>
+							<Entry Name="DcBusVoltDisp " Index="#x201e" Sub="#x1f">
+								<Type>UINT</Type>
+							</Entry>
+							<Entry Name="InerRatioReal" Index="#x201e" Sub="#x14">
+								<Type>UINT</Type>
+							</Entry>
+						</Pdo>
+						<Pdo Name="RxPDO" Index="#x1600" InOut="1" Flags="#x0000">
+							<ExcludePdo>#x1701</ExcludePdo>
+							<ExcludePdo>#x1702</ExcludePdo>
+							<Entry Name="ControlWord" Index="#x6040">
+								<Type>UINT</Type>
+							</Entry>
+							<Entry Name="Target position" Index="#x607a">
+								<Type>DINT</Type>
+							</Entry>
+							<Entry Name="Touch probe function" Index="#x60b8">
+								<Type>UINT</Type>
+							</Entry>
+							<Entry Name="Modes of operation" Index="#x6060">
+								<Type>SINT</Type>
+							</Entry>
+						</Pdo>
+						<Pdo Name="RxPDO" Index="#x1701" InOut="1" Flags="#x0000">
+							<ExcludePdo>#x1600</ExcludePdo>
+							<ExcludePdo>#x1702</ExcludePdo>
+							<Entry Name="ControlWord" Index="#x6040">
+								<Type>UINT</Type>
+							</Entry>
+							<Entry Name="Target position" Index="#x607a">
+								<Type>DINT</Type>
+							</Entry>
+							<Entry Name="Touch probe function" Index="#x60b8">
+								<Type>UINT</Type>
+							</Entry>
+							<Entry Name="Modes of operation" Index="#x6060">
+								<Type>SINT</Type>
+							</Entry>
+						</Pdo>
+						<Pdo Name="RxPDO" Index="#x1702" InOut="1" Flags="#x0000" SyncMan="2">
+							<ExcludePdo>#x1600</ExcludePdo>
+							<ExcludePdo>#x1701</ExcludePdo>
+							<Entry Name="ControlWord" Index="#x6040">
+								<Type>UINT</Type>
+							</Entry>
+							<Entry Name="Target position" Index="#x607a">
+								<Type>DINT</Type>
+							</Entry>
+							<Entry Name="Target velocity" Index="#x60ff">
+								<Type>DINT</Type>
+							</Entry>
+							<Entry Name="Target torque" Index="#x6071">
+								<Type>INT</Type>
+							</Entry>
+							<Entry Name="Modes of operation" Index="#x6060">
+								<Type>SINT</Type>
+							</Entry>
+							<Entry Name="Touch probe function" Index="#x60b8">
+								<Type>UINT</Type>
+							</Entry>
+							<Entry Name="Motor revolutions" Index="#x6091" Sub="#x01">
+								<Type>UDINT</Type>
+							</Entry>
+							<Entry Name="Shaft revolutions" Index="#x6091" Sub="#x02">
+								<Type>UDINT</Type>
+							</Entry>
+						</Pdo>
+						<CoeProfile ProfileNo="402"/>
+					</EtherCAT>
+				</Box>
+				<Box Id="2" Disabled="true" BoxType="9099" BoxFlags="#x00000020">
+					<Name>汇川SV630N_03716</Name>
+					<ImageId>1000</ImageId>
+					<EtherCAT SlaveType="2" PdiType="#x0c80" MboxDataLinkLayer="true" StateMBoxPolling="true" CycleMBoxPollingTime="0" CoeType="13" EoeType="2" VendorId="#x00100000" ProductCode="#x000c0112" RevisionNo="#x00010000" InfoDataAddr="true" InfoDataSoeDS401="true" InfoDataDcTimes="true" TimeoutStateChange2="9000" TimeoutMailbox2="2000" PortPhys="17" MaxSlotCount="256" MaxSlotGroupCount="1" SlotPdoIncrement="1" SlotIndexIncrement="16" Type="SV630N_1Axis_03716" Desc="InoSV630N" PortABoxInfo="#x01000003">
+						<SyncMan>001000012600010001000000220000020001001026010000</SyncMan>
+						<SyncMan>001400012200010002000000220000020001001422010000</SyncMan>
+						<SyncMan>001817006400010003000000000000000c00001864010000</SyncMan>
+						<SyncMan>001c13002000010004000000000000001c00001c20010000</SyncMan>
+						<Fmmu>0000000000000000001800020100000001000000000000000000000000000000</Fmmu>
+						<Fmmu>0000000000000000001c00010100000002000000000000000000000000000000</Fmmu>
+						<Fmmu>00000000000000000d0800010100000003000000000000000000000000000000</Fmmu>
+						<SwitchPortData>01000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000</SwitchPortData>
+						<DcData>0003000000000000000000000000000001000000000000000000000000000000</DcData>
+						<DcMode>4443000000000000000000000000000044432d53796e6368726f6e000000000000000000000000000000000000000000000000000000000000000000000000030100000000000000000000000000000000000000000000000000000000000000</DcMode>
+						<MBoxUserCmdData>02000300090000001200000003000000000000000000000000000000000000002060600001000000084d6f646573206f66206f7065726174696f6e00</MBoxUserCmdData>
+						<Pdo Name="Inputs" Index="#x1a00" Flags="#x0000" SyncMan="3">
+							<ExcludePdo>#x1b01</ExcludePdo>
+							<ExcludePdo>#x1b02</ExcludePdo>
+							<ExcludePdo>#x1b03</ExcludePdo>
+							<ExcludePdo>#x1b04</ExcludePdo>
+							<Entry Name="Error code" Index="#x603f">
+								<Type>UINT</Type>
+							</Entry>
+							<Entry Name="Statusword" Index="#x6041">
+								<Type>UINT</Type>
+							</Entry>
+							<Entry Name="Position actual value" Index="#x6064">
+								<Type>DINT</Type>
+							</Entry>
+							<Entry Name="Torque actual value" Index="#x6077">
+								<Type>INT</Type>
+							</Entry>
+							<Entry Name="Velocity actual value" Index="#x606c">
+								<Type>DINT</Type>
+							</Entry>
+							<Entry Name="Modes of operation display" Index="#x6061">
+								<Type>SINT</Type>
+							</Entry>
+							<Entry Name="Torque demand" Index="#x6074">
+								<Type>INT</Type>
+							</Entry>
+							<Entry Name="Average value of load inertia ratio" Index="#x2008" Sub="#x10">
+								<Type>UINT</Type>
+							</Entry>
+						</Pdo>
+						<Pdo Name="Inputs" Index="#x1b01" Flags="#x0010">
+							<ExcludePdo>#x1a00</ExcludePdo>
+							<ExcludePdo>#x1b02</ExcludePdo>
+							<ExcludePdo>#x1b03</ExcludePdo>
+							<ExcludePdo>#x1b04</ExcludePdo>
+							<Entry Name="Error code" Index="#x603f">
+								<Type>UINT</Type>
+							</Entry>
+							<Entry Name="Statusword" Index="#x6041">
+								<Type>UINT</Type>
+							</Entry>
+							<Entry Name="Position actual value" Index="#x6064">
+								<Type>DINT</Type>
+							</Entry>
+							<Entry Name="Torque actual value" Index="#x6077">
+								<Type>INT</Type>
+							</Entry>
+							<Entry Name="Following error actual value" Index="#x60f4">
+								<Type>DINT</Type>
+							</Entry>
+							<Entry Name="Touch probe status" Index="#x60b9">
+								<Type>UINT</Type>
+							</Entry>
+							<Entry Name="Touch probe pos1 pos value" Index="#x60ba">
+								<Type>DINT</Type>
+							</Entry>
+							<Entry Name="Touch probe pos2 pos value" Index="#x60bc">
+								<Type>DINT</Type>
+							</Entry>
+							<Entry Name="Digital inputs" Index="#x60fd">
+								<Type>UDINT</Type>
+							</Entry>
+						</Pdo>
+						<Pdo Name="Inputs" Index="#x1b02" Flags="#x0010">
+							<ExcludePdo>#x1a00</ExcludePdo>
+							<ExcludePdo>#x1b01</ExcludePdo>
+							<ExcludePdo>#x1b03</ExcludePdo>
+							<ExcludePdo>#x1b04</ExcludePdo>
+							<Entry Name="Error code" Index="#x603f">
+								<Type>UINT</Type>
+							</Entry>
+							<Entry Name="Statusword" Index="#x6041">
+								<Type>UINT</Type>
+							</Entry>
+							<Entry Name="Position actual value" Index="#x6064">
+								<Type>DINT</Type>
+							</Entry>
+							<Entry Name="Torque actual value" Index="#x6077">
+								<Type>INT</Type>
+							</Entry>
+							<Entry Name="Modes of operation display" Index="#x6061">
+								<Type>SINT</Type>
+							</Entry>
+							<Entry Name="Touch probe status" Index="#x60b9">
+								<Type>UINT</Type>
+							</Entry>
+							<Entry Name="Touch probe pos1 pos value" Index="#x60ba">
+								<Type>DINT</Type>
+							</Entry>
+							<Entry Name="Touch probe pos2 pos value" Index="#x60bc">
+								<Type>DINT</Type>
+							</Entry>
+							<Entry Name="Digital inputs" Index="#x60fd">
+								<Type>UDINT</Type>
+							</Entry>
+						</Pdo>
+						<Pdo Name="Inputs" Index="#x1b03" Flags="#x0010">
+							<ExcludePdo>#x1a00</ExcludePdo>
+							<ExcludePdo>#x1b01</ExcludePdo>
+							<ExcludePdo>#x1b02</ExcludePdo>
+							<ExcludePdo>#x1b04</ExcludePdo>
+							<Entry Name="Error code" Index="#x603f">
+								<Type>UINT</Type>
+							</Entry>
+							<Entry Name="Statusword" Index="#x6041">
+								<Type>UINT</Type>
+							</Entry>
+							<Entry Name="Position actual value" Index="#x6064">
+								<Type>DINT</Type>
+							</Entry>
+							<Entry Name="Torque actual value" Index="#x6077">
+								<Type>INT</Type>
+							</Entry>
+							<Entry Name="Following error actual value" Index="#x60f4">
+								<Type>DINT</Type>
+							</Entry>
+							<Entry Name="Modes of operation display" Index="#x6061">
+								<Type>SINT</Type>
+							</Entry>
+							<Entry Name="Touch probe status" Index="#x60b9">
+								<Type>UINT</Type>
+							</Entry>
+							<Entry Name="Touch probe pos1 pos value" Index="#x60ba">
+								<Type>DINT</Type>
+							</Entry>
+							<Entry Name="Touch probe pos2 pos value" Index="#x60bc">
+								<Type>DINT</Type>
+							</Entry>
+							<Entry Name="Digital inputs" Index="#x60fd">
+								<Type>UDINT</Type>
+							</Entry>
+						</Pdo>
+						<Pdo Name="Inputs" Index="#x1b04" Flags="#x0010">
+							<ExcludePdo>#x1a00</ExcludePdo>
+							<ExcludePdo>#x1b01</ExcludePdo>
+							<ExcludePdo>#x1b02</ExcludePdo>
+							<ExcludePdo>#x1b03</ExcludePdo>
+							<Entry Name="Error code" Index="#x603f">
+								<Type>UINT</Type>
+							</Entry>
+							<Entry Name="Statusword" Index="#x6041">
+								<Type>UINT</Type>
+							</Entry>
+							<Entry Name="Position actual value" Index="#x6064">
+								<Type>DINT</Type>
+							</Entry>
+							<Entry Name="Torque actual value" Index="#x6077">
+								<Type>INT</Type>
+							</Entry>
+							<Entry Name="Modes of operation display" Index="#x6061">
+								<Type>SINT</Type>
+							</Entry>
+							<Entry Name="Following error actual value" Index="#x60f4">
+								<Type>DINT</Type>
+							</Entry>
+							<Entry Name="Touch probe status" Index="#x60b9">
+								<Type>UINT</Type>
+							</Entry>
+							<Entry Name="Touch probe pos1 pos value" Index="#x60ba">
+								<Type>DINT</Type>
+							</Entry>
+							<Entry Name="Touch probe pos2 pos value" Index="#x60bc">
+								<Type>DINT</Type>
+							</Entry>
+							<Entry Name="Velocity actual value" Index="#x606c">
+								<Type>DINT</Type>
+							</Entry>
+						</Pdo>
+						<Pdo Name="Outputs" Index="#x1600" InOut="1" Flags="#x0000" SyncMan="2">
+							<ExcludePdo>#x1701</ExcludePdo>
+							<ExcludePdo>#x1702</ExcludePdo>
+							<ExcludePdo>#x1703</ExcludePdo>
+							<ExcludePdo>#x1704</ExcludePdo>
+							<ExcludePdo>#x1705</ExcludePdo>
+							<Entry Name="Controlword" Index="#x6040">
+								<Type>UINT</Type>
+							</Entry>
+							<Entry Name="Target position" Index="#x607a">
+								<Type>DINT</Type>
+							</Entry>
+							<Entry Name="Target velocity" Index="#x60ff">
+								<Type>DINT</Type>
+							</Entry>
+							<Entry Name="Target torque" Index="#x6071">
+								<Type>INT</Type>
+							</Entry>
+							<Entry Name="Modes of operation" Index="#x6060">
+								<Type>SINT</Type>
+							</Entry>
+							<Entry Name="Touch probe function" Index="#x60b8">
+								<Type>UINT</Type>
+							</Entry>
+							<Entry Name="Motor revolutions" Index="#x6091" Sub="#x01">
+								<Type>UDINT</Type>
+							</Entry>
+							<Entry Name="Shaft revolutions" Index="#x6091" Sub="#x02">
+								<Type>UDINT</Type>
+							</Entry>
+						</Pdo>
+						<Pdo Name="Outputs" Index="#x1701" InOut="1" Flags="#x0010">
+							<ExcludePdo>#x1600</ExcludePdo>
+							<ExcludePdo>#x1702</ExcludePdo>
+							<ExcludePdo>#x1703</ExcludePdo>
+							<ExcludePdo>#x1704</ExcludePdo>
+							<ExcludePdo>#x1705</ExcludePdo>
+							<Entry Name="Controlword" Index="#x6040">
+								<Type>UINT</Type>
+							</Entry>
+							<Entry Name="Target position" Index="#x607a">
+								<Type>DINT</Type>
+							</Entry>
+							<Entry Name="Touch probe function" Index="#x60b8">
+								<Type>UINT</Type>
+							</Entry>
+							<Entry Name="Physical outputs" Index="#x60fe" Sub="#x01">
+								<Type>UDINT</Type>
+							</Entry>
+						</Pdo>
+						<Pdo Name="Outputs" Index="#x1702" InOut="1" Flags="#x0010">
+							<ExcludePdo>#x1600</ExcludePdo>
+							<ExcludePdo>#x1701</ExcludePdo>
+							<ExcludePdo>#x1703</ExcludePdo>
+							<ExcludePdo>#x1704</ExcludePdo>
+							<ExcludePdo>#x1705</ExcludePdo>
+							<Entry Name="Controlword" Index="#x6040">
+								<Type>UINT</Type>
+							</Entry>
+							<Entry Name="Target position" Index="#x607a">
+								<Type>DINT</Type>
+							</Entry>
+							<Entry Name="Target velocity" Index="#x60ff">
+								<Type>DINT</Type>
+							</Entry>
+							<Entry Name="Target torque" Index="#x6071">
+								<Type>INT</Type>
+							</Entry>
+							<Entry Name="Modes of operation" Index="#x6060">
+								<Type>SINT</Type>
+							</Entry>
+							<Entry Name="Touch probe function" Index="#x60b8">
+								<Type>UINT</Type>
+							</Entry>
+							<Entry Name="Max profile velocity" Index="#x607f">
+								<Type>UDINT</Type>
+							</Entry>
+						</Pdo>
+						<Pdo Name="Outputs" Index="#x1703" InOut="1" Flags="#x0010">
+							<ExcludePdo>#x1600</ExcludePdo>
+							<ExcludePdo>#x1701</ExcludePdo>
+							<ExcludePdo>#x1702</ExcludePdo>
+							<ExcludePdo>#x1704</ExcludePdo>
+							<ExcludePdo>#x1705</ExcludePdo>
+							<Entry Name="Controlword" Index="#x6040">
+								<Type>UINT</Type>
+							</Entry>
+							<Entry Name="Target position" Index="#x607a">
+								<Type>DINT</Type>
+							</Entry>
+							<Entry Name="Target velocity" Index="#x60ff">
+								<Type>DINT</Type>
+							</Entry>
+							<Entry Name="Modes of operation" Index="#x6060">
+								<Type>SINT</Type>
+							</Entry>
+							<Entry Name="Touch probe function" Index="#x60b8">
+								<Type>UINT</Type>
+							</Entry>
+							<Entry Name="Positive torque limit value" Index="#x60e0">
+								<Type>UINT</Type>
+							</Entry>
+							<Entry Name="Negative torque limit value" Index="#x60e1">
+								<Type>UINT</Type>
+							</Entry>
+						</Pdo>
+						<Pdo Name="Outputs" Index="#x1704" InOut="1" Flags="#x0010">
+							<ExcludePdo>#x1600</ExcludePdo>
+							<ExcludePdo>#x1701</ExcludePdo>
+							<ExcludePdo>#x1702</ExcludePdo>
+							<ExcludePdo>#x1703</ExcludePdo>
+							<ExcludePdo>#x1705</ExcludePdo>
+							<Entry Name="Controlword" Index="#x6040">
+								<Type>UINT</Type>
+							</Entry>
+							<Entry Name="Target position" Index="#x607a">
+								<Type>DINT</Type>
+							</Entry>
+							<Entry Name="Target velocity" Index="#x60ff">
+								<Type>DINT</Type>
+							</Entry>
+							<Entry Name="Target torque" Index="#x6071">
+								<Type>INT</Type>
+							</Entry>
+							<Entry Name="Modes of operation" Index="#x6060">
+								<Type>SINT</Type>
+							</Entry>
+							<Entry Name="Touch probe function" Index="#x60b8">
+								<Type>UINT</Type>
+							</Entry>
+							<Entry Name="Max profile velocity" Index="#x607f">
+								<Type>UDINT</Type>
+							</Entry>
+							<Entry Name="Positive torque limit value" Index="#x60e0">
+								<Type>UINT</Type>
+							</Entry>
+							<Entry Name="Negative torque limit value" Index="#x60e1">
+								<Type>UINT</Type>
+							</Entry>
+						</Pdo>
+						<Pdo Name="Outputs" Index="#x1705" InOut="1" Flags="#x0010">
+							<ExcludePdo>#x1600</ExcludePdo>
+							<ExcludePdo>#x1701</ExcludePdo>
+							<ExcludePdo>#x1702</ExcludePdo>
+							<ExcludePdo>#x1703</ExcludePdo>
+							<ExcludePdo>#x1704</ExcludePdo>
+							<Entry Name="Controlword" Index="#x6040">
+								<Type>UINT</Type>
+							</Entry>
+							<Entry Name="Target position" Index="#x607a">
+								<Type>DINT</Type>
+							</Entry>
+							<Entry Name="Target velocity" Index="#x60ff">
+								<Type>DINT</Type>
+							</Entry>
+							<Entry Name="Modes of operation" Index="#x6060">
+								<Type>SINT</Type>
+							</Entry>
+							<Entry Name="Touch probe function" Index="#x60b8">
+								<Type>UINT</Type>
+							</Entry>
+							<Entry Name="Positive torque limit value" Index="#x60e0">
+								<Type>UINT</Type>
+							</Entry>
+							<Entry Name="Negative torque limit value" Index="#x60e1">
+								<Type>UINT</Type>
+							</Entry>
+							<Entry Name="Torque offset" Index="#x60b2">
+								<Type>INT</Type>
+							</Entry>
+						</Pdo>
+						<CoeProfile ProfileNo="402"/>
+					</EtherCAT>
+				</Box>
+				<EtherCAT PromiscuousModeNoCopy="true" ManualDcSelect="true" DcCycDiag="true" MaxCdl="1" DcSyncMode="3" DcShiftTimeFixedPercent="1" EnableVirtualSwitch="true" MaxSwitchPorts="3" MaxSwitchFrames="140" DcSyncTask="2">
+					<SuNamePreDef>WASR_Sync_Unit</SuNamePreDef>
+				</EtherCAT>
+			</Device>
+		</Io>
+	</Project>
+	<Mappings>
+		<MappingInfo Identifier="{00000000-0010-0304-1000-010110000403}" Id="#x02030010"/>
+		<OwnerA Name="TIID^主站">
+			<OwnerB Name="TIXC^WASR_TC^WASR_TC_Obj1 (WASR_TC)">
+				<Link VarA="汇川SV630N_03716^Inputs^Error code" VarB="Inputs^Servo1^Error_code"/>
+				<Link VarA="汇川SV630N_03716^Inputs^Position actual value" VarB="Inputs^Servo1^Position_actual_value"/>
+				<Link VarA="汇川SV630N_03716^Inputs^Statusword" VarB="Inputs^Servo1^Status_word"/>
+				<Link VarA="汇川SV630N_03716^Inputs^Torque actual value" VarB="Inputs^Servo1^Torque_actual_value"/>
+				<Link VarA="汇川SV630N_03716^Inputs^Torque demand" VarB="Inputs^Servo1^Torque_demand"/>
+				<Link VarA="汇川SV630N_03716^Inputs^Velocity actual value" VarB="Inputs^Servo1^Velocity_actual_value"/>
+				<Link VarA="汇川SV630N_03716^Outputs^Controlword" VarB="Outputs^Servo1^Controlword"/>
+				<Link VarA="汇川SV630N_03716^Outputs^Modes of operation" VarB="Outputs^Servo1^Modes_of_operation"/>
+				<Link VarA="汇川SV630N_03716^Outputs^Motor revolutions" VarB="Outputs^Servo1^Motor_revolutions"/>
+				<Link VarA="汇川SV630N_03716^Outputs^Shaft revolutions" VarB="Outputs^Servo1^Shaft_revolutions"/>
+				<Link VarA="汇川SV630N_03716^Outputs^Target torque" VarB="Outputs^Servo1^Target_torque"/>
+				<Link VarA="汇川SV630N_03716^Outputs^Target velocity" VarB="Outputs^Servo1^Target_velocity"/>
+				<Link VarA="维控VD5L^RxPDO^ControlWord" VarB="Outputs^Servo0^Controlword"/>
+				<Link VarA="维控VD5L^RxPDO^Modes of operation" VarB="Outputs^Servo0^Modes_of_operation"/>
+				<Link VarA="维控VD5L^RxPDO^Motor revolutions" VarB="Outputs^Servo0^Motor_revolutions"/>
+				<Link VarA="维控VD5L^RxPDO^Shaft revolutions" VarB="Outputs^Servo0^Shaft_revolutions"/>
+				<Link VarA="维控VD5L^RxPDO^Target position" VarB="Outputs^Servo0^Target_position"/>
+				<Link VarA="维控VD5L^RxPDO^Target torque" VarB="Outputs^Servo0^Target_torque"/>
+				<Link VarA="维控VD5L^RxPDO^Target velocity" VarB="Outputs^Servo0^Target_velocity"/>
+				<Link VarA="维控VD5L^TxPDO^Error Code" VarB="Inputs^Servo0^Error_code"/>
+				<Link VarA="维控VD5L^TxPDO^Position actual value" VarB="Inputs^Servo0^Position_actual_value"/>
+				<Link VarA="维控VD5L^TxPDO^Torque actual value" VarB="Inputs^Servo0^Torque_actual_value"/>
+				<Link VarA="维控VD5L^TxPDO^Torque demand " VarB="Inputs^Servo0^Torque_demand"/>
+				<Link VarA="维控VD5L^TxPDO^Velocity actual value" VarB="Inputs^Servo0^Velocity_actual_value"/>
+				<Link VarA="维控VD5L^TxPDO^statusWord" VarB="Inputs^Servo0^Status_word"/>
+			</OwnerB>
+		</OwnerA>
+	</Mappings>
+</TcSmProject>

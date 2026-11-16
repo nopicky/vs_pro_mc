@@ -1,0 +1,475 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TcModuleClass xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.beckhoff.com/schemas/2009/05/TcModuleClass">
+  <Vendor>
+    <Name>C++ Module Vendor</Name>
+  </Vendor>
+  <DataTypes>
+    <DataType>
+      <Name GUID="{3ea188cf-a9b9-4934-9f74-3938a094c484}" AutoDeleteType="true">ServoInputs</Name>
+      <SubItem>
+        <Name>Error_code</Name>
+        <Type GUID="{18071995-0000-0000-0000-000000000005}">UINT</Type>
+      </SubItem>
+      <SubItem>
+        <Name>Status_word</Name>
+        <Type GUID="{18071995-0000-0000-0000-000000000005}">UINT</Type>
+      </SubItem>
+      <SubItem>
+        <Name>Position_actual_value</Name>
+        <Type GUID="{18071995-0000-0000-0000-000000000009}">DINT</Type>
+      </SubItem>
+      <SubItem>
+        <Name>Torque_actual_value</Name>
+        <Type GUID="{18071995-0000-0000-0000-000000000006}">INT</Type>
+      </SubItem>
+      <SubItem>
+        <Name>Velocity_actual_value</Name>
+        <Type GUID="{18071995-0000-0000-0000-000000000009}">DINT</Type>
+      </SubItem>
+      <SubItem>
+        <Name>Torque_demand</Name>
+        <Type GUID="{18071995-0000-0000-0000-000000000006}">INT</Type>
+      </SubItem>
+      <Hides>
+        <Hide GUID="{ceb17ef3-3352-48a7-9733-e07a8efdbf5f}" />
+        <Hide GUID="{3cd78e58-1dfd-4bc4-8a10-07bfa445d2c5}" />
+        <Hide GUID="{8c8621d8-a3c9-4345-8946-c72d62995208}" />
+        <Hide GUID="{6f53daa2-0963-48fa-b9a8-2e814b61931c}" />
+        <Hide GUID="{62aca03c-9de4-48bf-8bd4-5d5a42b97a3e}" />
+        <Hide GUID="{39ce18e1-8d08-4435-9128-5e0dc355bb5a}" />
+        <Hide GUID="{833bedb9-097f-49e8-97e2-43447650aff6}" />
+        <Hide GUID="{35fb91f9-43e9-4427-a083-fff655dae0bb}" />
+        <Hide GUID="{37540f0d-39f1-48e9-a3a7-cbf3addd5e2d}" />
+        <Hide GUID="{ac79aaf5-b920-44e9-8041-ff338e379846}" />
+        <Hide GUID="{9feb0389-635a-457d-9d04-a3fa6c349a89}" />
+        <Hide GUID="{8f71f502-a4a4-4029-90c4-296bb04532c2}" />
+        <Hide GUID="{af4c8d9b-ff12-49fa-bbea-81772338a568}" />
+        <Hide GUID="{d03c70bd-d4d1-4c24-8d84-664367d1aa8b}" />
+        <Hide GUID="{120aaae2-7c00-4e45-bcf6-c4242565e8cd}" />
+        <Hide GUID="{c9b7194d-327b-491c-be6e-2345d7fef2cc}" />
+        <Hide GUID="{5599ec67-8337-4157-bf04-44dd1dcfc431}" />
+      </Hides>
+    </DataType>
+    <DataType>
+      <Name GUID="{b2423a46-ca74-4ceb-90a5-4087fa1a95a1}">ServoOutputs</Name>
+      <SubItem>
+        <Name>Controlword</Name>
+        <Type GUID="{18071995-0000-0000-0000-000000000005}">UINT</Type>
+      </SubItem>
+      <SubItem>
+        <Name>Target_position</Name>
+        <Type GUID="{18071995-0000-0000-0000-000000000009}">DINT</Type>
+      </SubItem>
+      <SubItem>
+        <Name>Target_velocity</Name>
+        <Type GUID="{18071995-0000-0000-0000-000000000009}">DINT</Type>
+      </SubItem>
+      <SubItem>
+        <Name>Target_torque</Name>
+        <Type GUID="{18071995-0000-0000-0000-000000000006}">INT</Type>
+      </SubItem>
+      <SubItem>
+        <Name>Modes_of_operation</Name>
+        <Type GUID="{18071995-0000-0000-0000-000000000003}">SINT</Type>
+      </SubItem>
+      <SubItem>
+        <Name>Motor_revolutions</Name>
+        <Type GUID="{18071995-0000-0000-0000-000000000008}">UDINT</Type>
+      </SubItem>
+      <SubItem>
+        <Name>Shaft_revolutions</Name>
+        <Type GUID="{18071995-0000-0000-0000-000000000008}">UDINT</Type>
+      </SubItem>
+      <Hides>
+        <Hide GUID="{B8510173-70AC-4EB4-839D-8EA04478273D}" />
+        <Hide GUID="{32f10400-8b99-492f-8a6b-abf894d81ed3}" />
+        <Hide GUID="{9e1ab995-80ae-447e-9210-eac0386d80da}" />
+        <Hide GUID="{15524453-de30-46ee-b4a8-a23ed2774062}" />
+        <Hide GUID="{87b7391f-b87e-442e-b6c6-132dad60ef00}" />
+        <Hide GUID="{da1be7b9-2c5a-4a1d-be48-62bb2c1a1f7b}" />
+        <Hide GUID="{4198d6ab-d7b5-45d7-8980-edc29ca411fd}" />
+        <Hide GUID="{17315beb-1fbd-4721-8942-65c19d0ff1aa}" />
+        <Hide GUID="{ffeb4580-d507-4fe3-a032-a05e9d3674cd}" />
+        <Hide GUID="{d5519d93-4719-4165-b240-3c5913d49465}" />
+        <Hide GUID="{d2bf5c20-f9e3-471d-8959-d155545f9161}" />
+        <Hide GUID="{43aa7432-8c17-414e-a420-64241e0738aa}" />
+        <Hide GUID="{ae8301d6-1848-4e95-bf43-350adc9ddbdb}" />
+        <Hide GUID="{8747089c-d338-43c2-8306-9f5eafe8070d}" />
+        <Hide GUID="{5b20f12c-d23d-40e1-a973-85c19ca8d268}" />
+        <Hide GUID="{82bd95d3-8e81-42dd-9060-3c500f22d41b}" />
+      </Hides>
+    </DataType>
+    <DataType>
+      <Name GUID="{d7752026-2e94-4b66-ba6c-cd15d3ee3ea4}">ServoStatus</Name>
+      <SubItem>
+        <Name>SpdCmd</Name>
+        <Type GUID="{18071995-0000-0000-0000-00000000000D}">REAL</Type>
+      </SubItem>
+      <SubItem>
+        <Name>SpdFb_ServoSend</Name>
+        <Type GUID="{18071995-0000-0000-0000-00000000000D}">REAL</Type>
+      </SubItem>
+      <SubItem>
+        <Name>SpdFb_PcCalc</Name>
+        <Type GUID="{18071995-0000-0000-0000-00000000000d}">REAL</Type>
+      </SubItem>
+      <SubItem>
+        <Name>TorCmd_PcSend</Name>
+        <Type GUID="{18071995-0000-0000-0000-00000000000D}">REAL</Type>
+      </SubItem>
+      <SubItem>
+        <Name>TorCmd_ServoRecv</Name>
+        <Type GUID="{18071995-0000-0000-0000-00000000000D}">REAL</Type>
+      </SubItem>
+      <SubItem>
+        <Name>TorFb</Name>
+        <Type GUID="{18071995-0000-0000-0000-00000000000D}">REAL</Type>
+      </SubItem>
+      <Hides>
+        <Hide GUID="{4CA2FC43-2C8F-4E24-855E-EE4D56D16773}" />
+        <Hide GUID="{B1A8F0D7-7A9E-4738-91A6-89077CDDAFB6}" />
+        <Hide GUID="{7C929CBF-665A-481B-8AE8-A27E7A90628C}" />
+        <Hide GUID="{383A73DA-D81F-454E-9781-2A61057E8CF2}" />
+        <Hide GUID="{539761D7-C385-458F-8794-1D61E646FA9E}" />
+        <Hide GUID="{5C0DADB3-2001-41E4-A079-C7450F252D23}" />
+        <Hide GUID="{A1D9653B-0B56-49CE-808C-6631DE219C59}" />
+        <Hide GUID="{64c3c367-b49a-4843-a882-e5328bf89d57}" />
+        <Hide GUID="{532d2484-cecf-413b-b8b5-c170207231df}" />
+        <Hide GUID="{7e1799d0-19d6-4288-9af9-11d6e14ee3a2}" />
+        <Hide GUID="{3f679f77-05a3-40cd-81f8-696c62aa281e}" />
+        <Hide GUID="{624f6730-e50f-4f53-8666-33752497b607}" />
+        <Hide GUID="{9cba76ca-3c3f-4435-8e41-ad3bf0b8103e}" />
+        <Hide GUID="{a745eee0-d752-4c1f-9ef5-b3f7c5a603f1}" />
+        <Hide GUID="{66389d0d-9201-4ba1-8005-7fce9bac9625}" />
+        <Hide GUID="{02c3d096-cca3-4ae3-a2f7-128b3fce67fe}" />
+        <Hide GUID="{d6c632ce-4be1-4a3c-aa80-2a0eb71b7253}" />
+        <Hide GUID="{b6fe1c1a-b793-4c53-8794-a7e071820886}" />
+        <Hide GUID="{5e27a67d-7392-4f33-b370-682e92ac8dc4}" />
+        <Hide GUID="{85f8089d-8fd6-4684-8291-dab964a38ddc}" />
+        <Hide GUID="{fe29ccb4-2af7-4698-8e47-c5738262e1c0}" />
+        <Hide GUID="{0f952df7-ad46-4bd4-8e3e-38dbaa35e746}" />
+        <Hide GUID="{0f62bb52-8740-4640-bbb4-27c41cf7f426}" />
+        <Hide GUID="{bf6a9052-8e37-4051-b5ec-751de7102f68}" />
+        <Hide GUID="{ed3bb56e-cc8f-4213-b104-2aeb733d0547}" />
+        <Hide GUID="{0326200a-5b70-4d04-9fc4-2d2171ba6735}" />
+        <Hide GUID="{ac33aba6-12da-432f-a868-31e96b7bbed6}" />
+        <Hide GUID="{6b5278e2-59c2-436c-8aa2-9e157747126c}" />
+        <Hide GUID="{af906a95-7dc0-49d6-9574-17c030dc9efa}" />
+      </Hides>
+    </DataType>
+    <DataType>
+      <Name GUID="{13cfe965-1f59-4dac-9bcf-7a8f032b5230}">ServoParams</Name>
+      <SubItem>
+        <Name>EncCntPerRev</Name>
+        <Type GUID="{18071995-0000-0000-0000-000000000008}">UDINT</Type>
+        <Comment TxtId=""><![CDATA[编码器转一圈计数]]></Comment>
+      </SubItem>
+      <SubItem>
+        <Name>GearNum</Name>
+        <Type GUID="{18071995-0000-0000-0000-000000000008}">UDINT</Type>
+        <Comment TxtId=""><![CDATA[齿轮比分子]]></Comment>
+      </SubItem>
+      <SubItem>
+        <Name>GearDen</Name>
+        <Type GUID="{18071995-0000-0000-0000-000000000008}">UDINT</Type>
+        <Comment TxtId=""><![CDATA[齿轮比分母]]></Comment>
+      </SubItem>
+      <SubItem>
+        <Name>InertiaBase</Name>
+        <Type GUID="{18071995-0000-0000-0000-00000000000D}">REAL</Type>
+        <Comment TxtId=""><![CDATA[转子惯量]]></Comment>
+        <Unit><![CDATA[kg·m2]]></Unit>
+      </SubItem>
+      <SubItem>
+        <Name>RatedTorque</Name>
+        <Type GUID="{18071995-0000-0000-0000-00000000000D}">REAL</Type>
+        <Comment TxtId=""><![CDATA[电机额定转矩]]></Comment>
+        <Unit><![CDATA[N·m]]></Unit>
+      </SubItem>
+      <Hides>
+        <Hide GUID="{37e19463-4525-4eb9-ad74-60fc546741aa}" />
+        <Hide GUID="{091d30f5-4a0c-41c9-a96a-cc66ca57bdc6}" />
+        <Hide GUID="{ba8e4da7-5206-49f8-871b-51d489dfe953}" />
+        <Hide GUID="{36be861f-c03b-4973-bd79-35a66de82547}" />
+        <Hide GUID="{56f6f2c2-d93c-4d03-b413-9b2ac11ef1e0}" />
+        <Hide GUID="{c2ad151a-b74b-4329-9ec3-caab10c6f893}" />
+        <Hide GUID="{78bba202-ff83-4536-81e1-91a0012875e5}" />
+        <Hide GUID="{c62f0de5-87fc-4529-8120-b19bcb800af1}" />
+        <Hide GUID="{787ed84a-212b-46ff-ae81-3a70df105751}" />
+      </Hides>
+    </DataType>
+    <DataType>
+      <Name GUID="{357956cc-d1a1-4576-b5a4-10ff5d8a9034}">ExperimentType_T</Name>
+      <BaseType GUID="{18071995-0000-0000-0000-000000000006}">INT</BaseType>
+      <EnumInfo>
+        <Text><![CDATA[ExperimentType_Manual]]></Text>
+        <Enum>0</Enum>
+        <Comment><![CDATA[手动实验]]></Comment>
+      </EnumInfo>
+      <EnumInfo>
+        <Text><![CDATA[ExperimentType_StepResponse]]></Text>
+        <Enum>1</Enum>
+        <Comment><![CDATA[阶跃响应实验]]></Comment>
+      </EnumInfo>
+      <EnumInfo>
+        <Text><![CDATA[ExperimentType_WaveResponse]]></Text>
+        <Enum>2</Enum>
+        <Comment><![CDATA[波形响应实验]]></Comment>
+      </EnumInfo>
+      <EnumInfo>
+        <Text><![CDATA[ExperimentType_VelocitySweep]]></Text>
+        <Enum>3</Enum>
+        <Comment><![CDATA[速度扫频实验]]></Comment>
+      </EnumInfo>
+      <EnumInfo>
+        <Text><![CDATA[ExperimentType_TorqueSweep]]></Text>
+        <Enum>4</Enum>
+        <Comment><![CDATA[转矩扫频实验]]></Comment>
+      </EnumInfo>
+      <EnumInfo>
+        <Text><![CDATA[ExperimentType_LoadDisturbScan]]></Text>
+        <Enum>5</Enum>
+        <Comment><![CDATA[负载扫描实验]]></Comment>
+      </EnumInfo>
+      <EnumInfo>
+        <Text><![CDATA[ExperimentType_PosLoopWave]]></Text>
+        <Enum>6</Enum>
+        <Comment><![CDATA[位置环波形响应实验]]></Comment>
+      </EnumInfo>
+      <EnumInfo>
+        <Text><![CDATA[ExperimentType_VelocityClosedLoopPRBS]]></Text>
+        <Enum>7</Enum>
+        <Comment><![CDATA[速度闭环PRBS实验]]></Comment>
+      </EnumInfo>
+      <EnumInfo>
+        <Text><![CDATA[ExperimentType_CurrentClosedLoopPRBS]]></Text>
+        <Enum>8</Enum>
+        <Comment><![CDATA[电流环PRBS实验]]></Comment>
+      </EnumInfo>
+      <Hides>
+        <Hide GUID="{607F3DD5-A6E7-477A-9EF1-53240F8703EA}" />
+        <Hide GUID="{DFED6A86-459D-4DA1-AE45-AE1E6BD76328}" />
+        <Hide GUID="{8D8E9699-BC7B-4458-8610-F23AE13721E5}" />
+        <Hide GUID="{E79755B1-5CFB-40CB-AC06-AA4FF3E48545}" />
+        <Hide GUID="{e277027c-e7b0-4d29-ab49-b9fc5b83338b}" />
+        <Hide GUID="{4780d381-3a92-425d-9595-a23fa6078e80}" />
+        <Hide GUID="{e34978f2-db9f-4a95-b89e-9d90f3c62cd3}" />
+        <Hide GUID="{617f8fad-251a-40da-a9d1-1d2938055c49}" />
+        <Hide GUID="{6ec7ff81-7396-4454-a42b-892c6775d0b7}" />
+        <Hide GUID="{e839798b-d263-44d3-9158-51d214830816}" />
+        <Hide GUID="{e4e862b1-7b44-4697-904e-4e0c3e899886}" />
+        <Hide GUID="{ca719973-518a-48ae-b0aa-47ed04d22a20}" />
+        <Hide GUID="{4470f173-ed52-4ba3-b2f5-2ddf8a96fd9c}" />
+        <Hide GUID="{e2adec1c-0825-42cc-b41b-ff22c032e8e2}" />
+        <Hide GUID="{5180f05c-aae9-4d23-b53b-f6000485dfb5}" />
+        <Hide GUID="{098938e6-7766-4583-8797-150b6094644c}" />
+        <Hide GUID="{d58fe9be-27ee-4896-a90d-1d65d47d05ae}" />
+        <Hide GUID="{41915ad9-5a0d-4ca5-a4b8-1b0ac7a6cbc3}" />
+      </Hides>
+    </DataType>
+    <DataType>
+      <Name GUID="{e8fbc83c-dcba-48a3-8f3c-de0bff168393}">ServoIO</Name>
+      <SubItem>
+        <Name>Inputs</Name>
+        <Type GUID="{3ea188cf-a9b9-4934-9f74-3938a094c484}" PointerTo="1">ServoInputs</Type>
+      </SubItem>
+      <SubItem>
+        <Name>Outputs</Name>
+        <Type GUID="{b2423a46-ca74-4ceb-90a5-4087fa1a95a1}" PointerTo="1">ServoOutputs</Type>
+      </SubItem>
+      <SubItem>
+        <Name>Status</Name>
+        <Type GUID="{d7752026-2e94-4b66-ba6c-cd15d3ee3ea4}">ServoStatus</Type>
+      </SubItem>
+      <SubItem>
+        <Name>Params</Name>
+        <Type GUID="{13cfe965-1f59-4dac-9bcf-7a8f032b5230}">ServoParams</Type>
+      </SubItem>
+      <Hides>
+        <Hide GUID="{0b33ae30-2d82-40b2-9b68-1ea1432c6b67}" />
+        <Hide GUID="{e981d35b-a707-4aa5-9b94-cd05084df471}" />
+        <Hide GUID="{c8417c24-fa62-44a6-ae4b-620d4b173c1e}" />
+        <Hide GUID="{ea4fcdcc-8c85-441a-b6df-51b915772bb5}" />
+        <Hide GUID="{1ddc22ba-7c03-451d-96c3-7ba085a15e79}" />
+        <Hide GUID="{dd079b10-636e-4fdd-b0a9-a28a44a4614f}" />
+        <Hide GUID="{88388f72-cd1a-4d3c-83ef-30a65d9ac9d2}" />
+        <Hide GUID="{cdd43a3d-c649-43c4-9f1e-2f3a00c25c72}" />
+        <Hide GUID="{efe662ff-4845-4955-91c5-5c1af22d9b70}" />
+        <Hide GUID="{817dc1a7-bd07-490b-97ac-a65eb01314b5}" />
+        <Hide GUID="{3a916db8-3cfa-4274-b3aa-a5dc05bf00bb}" />
+        <Hide GUID="{7a7d4177-55a4-479c-8ed3-d46b74d3af78}" />
+        <Hide GUID="{cba779cf-8764-4ac6-9fbb-fc922b6c9f32}" />
+        <Hide GUID="{3492b193-a531-4552-8292-3f5b8a48ed47}" />
+        <Hide GUID="{1c405f43-ec82-41af-a216-cb59277e2229}" />
+        <Hide GUID="{2a92641b-18d5-4296-8559-c3194108d3e1}" />
+        <Hide GUID="{7e0cb16a-6f0f-4b3a-9ab8-088679514865}" />
+        <Hide GUID="{2827f288-4abc-49b0-88e1-015b042cee0d}" />
+        <Hide GUID="{ed24386a-3637-4b1e-a317-b5117f7c697d}" />
+        <Hide GUID="{50a672e5-fb4a-43ef-8166-0d61c3d209cc}" />
+      </Hides>
+    </DataType>
+  </DataTypes>
+  <Groups>
+    <Group SortOrder="701">
+      <Name>C++</Name>
+      <DisplayName>C++ Modules</DisplayName>
+    </Group>
+  </Groups>
+  <Modules>
+    <Module GUID="{acd873df-2063-4b77-9a90-af0ed06810f6}" Group="C++">
+      <Name>WASR_TC</Name>
+      <CLSID ClassFactory="WASR_TC">{acd873df-2063-4b77-9a90-af0ed06810f6}</CLSID>
+      <Licenses>
+        <License>
+          <LicenseId>{304D006A-8299-4560-AB79-438534B50288}</LicenseId>
+          <Comment>TC3 C++</Comment>
+        </License>
+      </Licenses>
+      <InitSequence>PSO</InitSequence>
+      <Contexts>
+        <Context>
+          <Id>1</Id>
+        </Context>
+      </Contexts>
+      <Interfaces>
+        <Interface DisableCodeGeneration="true">
+          <Type GUID="{00000012-0000-0000-E000-000000000064}">ITComObject</Type>
+        </Interface>
+        <Interface>
+          <Type GUID="{03000010-0000-0000-E000-000000000064}">ITcCyclic</Type>
+        </Interface>
+        <Interface DisableCodeGeneration="true">
+          <Type GUID="{03000012-0000-0000-E000-000000000064}">ITcADI</Type>
+        </Interface>
+        <Interface DisableCodeGeneration="true">
+          <Type GUID="{03000018-0000-0000-E000-000000000064}">ITcWatchSource</Type>
+        </Interface>
+      </Interfaces>
+      <Parameters>
+        <Parameter HideParameter="true">
+          <Name>TraceLevelMax</Name>
+          <Comment>Controls the amount of log messages.</Comment>
+          <BaseType GUID="{8007ae3b-86bb-40f2-b385-ef87fcc239a4}">TcTraceLevel</BaseType>
+          <PTCID>#x03002103</PTCID>
+          <ContextId>1</ContextId>
+        </Parameter>
+      </Parameters>
+      <DataAreas>
+        <DataArea>
+          <AreaNo AreaType="InputDst">0</AreaNo>
+          <Name>Inputs</Name>
+          <ContextId>1</ContextId>
+          <Symbol>
+            <Name>Servo0</Name>
+            <BaseType GUID="{3ea188cf-a9b9-4934-9f74-3938a094c484}">ServoInputs</BaseType>
+          </Symbol>
+          <Symbol CreateSymbol="true">
+            <Name>Servo1</Name>
+            <BaseType GUID="{3ea188cf-a9b9-4934-9f74-3938a094c484}">ServoInputs</BaseType>
+          </Symbol>
+        </DataArea>
+        <DataArea>
+          <AreaNo AreaType="OutputSrc">1</AreaNo>
+          <Name>Outputs</Name>
+          <ContextId>1</ContextId>
+          <Symbol>
+            <Name>Servo0</Name>
+            <BaseType GUID="{b2423a46-ca74-4ceb-90a5-4087fa1a95a1}">ServoOutputs</BaseType>
+          </Symbol>
+          <Symbol>
+            <Name>Servo1</Name>
+            <BaseType GUID="{b2423a46-ca74-4ceb-90a5-4087fa1a95a1}">ServoOutputs</BaseType>
+          </Symbol>
+        </DataArea>
+        <DataArea>
+          <AreaNo AreaType="Standard" CreateSymbols="true">2</AreaNo>
+          <Name>Servos</Name>
+          <ContextId>1</ContextId>
+          <Symbol>
+            <Name>Servo0</Name>
+            <BaseType GUID="{e8fbc83c-dcba-48a3-8f3c-de0bff168393}">ServoIO</BaseType>
+          </Symbol>
+          <Symbol>
+            <Name>Servo1</Name>
+            <BaseType GUID="{e8fbc83c-dcba-48a3-8f3c-de0bff168393}">ServoIO</BaseType>
+          </Symbol>
+          <Symbol>
+            <Name>DriveSide</Name>
+            <BaseType GUID="{e8fbc83c-dcba-48a3-8f3c-de0bff168393}" PointerTo="1">ServoIO</BaseType>
+          </Symbol>
+          <Symbol>
+            <Name>LoadSide</Name>
+            <BaseType GUID="{e8fbc83c-dcba-48a3-8f3c-de0bff168393}" PointerTo="1">ServoIO</BaseType>
+          </Symbol>
+        </DataArea>
+        <DataArea>
+          <AreaNo AreaType="Standard" CreateSymbols="true">3</AreaNo>
+          <Name>Status</Name>
+          <Comment><![CDATA[状态]]></Comment>
+          <ContextId>1</ContextId>
+          <Symbol CreateSymbol="true">
+            <Name>Enable</Name>
+            <BaseType GUID="{18071995-0000-0000-0000-000000000002}">USINT</BaseType>
+          </Symbol>
+          <Symbol>
+            <Name>Driver_Servo_number</Name>
+            <BaseType GUID="{18071995-0000-0000-0000-000000000002}">USINT</BaseType>
+          </Symbol>
+          <Symbol>
+            <Name>Driver_Modes_of_operation</Name>
+            <BaseType GUID="{18071995-0000-0000-0000-000000000003}">SINT</BaseType>
+          </Symbol>
+          <Symbol>
+            <Name>Driver_Inertia_ratio</Name>
+            <BaseType GUID="{18071995-0000-0000-0000-000000000005}">UINT</BaseType>
+          </Symbol>
+          <Symbol>
+            <Name>Driver_Rigidity_level</Name>
+            <BaseType GUID="{18071995-0000-0000-0000-000000000005}">UINT</BaseType>
+          </Symbol>
+          <Symbol>
+            <Name>Driver_SpdLoop_Kp</Name>
+            <BaseType GUID="{18071995-0000-0000-0000-000000000005}">UINT</BaseType>
+          </Symbol>
+          <Symbol>
+            <Name>Driver_SpdLoop_Ti</Name>
+            <BaseType GUID="{18071995-0000-0000-0000-000000000005}">UINT</BaseType>
+          </Symbol>
+          <Symbol CreateSymbol="true">
+            <Name>ExperimentType</Name>
+            <BaseType GUID="{357956cc-d1a1-4576-b5a4-10ff5d8a9034}">ExperimentType_T</BaseType>
+          </Symbol>
+          <Symbol CreateSymbol="true">
+            <Name>SigFreq</Name>
+            <Comment TxtId=""><![CDATA[扰动频率]]></Comment>
+            <BaseType GUID="{18071995-0000-0000-0000-00000000000d}">REAL</BaseType>
+          </Symbol>
+          <Symbol>
+            <Name>SigAmp</Name>
+            <Comment TxtId=""><![CDATA[扰动幅值: 速度波形 [rpm], 位置波形 [指令单位], 负载扫描回读 [% 负载额定], 只读]]></Comment>
+            <BaseType GUID="{18071995-0000-0000-0000-00000000000d}">REAL</BaseType>
+          </Symbol>
+          <Symbol CreateSymbol="true">
+            <Name>SigOffset</Name>
+            <Comment TxtId=""><![CDATA[负载侧基准转矩指令]]></Comment>
+            <BaseType GUID="{18071995-0000-0000-0000-00000000000d}">REAL</BaseType>
+            <Unit><![CDATA[0.1%RatedTorque]]></Unit>
+          </Symbol>
+        </DataArea>
+      </DataAreas>
+      <InterfacePointers>
+        <InterfacePointer>
+          <PTCID>#x03002060</PTCID>
+          <Name>CyclicCaller</Name>
+          <Type GUID="{0300001e-0000-0000-e000-000000000064}">ITcCyclicCaller</Type>
+        </InterfacePointer>
+      </InterfacePointers>
+      <DataPointers />
+      <Deployment />
+    </Module>
+  </Modules>
+  <Library>
+    <Name>WASR_TC</Name>
+    <Version>0.0.0.1</Version>
+  </Library>
+</TcModuleClass>

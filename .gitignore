@@ -1,0 +1,83 @@
+# ============================================================
+# TwinCAT 3 (XAE) + C++ 实时模块工程 .gitignore
+# 适用: tc_testbed_copy (C++ 控制) + tc_measurement (Scope 录波)
+# ============================================================
+
+# ---------------- VS 缓存（最大头，绝不提交）----------------
+.vs/
+*.suo
+*.user
+*.vcxproj.user
+*.vcxproj.user.*
+Browse.VC.db*
+*.VC.db
+*.vsidx
+*.opendb
+ipch/
+
+# ---------------- TwinCAT 编译 / 激活产物 ----------------
+_Boot/
+_Repository/
+**/TcPublish/
+**/_products/
+**/_TFlexCat*/
+**/_Boot/
+**/_Repository/
+
+# ---------------- 编译中间产物 ----------------
+*.tmx
+*.sys
+*.obj
+*.pch
+*.pdb
+*.ilk
+*.exp
+*.lib
+*.tlog
+*.lastbuildstate
+*.idb
+[Dd]ebug/
+[Rr]elease/
+[Dd]ebug Static/
+[Rr]elease Static/
+x64/
+x86/
+[Tt]win[Cc]at*/
+**/[Tt]win[Cc]at OS*/
+**/[Tt]win[Cc]at RT*/
+
+# ---------------- 自动备份 / 日志 / 升级记录 ----------------
+*.bak
+*.tsproj.bak
+*.tmc.bak
+*.log
+UpgradeLog*.htm
+*.tpy.bak
+*.tclrs.bak
+
+# ---------------- TwinCAT 特定 ----------------
+# 目标设备激活配置（每台机器不同，不入库）
+**/CurrentConfig/
+**/CurrentProject*.tsproj
+*.project.~u
+# 编译器生成的 TMC（源码里的 .tmc 保留，自动再生的忽略）
+# 注意: WASR_TC.tmc 是源文件，勿在此忽略
+
+# ---------------- Scope / Measurement 产物 ----------------
+# 录波工作目录与数据文件（数据量大，不入库）
+**/ScopeWizard_Workfolder/
+*.tcscopex.lock
+*.svd
+*.tcscopexdat
+
+# ---------------- 授权 / 敏感（可选，默认忽略）----------------
+# 试用授权文件不建议入库（尤其仓库会上传时）
+TrialLicense.tclrs
+*.tclrs
+
+# ---------------- 系统垃圾 ----------------
+Thumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+ehthumbs.db
+*.tmp

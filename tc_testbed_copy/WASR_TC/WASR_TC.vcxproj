@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="us-ascii"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Condition="Exists('$(TWINCATSDK)\MsBuild\TwinCAT Common')" Project="$(TWINCATSDK)\MsBuild\TwinCAT Common\*.targets" />
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|TwinCAT OS (ARMV8-A)">
+      <Configuration>Debug</Configuration>
+      <Platform>TwinCAT OS (ARMV8-A)</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|TwinCAT RT (x64)">
+      <Configuration>Debug</Configuration>
+      <Platform>TwinCAT RT (x64)</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|TwinCAT RT (x86)">
+      <Configuration>Debug</Configuration>
+      <Platform>TwinCAT RT (x86)</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|TwinCAT OS (x64-E)">
+      <Configuration>Release</Configuration>
+      <Platform>TwinCAT OS (x64-E)</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|TwinCAT OS (ARMV8-A)">
+      <Configuration>Release</Configuration>
+      <Platform>TwinCAT OS (ARMV8-A)</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|TwinCAT RT (x64)">
+      <Configuration>Release</Configuration>
+      <Platform>TwinCAT RT (x64)</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|TwinCAT RT (x86)">
+      <Configuration>Release</Configuration>
+      <Platform>TwinCAT RT (x86)</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{049664a0-8452-41e5-a966-0529ce74e06e}</ProjectGuid>
+    <RootNamespace>WASR_TC</RootNamespace>
+    <Keyword>Win32Proj</Keyword>
+    <AutomaticRetargetPlatformVersion>true</AutomaticRetargetPlatformVersion>
+    <TcGeneralUseTmx>true</TcGeneralUseTmx>
+    <TcSignTwinCatCertName>bb</TcSignTwinCatCertName>
+    <TcSignTwinCatCertPW>bb</TcSignTwinCatCertPW>
+    <TcSignTwinCatVerbose>true</TcSignTwinCatVerbose>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|TwinCAT RT (x86)'" Label="Configuration">
+    <PlatformToolset>v143</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|TwinCAT RT (x86)'" Label="Configuration">
+    <PlatformToolset>v143</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|TwinCAT RT (x64)'" Label="Configuration">
+    <PlatformToolset>v143</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|TwinCAT RT (x64)'" Label="Configuration">
+    <PlatformToolset>v143</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|TwinCAT OS (x64-E)'" Label="Configuration">
+    <PlatformToolset>TwinCAT_LLVM_ELF</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|TwinCAT OS (x64-E)'" Label="Configuration">
+    <PlatformToolset>TwinCAT_LLVM_ELF</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|TwinCAT OS (ARMV8-A)'" Label="Configuration">
+    <PlatformToolset>TwinCAT_LLVM_ELF</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|TwinCAT OS (ARMV8-A)'" Label="Configuration">
+    <PlatformToolset>TwinCAT_LLVM_ELF</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+    <Import Condition="Exists('$(TWINCATSDK)\Build\MsBuild\TwinCAT Common\Extensions')" Project="$(TWINCATSDK)\Build\MsBuild\TwinCAT Common\Extensions\*.props" />
+  </ImportGroup>
+  <!-- common propertysheet -->
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|TwinCAT RT (x86)'" Label="PropertySheets">
+    <Import Project="WASR_TC.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|TwinCAT RT (x86)'" Label="PropertySheets">
+    <Import Project="WASR_TC.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|TwinCAT RT (x64)'" Label="PropertySheets">
+    <Import Project="WASR_TC.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|TwinCAT RT (x64)'" Label="PropertySheets">
+    <Import Project="WASR_TC.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|TwinCAT OS (x64-E)'" Label="PropertySheets">
+    <Import Project="WASR_TC.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|TwinCAT OS (x64-E)'" Label="PropertySheets">
+    <Import Project="WASR_TC.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|TwinCAT OS (ARMV8-A)'" Label="PropertySheets">
+    <Import Project="WASR_TC.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|TwinCAT OS (ARMV8-A)'" Label="PropertySheets">
+    <Import Project="WASR_TC.props" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <ItemDefinitionGroup>
+    <ClCompile>
+      <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|TwinCAT RT (x64)'">
+    <TcSignWindowsSha1>false</TcSignWindowsSha1>
+  </PropertyGroup>
+  <PropertyGroup>
+    <TcPublishPlatforms>TwinCAT RT (x64)</TcPublishPlatforms>
+  </PropertyGroup>
+  <ItemGroup>
+    <ClCompile Include="TcPch.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|TwinCAT RT (x86)'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|TwinCAT RT (x64)'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|TwinCAT OS (x64-E)'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|TwinCAT OS (ARMV8-A)'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|TwinCAT RT (x86)'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|TwinCAT RT (x64)'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|TwinCAT OS (x64-E)'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|TwinCAT OS (ARMV8-A)'">Create</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="SpeedTestSequencer.cpp" />
+    <ClCompile Include="CoeSdo.cpp" />
+    <ClCompile Include="WASR_TC.cpp" />
+    <ClCompile Include="WASR_TCClassFactory.cpp" />
+    <ClCompile Include="WASR_TCDriver.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|TwinCAT OS (x64-E)'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|TwinCAT OS (x64-E)'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|TwinCAT OS (ARMV8-A)'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|TwinCAT OS (ARMV8-A)'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="WASR_TCMain.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|TwinCAT RT (x64)'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|TwinCAT RT (x86)'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|TwinCAT RT (x64)'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|TwinCAT RT (x86)'">true</ExcludedFromBuild>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="EncoderDebounce.h" />
+    <ClInclude Include="CoeSdo.h" />
+    <ClInclude Include="CoeSdoConfig.h" />
+    <ClInclude Include="MiniSpdLoop.h" />
+    <ClInclude Include="ServoPlatformConfig.h" />
+    <ClInclude Include="SpeedTestSequencer.h" />
+    <ClInclude Include="TestScanTables.h" />
+    <ClInclude Include="TcPch.h" />
+    <ClInclude Include="TestScriptConfig.h" />
+    <ClInclude Include="WASR_ControlConfig.h" />
+    <ClInclude Include="WASR_TC.h" />
+    <ClInclude Include="WASR_TCClassFactory.h" />
+    <ClInclude Include="WASR_TCDriver.h" />
+    <ClInclude Include="WASR_TCInterfaces.h" />
+    <ClInclude Include="WASR_TCServices.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="WASR_TC.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="WASR_TC.tmc" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+    <Import Condition="Exists('$(TWINCATSDK)\Build\MsBuild\TwinCAT Common\Extensions')" Project="$(TWINCATSDK)\Build\MsBuild\TwinCAT Common\Extensions\*.targets" />
+  </ImportGroup>
+</Project>
