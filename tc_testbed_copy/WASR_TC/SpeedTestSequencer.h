@@ -52,6 +52,10 @@
 #include "TestScanTables.h"
 // 转矩扫频用的上位机速度环
 #include "MiniSpdLoop.h"
+// 送纸凸轮实验 (FeedCamTest): 工艺状态机 / 虚拟主轴 / 负载谱
+#include "FeedSequencer.h"
+#include "VirtualMaster.h"
+#include "LoadProfiler.h"
 
 struct SpeedTestSequencer
 {
@@ -64,6 +68,7 @@ struct SpeedTestSequencer
         LOAD_SCAN_TEST,     // 负载侧扰动转矩扫描
         POS_WAVE_TEST,      // 位置环定频波形 (CSP)
         PRBS_TEST,          // 速度闭环 PRBS + 增量频响
+        FEED_CAM_TEST,      // 送纸凸轮: 虚拟主轴 + 4 轴五次曲线 (CSP)
         STOPPING,           // 减速到 0 / 幅值淡出, 准备禁用
         DONE                // 实验结束, 等待 Enable 释放
     };
@@ -194,6 +199,16 @@ struct SpeedTestSequencer
     float    prbsAcc;               // 当前 bit 已计时 [s]
     float    prbsBit;               // 当前 bit 输出 [-1, +1]
 
+    // 送纸凸轮实验 (FEED_CAM_TEST): 虚拟主轴 + 凸轮状态机
+    // v1 仅轴0 指令下发 (单轴 VD5L), 其余轴指令仅进 monitor, 扩硬件后逐轴接出
+    CFeedSequencer feedSeq;         // 送纸工艺状态机 (含 4 轴凸轮)
+    CVirtualMaster feedMaster;      // 虚拟主轴
+    CLoadProfiler  feedLoad;        // 负载谱 (v1 占位, bLoadSideEnable=false 不用)
+    double feedMmToUnit;            // mm→指令单位换算 (挂载层按驱动侧齿轮比写入, 0=未挂载)
+    double feedActPos0;             // 进实验时的 6064h 实际位置 [指令单位] (指令原点, 防跳变)
+    float  feedPrevSigAmp;          // SigAmp 上一拍值 (Start 上升沿检测)
+    double feedCmdMm[4];            // 本拍 4 轴位置指令 [mm]
+
     // 停机
     float    lastSpdCmd;            // 上一拍速度指令 [rpm]
     uint8_t  stopClearFreq;         // 1 = 停机完成时把 SigFreq 清 0
@@ -245,10 +260,12 @@ struct SpeedTestSequencer
      *                    负载扫描回读当前幅度 [% 负载额定]; 位置环波形超
      *                    POSWAVE_TEST_AMP_MAX 时夹紧并回读
      * @param sigOffset   m_Status.SigOffset [in/out]: 偏置 (单位随实验, 见文件头)
+     * @param actPosUnits 驱动侧 6064h 实际位置 [指令单位] (FeedCamTest 指令原点/跟随监视)
      */
     void Update(ExperimentType_T experiment,
                 uint8_t* enable, float* spdCmd, float spdFb,
                 uint8_t driveReady,
-                float* sigFreq, float* sigAmp, float* sigOffset);
+                float* sigFreq, float* sigAmp, float* sigOffset,
+                double actPosUnits);
 
 };

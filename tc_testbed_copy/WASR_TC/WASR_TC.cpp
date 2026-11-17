@@ -315,6 +315,11 @@ void CWASR_TC::InitControl(float dtSec)
 	{
 		int di = (d == &m_Servos.Servo1) ? 1 : 0;
 		m_speedScale = m_speedScaleServo[di];
+		// 送纸凸轮: mm→指令单位 = 每转指令单位数 (= 60 / m_speedScaleServo[di])
+		//           / 电机每转工艺 mm (g_cfgFeed.fMmPerMotorRev)
+		if (g_cfgFeed.fMmPerMotorRev > 0.0) {
+			m_testSeq.feedMmToUnit = 60.0 / (double)m_speedScaleServo[di] / g_cfgFeed.fMmPerMotorRev;
+		}
 	}
 
 	// 实验序列器: 总惯量 = 转子惯量 × (1 + 惯量比/100), 供转矩扫频速度环折算
@@ -630,7 +635,8 @@ HRESULT CWASR_TC::CycleUpdate(ITcTask* ipTask, ITcUnknown* ipCaller, ULONG_PTR c
 	m_testSeq.Update(m_Status.ExperimentType,
 	                 &m_Status.Enable, &spdCmd, spdFbServo,
 	                 (uint8_t)(m_prevOpEnabled ? 1 : 0),
-	                 &m_Status.SigFreq, &m_Status.SigAmp, &m_Status.SigOffset);
+	                 &m_Status.SigFreq, &m_Status.SigAmp, &m_Status.SigOffset,
+	                 (double)d->Inputs->Position_actual_value);
 
 	// 驱动侧运行模式 (输出): 8 = CSP, 9 = CSV, 10 = CST
 	m_Status.Driver_Modes_of_operation = (char)DriveModeCode(m_testSeq.driveMode);

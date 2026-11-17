@@ -1,3 +1,4 @@
+#include "TcPch.h"
 #include "CamProfile.h"
 
 /* 凸轮固定段参数（来自 FAE 凸轮表：加速/减速段均为 300mm 主轴 / 120mm 从轴） */

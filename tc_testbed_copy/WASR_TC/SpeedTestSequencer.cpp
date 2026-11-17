@@ -175,6 +175,14 @@ void SpeedTestSequencer::Init(float dt, float inertia, float ratedTorque, float 
     posStopElapsed    = 0.0f;
     posCmdOut         = 0.0;
 
+    // 送纸凸轮: 换算未挂载 (=0) 时位置指令保持指令原点, 电机不动 (安全)
+    feedMmToUnit   = 0.0;
+    feedActPos0    = 0.0;
+    feedPrevSigAmp = 0.0f;
+    for (int i = 0; i < 4; i++) {
+        feedCmdMm[i] = 0.0;
+    }
+
     torSweepSub             = TOR_SWEEP_STANDBY;
     torSweepStartPhase      = 0;
     torSweepFreqIdx         = 0;
@@ -255,7 +263,8 @@ float SpeedTestSequencer::GetTorCmd() const
 void SpeedTestSequencer::Update(ExperimentType_T experiment,
             uint8_t* enable, float* spdCmd, float spdFb,
             uint8_t driveReady,
-            float* sigFreq, float* sigAmp, float* sigOffset)
+            float* sigFreq, float* sigAmp, float* sigOffset,
+            double actPosUnits)
 {
     // 外部 Enable 快照 (下面可能改写 *enable)
     uint8_t extEnable = *enable;
@@ -419,6 +428,28 @@ void SpeedTestSequencer::Update(ExperimentType_T experiment,
             prbsAcc        = 0.0f;
             prbsBit        = 1.0f;
             // SigFreq 是用户输入 (PRBS 位速率), 保持不动
+            break;
+        }
+
+        case ExperimentType_FeedCamTest: {
+            // 送纸凸轮: 伺服走 CSP(8); 虚拟主轴 + 4 轴五次曲线 (v1 仅轴0 下发)
+            // 启动逻辑整圈对齐 (对齐 FAE 工程02); SigOffset = 线速度 [m/min],
+            // SigAmp = Start 触发 (0→非0 上升沿送一次)
+            if (!feedSeq.init(&g_cfgFeed)) {
+                // 参数非法: 不启动实验, 检查 g_cfgFeed (nAxisCount / afSyncLen 等)
+                break;
+            }
+            mode = FEED_CAM_TEST;
+            feedMaster.setVelocity(((sigOffset != NULL) ? (double)*sigOffset : 0.0) * 1000.0 / 60.0);
+            feedMaster.start();
+            // 指令原点 = 当前实际位置 (6064h): 凸轮位置作为相对偏移叠加, 防使能跳变;
+            // posCenter 同步为该原点 (STOPPING 公共段复用: 停机回原点保持后禁用)
+            feedActPos0    = actPosUnits;
+            posCenter      = (LONG)actPosUnits;
+            feedPrevSigAmp = 0.0f;
+            posCmdOut      = actPosUnits;
+            SetSpdCmd(spdCmd, 0.0f);
+            driveMode      = DRIVE_CSP;
             break;
         }
 
@@ -918,6 +949,43 @@ void SpeedTestSequencer::Update(ExperimentType_T experiment,
             SetSpdCmd(spdCmd, 0.0f);
             mode = STOPPING;
         }
+        return;
+    }
+
+    case FEED_CAM_TEST: {
+        // 虚拟主轴线速度 [m/min] → [mm/s]: 每周期取 SigOffset, 运行中可改
+        float lineMMin = (sigOffset != NULL) ? *sigOffset : 0.0f;
+        feedMaster.setVelocity((double)lineMMin * 1000.0 / 60.0);
+
+        // Start 触发: SigAmp 0→非0 上升沿触发一次送纸循环 (循环中忽略, 再触发先回 0)
+        float startSig = (sigAmp != NULL) ? *sigAmp : 0.0f;
+        if (startSig > 0.0f && feedPrevSigAmp <= 0.0f) {
+            feedSeq.setStart(true);
+        }
+        feedPrevSigAmp = startSig;
+
+        // 实际位置换算 [mm] (跟随偏差监视); 换算未挂载 (=0) 时不监视
+        double actMm[4] = {0.0, 0.0, 0.0, 0.0};
+        const double* pAct = NULL;
+        if (feedMmToUnit > 0.0) {
+            actMm[0] = (actPosUnits - feedActPos0) / feedMmToUnit;
+            pAct = actMm;
+        }
+
+        // 虚拟主轴积分 + 状态机推进 (4 轴指令 [mm], v1 仅轴0 下发)
+        feedMaster.tick(dtSec);
+        feedSeq.tick(feedMaster.getPhase(), dtSec, pAct, feedCmdMm);
+
+        // 轴0 指令: 指令原点 + 凸轮位置 × 换算 (double 累加, 同 POS_WAVE 精度处理)
+        posCmdOut = feedActPos0 + feedCmdMm[0] * feedMmToUnit;
+
+        // SigFreq 回读凸轮相位 [mm] (Scope 观测)
+        if (sigFreq != NULL) {
+            FEED_MONITOR_T mon;
+            feedSeq.getMonitor(&mon);
+            *sigFreq = (float)mon.fCamX;
+        }
+        SetSpdCmd(spdCmd, 0.0f);   // CSP 下速度指令不用
         return;
     }
 

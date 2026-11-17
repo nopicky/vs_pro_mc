@@ -246,6 +246,11 @@
         <Enum>8</Enum>
         <Comment><![CDATA[电流环PRBS实验]]></Comment>
       </EnumInfo>
+      <EnumInfo>
+        <Text><![CDATA[ExperimentType_FeedCamTest]]></Text>
+        <Enum>9</Enum>
+        <Comment><![CDATA[送纸凸轮实验]]></Comment>
+      </EnumInfo>
       <Hides>
         <Hide GUID="{607F3DD5-A6E7-477A-9EF1-53240F8703EA}" />
         <Hide GUID="{DFED6A86-459D-4DA1-AE45-AE1E6BD76328}" />

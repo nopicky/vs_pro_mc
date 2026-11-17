@@ -96,7 +96,9 @@ enum ExperimentType_T : SHORT {
 	ExperimentType_TorqueSweep = 4,
 	ExperimentType_LoadDisturbScan = 5,
 	ExperimentType_PosLoopWave = 6,
-	ExperimentType_VelocityClosedLoopPRBS = 7
+	ExperimentType_VelocityClosedLoopPRBS = 7,
+	ExperimentType_CurrentClosedLoopPRBS = 8,
+	ExperimentType_FeedCamTest = 9
 };
 const GUID GUID_ExperimentType_T = {0x41915AD9, 0x5A0D, 0x4CA5, {0xA4, 0xB8, 0x1B, 0x0A, 0xC7, 0xA6, 0xCB, 0xC3}};
 #endif // !defined(_TC_TYPE_41915AD9_5A0D_4CA5_A4B8_1B0AC7A6CBC3_INCLUDED_)

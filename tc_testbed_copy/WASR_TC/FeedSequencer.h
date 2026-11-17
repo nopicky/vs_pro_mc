@@ -47,6 +47,9 @@ private:
 
     CCamFeeder    m_aFeeder[4];     /* 4 轴凸轮 */
     FEED_CONFIG_T m_cfg;            /* 参数快照（init 时拷贝） */
+    int           m_nAxisCount;     /* 启用轴数（init 快照，1~4） */
+    double        m_fMaxCamLen;     /* 启用轴中最大凸轮总长 mm（CAM_RUN 结束判据） */
+    double        m_afPosBase[4];   /* 各轴工艺位移基准 mm：每次循环结束累加（送纸辊单向连续，指令不跳变） */
     FEED_MONITOR_T m_mon;           /* 监视量 */
     FEED_STATE_E  m_eState;         /* 当前状态 */
     bool          m_bStart;         /* 启动信号 */
