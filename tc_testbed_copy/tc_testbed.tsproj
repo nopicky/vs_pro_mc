@@ -374,8 +374,8 @@
 	</ImageDatas>
 	<Project ProjectGUID="{2CC93405-99F2-4D4B-8D8C-1E5410171437}" Target64Bit="true" ShowHideConfigurations="#x6">
 		<System>
-			<Settings MaxCpus="14" NonWinCpus="1" CoreBoostActive="true">
-				<Cpu CpuId="13" BaseTime="1250"/>
+			<Settings MaxCpus="20" NonWinCpus="1" CoreBoostActive="true" PCoreAffinity="4095" ECoreAffinity="1044480">
+				<Cpu CpuId="19" BaseTime="1250"/>
 				<IoIdleTask CycleTime="1250"/>
 			</Settings>
 			<Tasks>

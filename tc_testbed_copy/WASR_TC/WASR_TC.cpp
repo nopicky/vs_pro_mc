@@ -218,7 +218,7 @@ CWASR_TC::CWASR_TC()
 	m_lastDriveSide = m_Servos.DriveSide;
 
 	// 模块级默认值
-	m_Status.ExperimentType = ExperimentType_WaveResponse;
+	m_Status.ExperimentType = ExperimentType_FeedCamTest;
 	// 驱动侧默认 CSV(9)
 	m_Status.Driver_Modes_of_operation = 9;
 	// Sig* 初值在第一次 CycleUpdate 按 ExperimentType 写入
@@ -485,6 +485,12 @@ void CWASR_TC::ApplyExperimentDefaults(ExperimentType_T type)
 		freq = PRBS_TEST_FREQ;
 		amp  = PRBS_TEST_AMPLITUDE;
 		off  = PRBS_TEST_BASE_SPD;
+		break;
+
+	case ExperimentType_FeedCamTest:
+		// 送纸凸轮: SigOffset = 主轴线速度 [m/min] (默认 30 慢速首测),
+		// SigAmp = Start 触发线 (0, 0→1 上升沿送一次), SigFreq 回读凸轮相位
+		off = 30.0f;
 		break;
 
 	case ExperimentType_Manual:
