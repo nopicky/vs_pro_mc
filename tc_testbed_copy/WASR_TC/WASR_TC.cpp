@@ -638,6 +638,12 @@ HRESULT CWASR_TC::CycleUpdate(ITcTask* ipTask, ITcUnknown* ipCaller, ULONG_PTR c
 	// 并给出驱动侧模式 (driveMode)
 	// driveReady = 上一拍 Operation Enabled, 驱动器未使能时速度环不积分
 	// SigFreq / SigAmp / SigOffset 是统一的注入信号口径 (单位随实验见头文件)
+	// 送纸凸轮换算兜底: 挂载点未执行/未生效时, 每拍保证 feedMmToUnit 有效
+	if (m_testSeq.feedMmToUnit <= 0.0 && g_cfgFeed.fMmPerMotorRev > 0.0) {
+		int di = (d == &m_Servos.Servo1) ? 1 : 0;
+		m_testSeq.feedMmToUnit = 60.0 / (double)m_speedScaleServo[di] / g_cfgFeed.fMmPerMotorRev;
+	}
+
 	m_testSeq.Update(m_Status.ExperimentType,
 	                 &m_Status.Enable, &spdCmd, spdFbServo,
 	                 (uint8_t)(m_prevOpEnabled ? 1 : 0),

@@ -979,11 +979,12 @@ void SpeedTestSequencer::Update(ExperimentType_T experiment,
         // 轴0 指令: 指令原点 + 凸轮位置 × 换算 (double 累加, 同 POS_WAVE 精度处理)
         posCmdOut = feedActPos0 + feedCmdMm[0] * feedMmToUnit;
 
-        // SigFreq 回读凸轮相位 [mm] (Scope 观测)
+        // SigFreq 回读: IDLE = 换算系数 feedMmToUnit (诊断: 应 ≈ 671, 0 = 未挂载),
+        //                运行中 = 凸轮相位 camX [mm]
         if (sigFreq != NULL) {
             FEED_MONITOR_T mon;
             feedSeq.getMonitor(&mon);
-            *sigFreq = (float)mon.fCamX;
+            *sigFreq = (mon.nState == 0) ? (float)feedMmToUnit : (float)mon.fCamX;
         }
         SetSpdCmd(spdCmd, 0.0f);   // CSP 下速度指令不用
         return;
