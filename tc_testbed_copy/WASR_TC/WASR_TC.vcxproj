@@ -119,6 +119,8 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|TwinCAT OS (ARMV8-A)'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="SpeedTestSequencer.cpp" />
+    <ClCompile Include="CamProfile.cpp" />
+    <ClCompile Include="FeedSequencer.cpp" />
     <ClCompile Include="CoeSdo.cpp" />
     <ClCompile Include="WASR_TC.cpp" />
     <ClCompile Include="WASR_TCClassFactory.cpp" />
@@ -137,6 +139,11 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="EncoderDebounce.h" />
+    <ClInclude Include="CamProfile.h" />
+    <ClInclude Include="FeedConfig.h" />
+    <ClInclude Include="FeedSequencer.h" />
+    <ClInclude Include="LoadProfiler.h" />
+    <ClInclude Include="VirtualMaster.h" />
     <ClInclude Include="CoeSdo.h" />
     <ClInclude Include="CoeSdoConfig.h" />
     <ClInclude Include="MiniSpdLoop.h" />
