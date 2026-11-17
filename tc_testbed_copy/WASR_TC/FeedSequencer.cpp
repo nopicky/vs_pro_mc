@@ -1,4 +1,6 @@
 #include "TcPch.h"
+#pragma hdrstop
+
 #include "FeedSequencer.h"
 #include <cmath>
 #include <string.h>
@@ -12,6 +14,10 @@ FEED_CONFIG_T g_cfgFeed = {
     1188.78,                       /* fMasterCircum */
     90.0,                          /* fRollerPitch */
     195.349,                       /* fMmPerMotorRev */
+    300.0,                         /* fAccelX：FAE 柔和版，威科达更短 */
+    120.0,                         /* fAccelY：威科达参考 100 */
+    300.0,                         /* fDecelX */
+    120.0,                         /* fDecelY：威科达参考 25 */
     {430.0, 340.0, 250.0, 160.0},  /* afSyncLen：A1~A4 同步段长 */
     {10.0, 0.0, 0.0, 0.0},         /* afOvertravel：轴1 +10mm（科威达工艺） */
     0.0,                           /* fStartPhaseComp */
@@ -59,7 +65,9 @@ bool CFeedSequencer::init(const FEED_CONFIG_T* pCfg) {
         if (pCfg->afSyncLen[i] <= 0.0) {
             return false;
         }
-        if (!m_aFeeder[i].build(pCfg->afSyncLen[i], pCfg->afOvertravel[i])) {
+        if (!m_aFeeder[i].build(pCfg->afSyncLen[i], pCfg->afOvertravel[i],
+                                pCfg->fAccelX, pCfg->fAccelY,
+                                pCfg->fDecelX, pCfg->fDecelY)) {
             return false;
         }
         if (m_aFeeder[i].getLength() > m_fMaxCamLen) {

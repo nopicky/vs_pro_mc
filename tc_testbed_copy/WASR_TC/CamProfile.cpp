@@ -1,9 +1,7 @@
 #include "TcPch.h"
-#include "CamProfile.h"
+#pragma hdrstop
 
-/* 凸轮固定段参数（来自 FAE 凸轮表：加速/减速段均为 300mm 主轴 / 120mm 从轴） */
-static const double c_fSectX = 300.0;   /* 加速/减速段主轴行程 mm */
-static const double c_fSectY = 120.0;   /* 加速/减速段从轴行程 mm */
+#include "CamProfile.h"
 
 bool makeQuintic(double fX0, double fY0, double fV0, double fA0,
                  double fX1, double fY1, double fV1, double fA1,
@@ -73,23 +71,27 @@ static double evalSegVel(const QUINTIC_SEG_T* pSeg, double fX) {
     return (fH / fL) * dp;
 }
 
-bool CCamFeeder::build(double fSyncLen, double fOvertravel) {
+bool CCamFeeder::build(double fSyncLen, double fOvertravel,
+                       double fAccelX, double fAccelY, double fDecelX, double fDecelY) {
 
-    if (fSyncLen <= 0.0) {
+    if (fSyncLen <= 0.0 || fAccelX <= 0.0 || fAccelY <= 0.0 ||
+        fDecelX <= 0.0 || fDecelY <= 0.0) {
         return false;
     }
     /* v1：过送补偿并入同步段（轴1 +10mm 使纸尾脱离），后续按实测优化叠加方式 */
     m_fSyncLen = fSyncLen + fOvertravel;
-    m_fTotalLen = c_fSectX + m_fSyncLen + c_fSectX;
+    m_fAccelX = fAccelX;
+    m_fDecelX = fDecelX;
+    m_fTotalLen = fAccelX + m_fSyncLen + fDecelX;
 
     /* 加速段：速比 0→1，加速度 0→0 */
     if (!makeQuintic(0.0, 0.0, 0.0, 0.0,
-                     c_fSectX, c_fSectY, 1.0, 0.0, &m_accelSeg)) {
+                     fAccelX, fAccelY, 1.0, 0.0, &m_accelSeg)) {
         return false;
     }
-    /* 减速段：速比 1→0，加速度 0→0（局部坐标 0→300mm） */
+    /* 减速段：速比 1→0，加速度 0→0（局部坐标） */
     if (!makeQuintic(0.0, 0.0, 1.0, 0.0,
-                     c_fSectX, c_fSectY, 0.0, 0.0, &m_decelSeg)) {
+                     fDecelX, fDecelY, 0.0, 0.0, &m_decelSeg)) {
         return false;
     }
     return true;
@@ -100,17 +102,17 @@ double CCamFeeder::evalPos(double fX) const {
     if (fX <= 0.0) {
         return 0.0;
     }
-    if (fX < c_fSectX) {
+    if (fX < m_fAccelX) {
         return evalSegPos(&m_accelSeg, fX);            /* 加速段 */
     }
-    if (fX < c_fSectX + m_fSyncLen) {
-        return c_fSectY + (fX - c_fSectX);             /* 同步段：速比 1 */
+    if (fX < m_fAccelX + m_fSyncLen) {
+        return m_accelSeg.fY1 + (fX - m_fAccelX);      /* 同步段：速比 1 */
     }
     if (fX < m_fTotalLen) {
         /* 减速段：映射到局部坐标 */
-        return c_fSectY + m_fSyncLen + evalSegPos(&m_decelSeg, fX - c_fSectX - m_fSyncLen);
+        return m_accelSeg.fY1 + m_fSyncLen + evalSegPos(&m_decelSeg, fX - m_fAccelX - m_fSyncLen);
     }
-    return 2.0 * c_fSectY + m_fSyncLen;                /* 走完保持终值 */
+    return m_accelSeg.fY1 + m_fSyncLen + m_decelSeg.fY1;   /* 走完保持终值 */
 }
 
 double CCamFeeder::evalVel(double fX) const {
@@ -118,13 +120,13 @@ double CCamFeeder::evalVel(double fX) const {
     if (fX <= 0.0 || fX >= m_fTotalLen) {
         return 0.0;
     }
-    if (fX < c_fSectX) {
+    if (fX < m_fAccelX) {
         return evalSegVel(&m_accelSeg, fX);
     }
-    if (fX < c_fSectX + m_fSyncLen) {
+    if (fX < m_fAccelX + m_fSyncLen) {
         return 1.0;
     }
-    return evalSegVel(&m_decelSeg, fX - c_fSectX - m_fSyncLen);
+    return evalSegVel(&m_decelSeg, fX - m_fAccelX - m_fSyncLen);
 }
 
 double CCamFeeder::getLength() const {

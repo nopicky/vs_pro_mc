@@ -23,8 +23,10 @@ bool makeQuintic(double fX0, double fY0, double fV0, double fA0,
 class CCamFeeder {
 public:
     /* 构建凸轮：fSyncLen 同步段长 mm；fOvertravel 过送补偿 mm（v1：并入同步段长）
+       fAccelX/fAccelY：加速段主轴/从轴行程 mm；fDecelX/fDecelY：减速段同理
        内部拼接三段并做边界自校验，不合格返回 false（坏曲线不进实时环） */
-    bool   build(double fSyncLen, double fOvertravel);
+    bool   build(double fSyncLen, double fOvertravel,
+                 double fAccelX, double fAccelY, double fDecelX, double fDecelY);
 
     /* 主轴相位 fX(mm) → 从轴位置(mm)；越界自动钳位（前 0、后保持终值） */
     double evalPos(double fX) const;
@@ -34,10 +36,12 @@ public:
     double getLength() const;
 
 private:
-    QUINTIC_SEG_T m_accelSeg;   /* 加速段：0→300mm 主轴，0→120mm 从轴，速比 0→1 */
-    QUINTIC_SEG_T m_decelSeg;   /* 减速段：300mm 主轴，120mm 从轴，速比 1→0（局部坐标） */
+    QUINTIC_SEG_T m_accelSeg;   /* 加速段：速比 0→1 */
+    QUINTIC_SEG_T m_decelSeg;   /* 减速段：速比 1→0（局部坐标） */
     double        m_fSyncLen;   /* 有效同步段长 mm（含过送补偿） */
-    double        m_fTotalLen;  /* 凸轮总长 mm = 300 + 同步段长 + 300 */
+    double        m_fAccelX;    /* 加速段主轴行程 mm（参数化，默认 300=FAE 值） */
+    double        m_fDecelX;    /* 减速段主轴行程 mm */
+    double        m_fTotalLen;  /* 凸轮总长 mm = 加速段 + 同步段 + 减速段 */
 };
 
 #endif /* CAM_PROFILE_H__20261117 */

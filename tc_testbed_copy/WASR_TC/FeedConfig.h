@@ -10,6 +10,10 @@ typedef struct tagFEED_CONFIG_T {
     double fMasterCircum;       /* 主轴(印刷滚筒)周长 mm，默认 1188.78 */
     double fRollerPitch;        /* 轮间距 mm，默认 90（相邻轴同步段长度差） */
     double fMmPerMotorRev;      /* 电机每转对应的送纸工艺 mm（减速比折算），默认 195.349（直连 1:1） */
+    double fAccelX;             /* 加速段主轴行程 mm，默认 300（FAE 自选柔和版；威科达更短，实测扫参） */
+    double fAccelY;             /* 加速段从轴行程 mm，默认 120（威科达参考：加速距离 100） */
+    double fDecelX;             /* 减速段主轴行程 mm，默认 300 */
+    double fDecelY;             /* 减速段从轴行程 mm，默认 120（威科达参考：减速距离 25） */
     double afSyncLen[4];        /* 各轴同步段长 mm：{430, 340, 250, 160} = A1~A4 */
     double afOvertravel[4];     /* 各轴过送补偿 mm：{10,0,0,0}（科威达工艺：轴1 +10 使纸尾脱离） */
     double fStartPhaseComp;     /* 启动相位补偿 mm：整圈对齐基础上的手动微调，默认 0 */
