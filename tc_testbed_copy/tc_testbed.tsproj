@@ -374,7 +374,7 @@
 	</ImageDatas>
 	<Project ProjectGUID="{2CC93405-99F2-4D4B-8D8C-1E5410171437}" Target64Bit="true" ShowHideConfigurations="#x6">
 		<System>
-			<Settings MaxCpus="20" NonWinCpus="1" CoreBoostActive="true" PCoreAffinity="4095" ECoreAffinity="1044480">
+			<Settings MaxCpus="20" NonWinCpus="1" PCoreAffinity="4095" ECoreAffinity="1044480">
 				<Cpu CpuId="19" BaseTime="1250"/>
 				<IoIdleTask CycleTime="1250"/>
 			</Settings>
@@ -386,7 +386,7 @@
 		</System>
 		<Cpp>
 			<Project GUID="{049664A0-8452-41E5-A966-0529CE74E06E}" Name="WASR_TC" PrjFilePath="WASR_TC\WASR_TC.vcxproj" TmcFilePath="WASR_TC\WASR_TC.tmc">
-				<Instance Id="#x01010010" KeepUnrestoredLinks="2" ClassFactoryId="C++ Module Vendor|WASR_TC|0.0.0.1">
+				<Instance Id="#x01010010" KeepUnrestoredLinks="2" AutoReloadTmc="true" ClassFactoryId="C++ Module Vendor|WASR_TC|0.0.0.1">
 					<Name>WASR_TC_Obj1 (WASR_TC)</Name>
 					<TmcDesc GUID="{ACD873DF-2063-4B77-9A90-AF0ED06810F6}" ClassFactoryId="C++ Module Vendor|WASR_TC|0.0.0.1">
 						<Name>WASR_TC</Name>
@@ -503,7 +503,7 @@
 								<Name>Status</Name>
 								<Comment><![CDATA[状态]]></Comment>
 								<ContextId>1</ContextId>
-								<ByteSize>65</ByteSize>
+								<ByteSize>97</ByteSize>
 								<Symbol>
 									<Name>Enable</Name>
 									<BitSize>8</BitSize>
@@ -584,35 +584,67 @@
 								</Symbol>
 								<Symbol CreateSymbol="true">
 									<Name>FeedFollowErr0</Name>
-									<Comment TxtId=""><![CDATA[轴0 跟随偏差 (指令-实际-启动相位补偿)]]></Comment>
+									<Comment TxtId=""><![CDATA[轴0 跟随偏差 (指令-实际-启动相位补偿), 指令单位]]></Comment>
 									<BitSize>64</BitSize>
 									<BaseType GUID="{18071995-0000-0000-0000-00000000000E}">LREAL</BaseType>
-									<Unit><![CDATA[mm]]></Unit>
+									<Unit><![CDATA[指令单位]]></Unit>
 									<BitOffs>264</BitOffs>
 								</Symbol>
 								<Symbol CreateSymbol="true">
 									<Name>FeedFollowErr1</Name>
-									<Comment TxtId=""><![CDATA[轴1 跟随偏差]]></Comment>
+									<Comment TxtId=""><![CDATA[轴1 跟随偏差, 指令单位]]></Comment>
 									<BitSize>64</BitSize>
 									<BaseType GUID="{18071995-0000-0000-0000-00000000000E}">LREAL</BaseType>
-									<Unit><![CDATA[mm]]></Unit>
+									<Unit><![CDATA[指令单位]]></Unit>
 									<BitOffs>328</BitOffs>
 								</Symbol>
 								<Symbol CreateSymbol="true">
 									<Name>FeedFollowErr2</Name>
-									<Comment TxtId=""><![CDATA[轴2 跟随偏差]]></Comment>
+									<Comment TxtId=""><![CDATA[轴2 跟随偏差, 指令单位]]></Comment>
 									<BitSize>64</BitSize>
 									<BaseType GUID="{18071995-0000-0000-0000-00000000000E}">LREAL</BaseType>
-									<Unit><![CDATA[mm]]></Unit>
+									<Unit><![CDATA[指令单位]]></Unit>
 									<BitOffs>392</BitOffs>
 								</Symbol>
 								<Symbol CreateSymbol="true">
 									<Name>FeedFollowErr3</Name>
-									<Comment TxtId=""><![CDATA[轴3 跟随偏差]]></Comment>
+									<Comment TxtId=""><![CDATA[轴3 跟随偏差, 指令单位]]></Comment>
+									<BitSize>64</BitSize>
+									<BaseType GUID="{18071995-0000-0000-0000-00000000000E}">LREAL</BaseType>
+									<Unit><![CDATA[指令单位]]></Unit>
+									<BitOffs>456</BitOffs>
+								</Symbol>
+								<Symbol CreateSymbol="true">
+									<Name>FeedFollowErrMm0</Name>
+									<Comment TxtId=""><![CDATA[轴0 跟随偏差, mm (工艺口径)]]></Comment>
 									<BitSize>64</BitSize>
 									<BaseType GUID="{18071995-0000-0000-0000-00000000000E}">LREAL</BaseType>
 									<Unit><![CDATA[mm]]></Unit>
-									<BitOffs>456</BitOffs>
+									<BitOffs>520</BitOffs>
+								</Symbol>
+								<Symbol CreateSymbol="true">
+									<Name>FeedFollowErrMm1</Name>
+									<Comment TxtId=""><![CDATA[轴1 跟随偏差, mm]]></Comment>
+									<BitSize>64</BitSize>
+									<BaseType GUID="{18071995-0000-0000-0000-00000000000E}">LREAL</BaseType>
+									<Unit><![CDATA[mm]]></Unit>
+									<BitOffs>584</BitOffs>
+								</Symbol>
+								<Symbol CreateSymbol="true">
+									<Name>FeedFollowErrMm2</Name>
+									<Comment TxtId=""><![CDATA[轴2 跟随偏差, mm]]></Comment>
+									<BitSize>64</BitSize>
+									<BaseType GUID="{18071995-0000-0000-0000-00000000000E}">LREAL</BaseType>
+									<Unit><![CDATA[mm]]></Unit>
+									<BitOffs>648</BitOffs>
+								</Symbol>
+								<Symbol CreateSymbol="true">
+									<Name>FeedFollowErrMm3</Name>
+									<Comment TxtId=""><![CDATA[轴3 跟随偏差, mm]]></Comment>
+									<BitSize>64</BitSize>
+									<BaseType GUID="{18071995-0000-0000-0000-00000000000E}">LREAL</BaseType>
+									<Unit><![CDATA[mm]]></Unit>
+									<BitOffs>712</BitOffs>
 								</Symbol>
 							</DataArea>
 						</DataAreas>
@@ -1632,7 +1664,7 @@
 						<SyncMan>001080002600010001000000240000018000001026010000</SyncMan>
 						<SyncMan>801080002200010002000000240000018000801022010000</SyncMan>
 						<SyncMan>001117006400010003000000000000000900001164010000</SyncMan>
-						<SyncMan>001415002000010004000000000000000f00001420010000</SyncMan>
+						<SyncMan>001419002000010004000000000000000f00001420010000</SyncMan>
 						<Fmmu>0000000000000000001100020100000001000000000000000000000000000000</Fmmu>
 						<Fmmu>0000000000000000001400010100000002000000000000000000000000000000</Fmmu>
 						<Fmmu>00000000000000000d0800010100000003000000000000000000000000000000</Fmmu>
@@ -1704,6 +1736,9 @@
 							</Entry>
 							<Entry Name="InerRatioReal" Index="#x201e" Sub="#x14">
 								<Type>UINT</Type>
+							</Entry>
+							<Entry Name="Following error actual value" Index="#x60f4">
+								<Type>DINT</Type>
 							</Entry>
 						</Pdo>
 						<Pdo Name="RxPDO" Index="#x1600" InOut="1" Flags="#x0000">

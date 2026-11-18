@@ -5,12 +5,12 @@
   <Children>
     <Node>
       <Title>ScopeWizard</Title>
-      <Expanded>True</Expanded>
+      <Expanded>False</Expanded>
       <FileName>D:\work\w2026\vs_pro_mc\tc_measurement\ScopeWizard.tcscopex</FileName>
       <Children>
         <Node>
           <Title>DataPool</Title>
-          <Expanded>True</Expanded>
+          <Expanded>False</Expanded>
           <FileName></FileName>
           <Children>
             <Node>
@@ -131,12 +131,12 @@
         </Node>
         <Node>
           <Title>驱动侧</Title>
-          <Expanded>True</Expanded>
+          <Expanded>False</Expanded>
           <FileName></FileName>
           <Children>
             <Node>
               <Title>目标位置</Title>
-              <Expanded>True</Expanded>
+              <Expanded>False</Expanded>
               <FileName></FileName>
               <Children>
                 <Node>
@@ -167,7 +167,7 @@
             </Node>
             <Node>
               <Title>位置差(目标与实际)</Title>
-              <Expanded>True</Expanded>
+              <Expanded>False</Expanded>
               <FileName></FileName>
               <Children>
                 <Node>
@@ -216,7 +216,7 @@
             </Node>
             <Node>
               <Title>606c速度</Title>
-              <Expanded>True</Expanded>
+              <Expanded>False</Expanded>
               <FileName></FileName>
               <Children>
                 <Node>
@@ -234,8 +234,8 @@
               </Children>
             </Node>
             <Node>
-              <Title>主轴相位</Title>
-              <Expanded>True</Expanded>
+              <Title>60f4位置差</Title>
+              <Expanded>False</Expanded>
               <FileName></FileName>
               <Children>
                 <Node>
@@ -256,12 +256,12 @@
         </Node>
         <Node>
           <Title>Trigger</Title>
-          <Expanded>True</Expanded>
+          <Expanded>False</Expanded>
           <FileName></FileName>
           <Children>
             <Node>
               <Title>TriggerGroup_StartRecord</Title>
-              <Expanded>True</Expanded>
+              <Expanded>False</Expanded>
               <FileName></FileName>
               <Children>
                 <Node>
@@ -274,7 +274,7 @@
             </Node>
             <Node>
               <Title>TriggerGroup_StopRecord</Title>
-              <Expanded>True</Expanded>
+              <Expanded>False</Expanded>
               <FileName></FileName>
               <Children>
                 <Node>

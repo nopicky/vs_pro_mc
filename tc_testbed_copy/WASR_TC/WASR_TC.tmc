@@ -533,6 +533,6 @@
   </Modules>
   <Library>
     <Name>WASR_TC</Name>
-    <Version>0.0.0.1</Version>
+    <Version>0.0.0.2</Version>
   </Library>
 </TcModuleClass>
