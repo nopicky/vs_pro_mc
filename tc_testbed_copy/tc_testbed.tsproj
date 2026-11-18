@@ -386,9 +386,9 @@
 		</System>
 		<Cpp>
 			<Project GUID="{049664A0-8452-41E5-A966-0529CE74E06E}" Name="WASR_TC" PrjFilePath="WASR_TC\WASR_TC.vcxproj" TmcFilePath="WASR_TC\WASR_TC.tmc">
-				<Instance Id="#x01010010" KeepUnrestoredLinks="2" AutoReloadTmc="true" ClassFactoryId="C++ Module Vendor|WASR_TC|0.0.0.1">
+				<Instance Id="#x01010010" KeepUnrestoredLinks="2" AutoReloadTmc="true" ClassFactoryId="C++ Module Vendor|WASR_TC|0.0.0.2">
 					<Name>WASR_TC_Obj1 (WASR_TC)</Name>
-					<TmcDesc GUID="{ACD873DF-2063-4B77-9A90-AF0ED06810F6}" ClassFactoryId="C++ Module Vendor|WASR_TC|0.0.0.1">
+					<TmcDesc GUID="{ACD873DF-2063-4B77-9A90-AF0ED06810F6}" ClassFactoryId="C++ Module Vendor|WASR_TC|0.0.0.2">
 						<Name>WASR_TC</Name>
 						<CLSID ClassFactory="WASR_TC">{ACD873DF-2063-4B77-9A90-AF0ED06810F6}</CLSID>
 						<Licenses>
@@ -433,22 +433,22 @@
 						</Parameters>
 						<DataAreas>
 							<DataArea>
-								<AreaNo AreaType="InputDst" CreateSymbols="true">0</AreaNo>
+								<AreaNo AreaType="InputDst" CreateSymbols="true" ShowSymbols="true">0</AreaNo>
 								<Name>Inputs</Name>
 								<ContextId>1</ContextId>
-								<ByteSize>32</ByteSize>
-								<Symbol>
-									<Name>Servo0</Name>
-									<BitSize>128</BitSize>
+							<ByteSize>40</ByteSize>
+							<Symbol>
+								<Name>Servo0</Name>
+								<BitSize>160</BitSize>
 									<BaseType GUID="{3EA188CF-A9B9-4934-9F74-3938A094C484}">ServoInputs</BaseType>
 									<BitOffs>0</BitOffs>
 								</Symbol>
-								<Symbol>
-									<Name>Servo1</Name>
-									<BitSize>128</BitSize>
-									<BaseType GUID="{3EA188CF-A9B9-4934-9F74-3938A094C484}">ServoInputs</BaseType>
-									<BitOffs>128</BitOffs>
-								</Symbol>
+							<Symbol>
+								<Name>Servo1</Name>
+								<BitSize>160</BitSize>
+								<BaseType GUID="{3EA188CF-A9B9-4934-9F74-3938A094C484}">ServoInputs</BaseType>
+								<BitOffs>160</BitOffs>
+							</Symbol>
 							</DataArea>
 							<DataArea>
 								<AreaNo AreaType="OutputSrc">1</AreaNo>
