@@ -76,6 +76,15 @@ bool CFeedSequencer::init(const FEED_CONFIG_T* pCfg) {
     }
     m_nAxisCount = pCfg->nAxisCount;
     m_cfg = *pCfg;   /* 参数快照 */
+    /* 状态与位移基准复位：init 即新会话（挂载层会重新采样指令原点），
+       否则重新使能后旧累计位移叠加到新原点，607A 指令瞬间跳变（飞车风险） */
+    m_bStart = false;
+    m_nStopTicks = 0;
+    m_fTriggerPhase = 0.0;
+    m_fCamOrigin = 0.0;
+    for (int i = 0; i < 4; i++) {
+        m_afPosBase[i] = 0.0;
+    }
     m_eState = FEED_IDLE;
     return true;
 }
