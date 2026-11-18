@@ -74,6 +74,18 @@
               <Children />
             </Node>
             <Node>
+              <Title>FeedFollowErr0</Title>
+              <Expanded>False</Expanded>
+              <FileName></FileName>
+              <Children />
+            </Node>
+            <Node>
+              <Title>FeedMasterPhase</Title>
+              <Expanded>False</Expanded>
+              <FileName></FileName>
+              <Children />
+            </Node>
+            <Node>
               <Title>Position_actual_value</Title>
               <Expanded>False</Expanded>
               <FileName></FileName>
@@ -87,12 +99,6 @@
             </Node>
             <Node>
               <Title>SigAmp</Title>
-              <Expanded>False</Expanded>
-              <FileName></FileName>
-              <Children />
-            </Node>
-            <Node>
-              <Title>SigFreq</Title>
               <Expanded>False</Expanded>
               <FileName></FileName>
               <Children />
@@ -183,7 +189,7 @@
                   <Children />
                 </Node>
                 <Node>
-                  <Title>Target_position (1)</Title>
+                  <Title>Target_position</Title>
                   <Expanded>False</Expanded>
                   <FileName></FileName>
                   <Children />
@@ -195,7 +201,13 @@
                   <Children />
                 </Node>
                 <Node>
-                  <Title>Target_position (2)</Title>
+                  <Title>Target_position</Title>
+                  <Expanded>False</Expanded>
+                  <FileName></FileName>
+                  <Children />
+                </Node>
+                <Node>
+                  <Title>FeedFollowErr0</Title>
                   <Expanded>False</Expanded>
                   <FileName></FileName>
                   <Children />
@@ -208,7 +220,7 @@
               <FileName></FileName>
               <Children>
                 <Node>
-                  <Title>DriveSide_TorCmd_ServoRecv (1)</Title>
+                  <Title>DriveSide_TorCmd_ServoRecv</Title>
                   <Expanded>False</Expanded>
                   <FileName></FileName>
                   <Children />
@@ -222,31 +234,18 @@
               </Children>
             </Node>
             <Node>
-              <Title>sigFreq</Title>
-              <Expanded>True</Expanded>
-              <FileName></FileName>
-              <Children>
-                <Node>
-                  <Title>SigAmp</Title>
-                  <Expanded>False</Expanded>
-                  <FileName></FileName>
-                  <Children />
-                </Node>
-                <Node>
-                  <Title>SigFreq (1)</Title>
-                  <Expanded>False</Expanded>
-                  <FileName></FileName>
-                  <Children />
-                </Node>
-              </Children>
-            </Node>
-            <Node>
-              <Title>sigFreq (1)</Title>
+              <Title>主轴相位</Title>
               <Expanded>True</Expanded>
               <FileName></FileName>
               <Children>
                 <Node>
                   <Title>SigFreq</Title>
+                  <Expanded>False</Expanded>
+                  <FileName></FileName>
+                  <Children />
+                </Node>
+                <Node>
+                  <Title>FeedMasterPhase</Title>
                   <Expanded>False</Expanded>
                   <FileName></FileName>
                   <Children />

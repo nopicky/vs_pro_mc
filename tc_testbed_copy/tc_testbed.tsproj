@@ -503,7 +503,7 @@
 								<Name>Status</Name>
 								<Comment><![CDATA[状态]]></Comment>
 								<ContextId>1</ContextId>
-								<ByteSize>25</ByteSize>
+								<ByteSize>65</ByteSize>
 								<Symbol>
 									<Name>Enable</Name>
 									<BitSize>8</BitSize>
@@ -573,6 +573,46 @@
 									<BaseType GUID="{18071995-0000-0000-0000-00000000000D}">REAL</BaseType>
 									<Unit><![CDATA[0.1%RatedTorque]]></Unit>
 									<BitOffs>168</BitOffs>
+								</Symbol>
+								<Symbol CreateSymbol="true">
+									<Name>FeedMasterPhase</Name>
+									<Comment TxtId=""><![CDATA[送纸凸轮: 虚拟主轴相位]]></Comment>
+									<BitSize>64</BitSize>
+									<BaseType GUID="{18071995-0000-0000-0000-00000000000E}">LREAL</BaseType>
+									<Unit><![CDATA[mm]]></Unit>
+									<BitOffs>200</BitOffs>
+								</Symbol>
+								<Symbol CreateSymbol="true">
+									<Name>FeedFollowErr0</Name>
+									<Comment TxtId=""><![CDATA[轴0 跟随偏差 (指令-实际-启动相位补偿)]]></Comment>
+									<BitSize>64</BitSize>
+									<BaseType GUID="{18071995-0000-0000-0000-00000000000E}">LREAL</BaseType>
+									<Unit><![CDATA[mm]]></Unit>
+									<BitOffs>264</BitOffs>
+								</Symbol>
+								<Symbol CreateSymbol="true">
+									<Name>FeedFollowErr1</Name>
+									<Comment TxtId=""><![CDATA[轴1 跟随偏差]]></Comment>
+									<BitSize>64</BitSize>
+									<BaseType GUID="{18071995-0000-0000-0000-00000000000E}">LREAL</BaseType>
+									<Unit><![CDATA[mm]]></Unit>
+									<BitOffs>328</BitOffs>
+								</Symbol>
+								<Symbol CreateSymbol="true">
+									<Name>FeedFollowErr2</Name>
+									<Comment TxtId=""><![CDATA[轴2 跟随偏差]]></Comment>
+									<BitSize>64</BitSize>
+									<BaseType GUID="{18071995-0000-0000-0000-00000000000E}">LREAL</BaseType>
+									<Unit><![CDATA[mm]]></Unit>
+									<BitOffs>392</BitOffs>
+								</Symbol>
+								<Symbol CreateSymbol="true">
+									<Name>FeedFollowErr3</Name>
+									<Comment TxtId=""><![CDATA[轴3 跟随偏差]]></Comment>
+									<BitSize>64</BitSize>
+									<BaseType GUID="{18071995-0000-0000-0000-00000000000E}">LREAL</BaseType>
+									<Unit><![CDATA[mm]]></Unit>
+									<BitOffs>456</BitOffs>
 								</Symbol>
 							</DataArea>
 						</DataAreas>
@@ -1631,6 +1671,9 @@
 							</Entry>
 							<Entry Name="DcBusVoltDisp " Index="#x201e" Sub="#x1f">
 								<Type>UINT</Type>
+							</Entry>
+							<Entry Name="Following error actual value" Index="#x60f4">
+								<Type>DINT</Type>
 							</Entry>
 						</Pdo>
 						<Pdo Name="TxPDO" Index="#x1b01" Flags="#x0000" SyncMan="3">
