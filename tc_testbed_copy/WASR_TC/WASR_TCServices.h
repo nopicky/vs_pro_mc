@@ -178,11 +178,15 @@ typedef struct _WASR_TCStatus
 	float SigFreq;
 	float SigAmp;
 	float SigOffset;
-	double FeedMasterPhase;		/* 送纸凸轮: 虚拟主轴相位 [mm] (Scope 录波) */
-	double FeedFollowErr0;		/* 轴0 跟随偏差 [mm] (指令-实际-启动相位补偿) */
-	double FeedFollowErr1;		/* 轴1 跟随偏差 [mm] */
-	double FeedFollowErr2;		/* 轴2 跟随偏差 [mm] */
-	double FeedFollowErr3;		/* 轴3 跟随偏差 [mm] */
+	double FeedMasterPhase;		/* 送纸凸轮: 虚拟主轴相位 [mm] (工艺量, Scope 录波) */
+	double FeedFollowErr0;		/* 轴0 跟随偏差 [指令单位] (同事对接口径: 位置相关一律指令单位) */
+	double FeedFollowErr1;		/* 轴1 跟随偏差 [指令单位] */
+	double FeedFollowErr2;		/* 轴2 跟随偏差 [指令单位] */
+	double FeedFollowErr3;		/* 轴3 跟随偏差 [指令单位] */
+	double FeedFollowErrMm0;	/* 轴0 跟随偏差 [mm] (工艺口径显示) */
+	double FeedFollowErrMm1;	/* 轴1 跟随偏差 [mm] */
+	double FeedFollowErrMm2;	/* 轴2 跟随偏差 [mm] */
+	double FeedFollowErrMm3;	/* 轴3 跟随偏差 [mm] */
 } WASR_TCStatus, *PWASR_TCStatus;
 #pragma pack(pop)
 

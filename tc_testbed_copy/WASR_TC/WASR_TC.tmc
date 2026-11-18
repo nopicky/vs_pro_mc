@@ -472,25 +472,49 @@
           </Symbol>
           <Symbol CreateSymbol="true">
             <Name>FeedFollowErr0</Name>
-            <Comment TxtId=""><![CDATA[轴0 跟随偏差 (指令-实际-启动相位补偿)]]></Comment>
+            <Comment TxtId=""><![CDATA[轴0 跟随偏差 (指令-实际-启动相位补偿), 指令单位]]></Comment>
             <BaseType GUID="{18071995-0000-0000-0000-00000000000e}">LREAL</BaseType>
-            <Unit><![CDATA[mm]]></Unit>
+            <Unit><![CDATA[指令单位]]></Unit>
           </Symbol>
           <Symbol CreateSymbol="true">
             <Name>FeedFollowErr1</Name>
-            <Comment TxtId=""><![CDATA[轴1 跟随偏差]]></Comment>
+            <Comment TxtId=""><![CDATA[轴1 跟随偏差, 指令单位]]></Comment>
             <BaseType GUID="{18071995-0000-0000-0000-00000000000e}">LREAL</BaseType>
-            <Unit><![CDATA[mm]]></Unit>
+            <Unit><![CDATA[指令单位]]></Unit>
           </Symbol>
           <Symbol CreateSymbol="true">
             <Name>FeedFollowErr2</Name>
-            <Comment TxtId=""><![CDATA[轴2 跟随偏差]]></Comment>
+            <Comment TxtId=""><![CDATA[轴2 跟随偏差, 指令单位]]></Comment>
+            <BaseType GUID="{18071995-0000-0000-0000-00000000000e}">LREAL</BaseType>
+            <Unit><![CDATA[指令单位]]></Unit>
+          </Symbol>
+          <Symbol CreateSymbol="true">
+            <Name>FeedFollowErr3</Name>
+            <Comment TxtId=""><![CDATA[轴3 跟随偏差, 指令单位]]></Comment>
+            <BaseType GUID="{18071995-0000-0000-0000-00000000000e}">LREAL</BaseType>
+            <Unit><![CDATA[指令单位]]></Unit>
+          </Symbol>
+          <Symbol CreateSymbol="true">
+            <Name>FeedFollowErrMm0</Name>
+            <Comment TxtId=""><![CDATA[轴0 跟随偏差, mm (工艺口径)]]></Comment>
             <BaseType GUID="{18071995-0000-0000-0000-00000000000e}">LREAL</BaseType>
             <Unit><![CDATA[mm]]></Unit>
           </Symbol>
           <Symbol CreateSymbol="true">
-            <Name>FeedFollowErr3</Name>
-            <Comment TxtId=""><![CDATA[轴3 跟随偏差]]></Comment>
+            <Name>FeedFollowErrMm1</Name>
+            <Comment TxtId=""><![CDATA[轴1 跟随偏差, mm]]></Comment>
+            <BaseType GUID="{18071995-0000-0000-0000-00000000000e}">LREAL</BaseType>
+            <Unit><![CDATA[mm]]></Unit>
+          </Symbol>
+          <Symbol CreateSymbol="true">
+            <Name>FeedFollowErrMm2</Name>
+            <Comment TxtId=""><![CDATA[轴2 跟随偏差, mm]]></Comment>
+            <BaseType GUID="{18071995-0000-0000-0000-00000000000e}">LREAL</BaseType>
+            <Unit><![CDATA[mm]]></Unit>
+          </Symbol>
+          <Symbol CreateSymbol="true">
+            <Name>FeedFollowErrMm3</Name>
+            <Comment TxtId=""><![CDATA[轴3 跟随偏差, mm]]></Comment>
             <BaseType GUID="{18071995-0000-0000-0000-00000000000e}">LREAL</BaseType>
             <Unit><![CDATA[mm]]></Unit>
           </Symbol>
