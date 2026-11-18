@@ -30,6 +30,10 @@
         <Name>Torque_demand</Name>
         <Type GUID="{18071995-0000-0000-0000-000000000006}">INT</Type>
       </SubItem>
+      <SubItem>
+        <Name>Following_error_actual_value</Name>
+        <Type GUID="{18071995-0000-0000-0000-000000000009}">DINT</Type>
+      </SubItem>
       <Hides>
         <Hide GUID="{ceb17ef3-3352-48a7-9733-e07a8efdbf5f}" />
         <Hide GUID="{3cd78e58-1dfd-4bc4-8a10-07bfa445d2c5}" />
@@ -459,6 +463,36 @@
             <Comment TxtId=""><![CDATA[负载侧基准转矩指令]]></Comment>
             <BaseType GUID="{18071995-0000-0000-0000-00000000000d}">REAL</BaseType>
             <Unit><![CDATA[0.1%RatedTorque]]></Unit>
+          </Symbol>
+          <Symbol CreateSymbol="true">
+            <Name>FeedMasterPhase</Name>
+            <Comment TxtId=""><![CDATA[送纸凸轮: 虚拟主轴相位]]></Comment>
+            <BaseType GUID="{18071995-0000-0000-0000-00000000000e}">LREAL</BaseType>
+            <Unit><![CDATA[mm]]></Unit>
+          </Symbol>
+          <Symbol CreateSymbol="true">
+            <Name>FeedFollowErr0</Name>
+            <Comment TxtId=""><![CDATA[轴0 跟随偏差 (指令-实际-启动相位补偿)]]></Comment>
+            <BaseType GUID="{18071995-0000-0000-0000-00000000000e}">LREAL</BaseType>
+            <Unit><![CDATA[mm]]></Unit>
+          </Symbol>
+          <Symbol CreateSymbol="true">
+            <Name>FeedFollowErr1</Name>
+            <Comment TxtId=""><![CDATA[轴1 跟随偏差]]></Comment>
+            <BaseType GUID="{18071995-0000-0000-0000-00000000000e}">LREAL</BaseType>
+            <Unit><![CDATA[mm]]></Unit>
+          </Symbol>
+          <Symbol CreateSymbol="true">
+            <Name>FeedFollowErr2</Name>
+            <Comment TxtId=""><![CDATA[轴2 跟随偏差]]></Comment>
+            <BaseType GUID="{18071995-0000-0000-0000-00000000000e}">LREAL</BaseType>
+            <Unit><![CDATA[mm]]></Unit>
+          </Symbol>
+          <Symbol CreateSymbol="true">
+            <Name>FeedFollowErr3</Name>
+            <Comment TxtId=""><![CDATA[轴3 跟随偏差]]></Comment>
+            <BaseType GUID="{18071995-0000-0000-0000-00000000000e}">LREAL</BaseType>
+            <Unit><![CDATA[mm]]></Unit>
           </Symbol>
         </DataArea>
       </DataAreas>

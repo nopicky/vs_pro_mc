@@ -2088,6 +2088,10 @@
 				</EtherCAT>
 			</Device>
 		</Io>
+		<SymbolWatch>
+			<Variable>TIXC^WASR_TC^WASR_TC_Obj1 (WASR_TC)^Outputs^Servo0</Variable>
+			<Variable>TIXC^WASR_TC^WASR_TC_Obj1 (WASR_TC)^Inputs^Servo0</Variable>
+		</SymbolWatch>
 	</Project>
 	<Mappings>
 		<MappingInfo Identifier="{00000000-0010-0304-1000-010110000403}" Id="#x02030010"/>

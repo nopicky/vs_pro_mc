@@ -37,6 +37,7 @@ typedef struct _ServoInputs
 	SHORT Torque_actual_value;
 	LONG Velocity_actual_value;
 	SHORT Torque_demand;
+	LONG Following_error_actual_value;	/* 60F4h 驱动器位置跟随偏差 (末尾追加, 不影响已有 PDO 链接) */
 } ServoInputs, *PServoInputs;
 #pragma pack(pop)
 const GUID GUID_ServoInputs = {0x3EA188CF, 0xA9B9, 0x4934, {0x9F, 0x74, 0x39, 0x38, 0xA0, 0x94, 0xC4, 0x84}};
@@ -177,6 +178,11 @@ typedef struct _WASR_TCStatus
 	float SigFreq;
 	float SigAmp;
 	float SigOffset;
+	double FeedMasterPhase;		/* 送纸凸轮: 虚拟主轴相位 [mm] (Scope 录波) */
+	double FeedFollowErr0;		/* 轴0 跟随偏差 [mm] (指令-实际-启动相位补偿) */
+	double FeedFollowErr1;		/* 轴1 跟随偏差 [mm] */
+	double FeedFollowErr2;		/* 轴2 跟随偏差 [mm] */
+	double FeedFollowErr3;		/* 轴3 跟随偏差 [mm] */
 } WASR_TCStatus, *PWASR_TCStatus;
 #pragma pack(pop)
 

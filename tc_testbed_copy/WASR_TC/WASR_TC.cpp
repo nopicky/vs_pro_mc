@@ -650,6 +650,17 @@ HRESULT CWASR_TC::CycleUpdate(ITcTask* ipTask, ITcUnknown* ipCaller, ULONG_PTR c
 	                 &m_Status.SigFreq, &m_Status.SigAmp, &m_Status.SigOffset,
 	                 (double)d->Inputs->Position_actual_value);
 
+	// 送纸凸轮监视量上 ADS (Scope 直接录: 主轴相位 + 各轴跟随偏差)
+	{
+		FEED_MONITOR_T mon;
+		m_testSeq.feedSeq.getMonitor(&mon);
+		m_Status.FeedMasterPhase = mon.fMasterPhase;
+		m_Status.FeedFollowErr0  = mon.afFollowErr[0];
+		m_Status.FeedFollowErr1  = mon.afFollowErr[1];
+		m_Status.FeedFollowErr2  = mon.afFollowErr[2];
+		m_Status.FeedFollowErr3  = mon.afFollowErr[3];
+	}
+
 	// 驱动侧运行模式 (输出): 8 = CSP, 9 = CSV, 10 = CST
 	m_Status.Driver_Modes_of_operation = (char)DriveModeCode(m_testSeq.driveMode);
 
