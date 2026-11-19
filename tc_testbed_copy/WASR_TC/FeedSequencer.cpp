@@ -21,10 +21,10 @@ FEED_CONFIG_T g_cfgFeed = {
     {430.0, 340.0, 250.0, 160.0},  /* afSyncLen：A1~A4 同步段长 */
     {10.0, 0.0, 0.0, 0.0},         /* afOvertravel：轴1 +10mm（科威达工艺） */
     0.0,                           /* fStartPhaseComp */
-    350.0,                         /* fMaxLineSpeedMMin */
+    400.0,                         /* fMaxLineSpeedMMin */
     true,                          /* bContinuous：默认连续循环（Start 撤销后当前循环走完即停） */
     false,                         /* bLoadSideEnable：默认不接负载伺服 */
-    0.0                            /* fLeadTimeMs：超前补偿关闭（等效 T≈20ms，实测后从 10~25 试） */
+    19.5                           /* fLeadTimeMs：350m/min 实测扫参最佳值（0 = 关闭，恢复无超前行为） */
 };
 
 /* 走完凸轮后保持终值的周期数（125us×8000 ≈ 1s），之后回 IDLE 等下一次 Start */
@@ -174,8 +174,11 @@ void CFeedSequencer::tick(double fMasterPhase, double fDtSec, const double* afAc
     }
 
     /* 启用轴位置指令 = 位移基准 + 凸轮求值 + 超前补偿 + 补偿钩子（v1 恒 0）；未启用轴置 0
-       IDLE 下凸轮相位按 0 处理（输出 = 位移基准，保持循环终点位置） */
-    double fCamXEff = (m_eState == FEED_CAM_RUN || m_eState == FEED_STOPPING) ? fCamX : 0.0;
+       注意：只有 CAM_RUN 才叠加凸轮求值。STOPPING/IDLE 必须按 camX=0 处理，
+       因为凸轮终值已在 CAM_RUN 结束时累加进 m_afPosBase——若 STOPPING 仍叠加
+       evalPos(越界钳位=终值)，指令会多算一个「整段位移」(+680mm)，回 IDLE 时
+       再减去，形成「先正冲、后倒退」的两次大跳变（实测 ±450k 指令单位） */
+    double fCamXEff = (m_eState == FEED_CAM_RUN) ? fCamX : 0.0;
     double fLeadSec = m_cfg.fLeadTimeMs * 0.001;    /* ms → s */
     for (int i = 0; i < 4; i++) {
         if (i < m_nAxisCount) {

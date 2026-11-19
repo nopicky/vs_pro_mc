@@ -17,7 +17,7 @@ typedef struct tagFEED_CONFIG_T {
     double afSyncLen[4];        /* 各轴同步段长 mm：{430, 340, 250, 160} = A1~A4 */
     double afOvertravel[4];     /* 各轴过送补偿 mm：{10,0,0,0}（科威达工艺：轴1 +10 使纸尾脱离） */
     double fStartPhaseComp;     /* 启动相位补偿 mm：整圈对齐基础上的手动微调，默认 0 */
-    double fMaxLineSpeedMMin;   /* 线速度上限 m/min，默认 350 */
+    double fMaxLineSpeedMMin;   /* 线速度上限 m/min，默认 400 */
     bool   bContinuous;         /* 运行模式：false=单次触发（默认，调试）；true=连续循环
                                    （凸轮走完立即等主轴下一整圈自动续送，Start 撤销后当前循环走完即停） */
     bool   bLoadSideEnable;     /* 负载侧(CST)使能开关：false=不接负载伺服（默认，首测/实际机台） */
