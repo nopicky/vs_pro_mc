@@ -22,6 +22,7 @@ FEED_CONFIG_T g_cfgFeed = {
     {10.0, 0.0, 0.0, 0.0},         /* afOvertravel：轴1 +10mm（科威达工艺） */
     0.0,                           /* fStartPhaseComp */
     350.0,                         /* fMaxLineSpeedMMin */
+    false,                         /* bContinuous：默认单次触发 */
     false                          /* bLoadSideEnable：默认不接负载伺服 */
 };
 
@@ -125,20 +126,25 @@ void CFeedSequencer::tick(double fMasterPhase, double fDtSec, const double* afAc
         case FEED_CAM_RUN: {
             /* 以启用轴中最长凸轮走完为结束标志；各轴 evalPos 越界自动钳位 */
             if (fCamX >= m_fMaxCamLen) {
-                m_eState = FEED_STOPPING;
-                m_nStopTicks = 0;
+                /* 循环结束：各轴终值固化为位移基准（送纸辊单向连续旋转，指令不跳变） */
+                for (int i = 0; i < m_nAxisCount; i++) {
+                    m_afPosBase[i] += m_aFeeder[i].evalPos(m_aFeeder[i].getLength());
+                }
+                if (m_cfg.bContinuous && m_bStart) {
+                    /* 连续模式：不停车，立即等主轴下一整圈自动续送（真实送纸节拍） */
+                    m_eState = FEED_ARMED;
+                } else {
+                    m_eState = FEED_STOPPING;
+                    m_nStopTicks = 0;
+                }
             }
         } break;
 
         case FEED_STOPPING: {
             m_nStopTicks++;
             if (m_nStopTicks >= c_nStopHoldTicks) {
+                /* 单次模式：位移基准已在 CAM_RUN 结束时累加，这里只回待命 */
                 m_bStart = false;
-                /* 循环结束：各轴终值固化为位移基准，下次循环从 0 叠加
-                   （送纸辊单向连续旋转，再触发时指令不跳回原点） */
-                for (int i = 0; i < m_nAxisCount; i++) {
-                    m_afPosBase[i] += m_aFeeder[i].evalPos(m_aFeeder[i].getLength());
-                }
                 m_eState = FEED_IDLE;
             }
         } break;
