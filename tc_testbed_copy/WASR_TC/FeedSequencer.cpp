@@ -23,7 +23,8 @@ FEED_CONFIG_T g_cfgFeed = {
     0.0,                           /* fStartPhaseComp */
     350.0,                         /* fMaxLineSpeedMMin */
     true,                          /* bContinuous：默认连续循环（Start 撤销后当前循环走完即停） */
-    false                          /* bLoadSideEnable：默认不接负载伺服 */
+    false,                         /* bLoadSideEnable：默认不接负载伺服 */
+    0.0                            /* fLeadTimeMs：超前补偿关闭（等效 T≈20ms，实测后从 10~25 试） */
 };
 
 /* 走完凸轮后保持终值的周期数（125us×8000 ≈ 1s），之后回 IDLE 等下一次 Start */
@@ -38,6 +39,8 @@ CFeedSequencer::CFeedSequencer() {
     m_nStopTicks = 0;
     m_nAxisCount = 0;
     m_fMaxCamLen = 0.0;
+    m_fPrevPhase = 0.0;
+    m_bPrevValid = false;
     for (int i = 0; i < 4; i++) {
         m_afPosBase[i] = 0.0;
     }
@@ -83,6 +86,8 @@ bool CFeedSequencer::init(const FEED_CONFIG_T* pCfg) {
     m_nStopTicks = 0;
     m_fTriggerPhase = 0.0;
     m_fCamOrigin = 0.0;
+    m_fPrevPhase = 0.0;
+    m_bPrevValid = false;
     for (int i = 0; i < 4; i++) {
         m_afPosBase[i] = 0.0;
     }
@@ -98,7 +103,18 @@ void CFeedSequencer::setStart(bool bStart) {
 void CFeedSequencer::tick(double fMasterPhase, double fDtSec, const double* afActPosMm,
                           double afCmdPosMm[4]) {
 
-    (void)fDtSec;   /* v1 未用（固定周期），预留变速周期 */
+    /* 主轴速度：相位差分（供超前补偿用；反向不计，v1 只做正向送纸）
+       仅在上一拍有效时差分，避免 init 后首拍产生巨大虚假速度 */
+    double fMasterVel = 0.0;
+    if (m_bPrevValid && fDtSec > 1e-9) {
+        fMasterVel = (fMasterPhase - m_fPrevPhase) / fDtSec;
+        if (fMasterVel < 0.0) {
+            fMasterVel = 0.0;
+        }
+    }
+    m_fPrevPhase = fMasterPhase;
+    m_bPrevValid = true;
+
     double fCamX = fMasterPhase - m_fCamOrigin;
 
     switch (m_eState) {
@@ -118,7 +134,10 @@ void CFeedSequencer::tick(double fMasterPhase, double fDtSec, const double* afAc
         } break;
 
         case FEED_WAIT_PHASE: {
-            if (fMasterPhase >= m_fTriggerPhase) {
+            /* 等相位期间撤销 Start: 直接回待命 (连续模式间隙停车, 不再续送下一张) */
+            if (!m_bStart) {
+                m_eState = FEED_IDLE;
+            } else if (fMasterPhase >= m_fTriggerPhase) {
                 m_eState = FEED_CAM_RUN;
             }
         } break;
@@ -154,12 +173,18 @@ void CFeedSequencer::tick(double fMasterPhase, double fDtSec, const double* afAc
         } break;
     }
 
-    /* 启用轴位置指令 = 位移基准 + 凸轮求值 + 补偿钩子（v1 恒 0）；未启用轴置 0
+    /* 启用轴位置指令 = 位移基准 + 凸轮求值 + 超前补偿 + 补偿钩子（v1 恒 0）；未启用轴置 0
        IDLE 下凸轮相位按 0 处理（输出 = 位移基准，保持循环终点位置） */
     double fCamXEff = (m_eState == FEED_CAM_RUN || m_eState == FEED_STOPPING) ? fCamX : 0.0;
+    double fLeadSec = m_cfg.fLeadTimeMs * 0.001;    /* ms → s */
     for (int i = 0; i < 4; i++) {
         if (i < m_nAxisCount) {
-            afCmdPosMm[i] = m_afPosBase[i] + m_aFeeder[i].evalPos(fCamXEff) + compensationHook(i);
+            /* 超前补偿（替代驱动器速度前馈）：指令前移「轴速度 × T」
+               轴速度 = 速比×主轴速度，故前移量 = evalVel(x)·v_master·T（一阶泰勒，等价相位提前）
+               凸轮两端速比为 0 → 起停无跳变；T=0 时与原实现完全一致 */
+            double fLead = m_aFeeder[i].evalVel(fCamXEff) * fMasterVel * fLeadSec;
+            afCmdPosMm[i] = m_afPosBase[i] + m_aFeeder[i].evalPos(fCamXEff) + fLead
+                            + compensationHook(i);
         } else {
             afCmdPosMm[i] = 0.0;
         }

@@ -1134,8 +1134,8 @@
 					<EtherCAT SlaveType="2" PdiType="#x0e08" MboxDataLinkLayer="true" StateMBoxPolling="true" CycleMBoxPollingTime="0" CoeType="15" VendorId="#x00000eff" ProductCode="#x0d3e0001" RevisionNo="#x00000073" InfoDataAddr="true" InfoDataSoeDS401="true" InfoDataDcTimes="true" TimeoutStateChange1="2000" TimeoutStateChange2="9000" TimeoutMailbox2="2000" PortPhys="17" MaxSlotCount="256" MaxSlotGroupCount="1" SlotPdoIncrement="1" SlotIndexIncrement="16" Type="Wecon VD3E EtherCAT Servo v1.15" Desc="Wecon VD3E EtherCAT Servo v1.15" PortABoxInfo="#x01000014">
 						<SyncMan>001080002600010001000000220000018000001026010000</SyncMan>
 						<SyncMan>801080002200010002000000220000018000801022010000</SyncMan>
-						<SyncMan>00110f006400010003000000000000000900001164010000</SyncMan>
-						<SyncMan>001411002000010004000000000000000f00001420010000</SyncMan>
+						<SyncMan>001117006400010003000000000000000900001164010000</SyncMan>
+						<SyncMan>001419002000010004000000000000000f00001420010000</SyncMan>
 						<Fmmu>0000000000000000001100020100000001000000000000000000000000000000</Fmmu>
 						<Fmmu>0000000000000000001400010100000002000000000000000000000000000000</Fmmu>
 						<Fmmu>00000000000000000d0800010100000003000000000000000000000000000000</Fmmu>
@@ -1171,13 +1171,13 @@
 							<Entry Name="Modes of operation display" Index="#x6061">
 								<Type>SINT</Type>
 							</Entry>
-															<Entry Name="DcBusVoltDisp " Index="#x201e" Sub="#x1f">
-										<Type>UINT</Type>
-									</Entry>
-									<Entry Name="Following error actual value" Index="#x60f4">
-										<Type>DINT</Type>
-									</Entry>
-								</Pdo>
+							<Entry Name="DcBusVoltDisp " Index="#x201e" Sub="#x1f">
+								<Type>UINT</Type>
+							</Entry>
+							<Entry Name="Following error actual value" Index="#x60f4">
+								<Type>DINT</Type>
+							</Entry>
+						</Pdo>
 						<Pdo Name="TxPDO" Index="#x1b01" Flags="#x0000" SyncMan="3">
 							<ExcludePdo>#x1a00</ExcludePdo>
 							<Entry Name="Error Code" Index="#x603f">
@@ -1201,16 +1201,16 @@
 							<Entry Name="Torque demand " Index="#x6074">
 								<Type>INT</Type>
 							</Entry>
-															<Entry Name="DcBusVoltDisp " Index="#x201e" Sub="#x1f">
-										<Type>UINT</Type>
-									</Entry>
-									<Entry Name="InerRatioReal" Index="#x201e" Sub="#x14">
-										<Type>UINT</Type>
-									</Entry>
-									<Entry Name="Following error actual value" Index="#x60f4">
-										<Type>DINT</Type>
-									</Entry>
-								</Pdo>
+							<Entry Name="DcBusVoltDisp " Index="#x201e" Sub="#x1f">
+								<Type>UINT</Type>
+							</Entry>
+							<Entry Name="InerRatioReal" Index="#x201e" Sub="#x14">
+								<Type>UINT</Type>
+							</Entry>
+							<Entry Name="Following error actual value" Index="#x60f4">
+								<Type>DINT</Type>
+							</Entry>
+						</Pdo>
 						<Pdo Name="RxPDO" Index="#x1600" InOut="1" Flags="#x0000">
 							<ExcludePdo>#x1701</ExcludePdo>
 							<ExcludePdo>#x1702</ExcludePdo>
@@ -1264,24 +1264,24 @@
 							<Entry Name="Touch probe function" Index="#x60b8">
 								<Type>UINT</Type>
 							</Entry>
-															<Entry Name="Motor revolutions" Index="#x6091" Sub="#x01">
-										<Type>UDINT</Type>
-									</Entry>
-									<Entry Name="Shaft revolutions" Index="#x6091" Sub="#x02">
-										<Type>UDINT</Type>
-									</Entry>
-								</Pdo>
+							<Entry Name="Motor revolutions" Index="#x6091" Sub="#x01">
+								<Type>UDINT</Type>
+							</Entry>
+							<Entry Name="Shaft revolutions" Index="#x6091" Sub="#x02">
+								<Type>UDINT</Type>
+							</Entry>
+						</Pdo>
 						<CoeProfile ProfileNo="402"/>
 					</EtherCAT>
 				</Box>
-<Box Id="5" Disabled="true" BoxType="9099" BoxFlags="#x00000020">
+				<Box Id="5" Disabled="true" BoxType="9099" BoxFlags="#x00000020">
 					<Name>维控VD3E_2</Name>
 					<ImageId>1001</ImageId>
 					<EtherCAT SlaveType="2" PdiType="#x0e08" MboxDataLinkLayer="true" StateMBoxPolling="true" CycleMBoxPollingTime="0" CoeType="15" VendorId="#x00000eff" ProductCode="#x0d3e0001" RevisionNo="#x00000073" InfoDataAddr="true" InfoDataSoeDS401="true" InfoDataDcTimes="true" TimeoutStateChange1="2000" TimeoutStateChange2="9000" TimeoutMailbox2="2000" PortPhys="17" MaxSlotCount="256" MaxSlotGroupCount="1" SlotPdoIncrement="1" SlotIndexIncrement="16" Type="Wecon VD3E EtherCAT Servo v1.15" Desc="Wecon VD3E EtherCAT Servo v1.15" PortABoxInfo="#x01000014">
 						<SyncMan>001080002600010001000000220000018000001026010000</SyncMan>
 						<SyncMan>801080002200010002000000220000018000801022010000</SyncMan>
-						<SyncMan>00110f006400010003000000000000000900001164010000</SyncMan>
-						<SyncMan>001411002000010004000000000000000f00001420010000</SyncMan>
+						<SyncMan>001117006400010003000000000000000900001164010000</SyncMan>
+						<SyncMan>001419002000010004000000000000000f00001420010000</SyncMan>
 						<Fmmu>0000000000000000001100020100000001000000000000000000000000000000</Fmmu>
 						<Fmmu>0000000000000000001400010100000002000000000000000000000000000000</Fmmu>
 						<Fmmu>00000000000000000d0800010100000003000000000000000000000000000000</Fmmu>
@@ -1317,13 +1317,13 @@
 							<Entry Name="Modes of operation display" Index="#x6061">
 								<Type>SINT</Type>
 							</Entry>
-															<Entry Name="DcBusVoltDisp " Index="#x201e" Sub="#x1f">
-										<Type>UINT</Type>
-									</Entry>
-									<Entry Name="Following error actual value" Index="#x60f4">
-										<Type>DINT</Type>
-									</Entry>
-								</Pdo>
+							<Entry Name="DcBusVoltDisp " Index="#x201e" Sub="#x1f">
+								<Type>UINT</Type>
+							</Entry>
+							<Entry Name="Following error actual value" Index="#x60f4">
+								<Type>DINT</Type>
+							</Entry>
+						</Pdo>
 						<Pdo Name="TxPDO" Index="#x1b01" Flags="#x0000" SyncMan="3">
 							<ExcludePdo>#x1a00</ExcludePdo>
 							<Entry Name="Error Code" Index="#x603f">
@@ -1347,16 +1347,16 @@
 							<Entry Name="Torque demand " Index="#x6074">
 								<Type>INT</Type>
 							</Entry>
-															<Entry Name="DcBusVoltDisp " Index="#x201e" Sub="#x1f">
-										<Type>UINT</Type>
-									</Entry>
-									<Entry Name="InerRatioReal" Index="#x201e" Sub="#x14">
-										<Type>UINT</Type>
-									</Entry>
-									<Entry Name="Following error actual value" Index="#x60f4">
-										<Type>DINT</Type>
-									</Entry>
-								</Pdo>
+							<Entry Name="DcBusVoltDisp " Index="#x201e" Sub="#x1f">
+								<Type>UINT</Type>
+							</Entry>
+							<Entry Name="InerRatioReal" Index="#x201e" Sub="#x14">
+								<Type>UINT</Type>
+							</Entry>
+							<Entry Name="Following error actual value" Index="#x60f4">
+								<Type>DINT</Type>
+							</Entry>
+						</Pdo>
 						<Pdo Name="RxPDO" Index="#x1600" InOut="1" Flags="#x0000">
 							<ExcludePdo>#x1701</ExcludePdo>
 							<ExcludePdo>#x1702</ExcludePdo>
@@ -1410,24 +1410,24 @@
 							<Entry Name="Touch probe function" Index="#x60b8">
 								<Type>UINT</Type>
 							</Entry>
-															<Entry Name="Motor revolutions" Index="#x6091" Sub="#x01">
-										<Type>UDINT</Type>
-									</Entry>
-									<Entry Name="Shaft revolutions" Index="#x6091" Sub="#x02">
-										<Type>UDINT</Type>
-									</Entry>
-								</Pdo>
+							<Entry Name="Motor revolutions" Index="#x6091" Sub="#x01">
+								<Type>UDINT</Type>
+							</Entry>
+							<Entry Name="Shaft revolutions" Index="#x6091" Sub="#x02">
+								<Type>UDINT</Type>
+							</Entry>
+						</Pdo>
 						<CoeProfile ProfileNo="402"/>
 					</EtherCAT>
 				</Box>
-<Box Id="6" Disabled="true" BoxType="9099" BoxFlags="#x00000020">
+				<Box Id="6" Disabled="true" BoxType="9099" BoxFlags="#x00000020">
 					<Name>维控VD3E_3</Name>
 					<ImageId>1001</ImageId>
 					<EtherCAT SlaveType="2" PdiType="#x0e08" MboxDataLinkLayer="true" StateMBoxPolling="true" CycleMBoxPollingTime="0" CoeType="15" VendorId="#x00000eff" ProductCode="#x0d3e0001" RevisionNo="#x00000073" InfoDataAddr="true" InfoDataSoeDS401="true" InfoDataDcTimes="true" TimeoutStateChange1="2000" TimeoutStateChange2="9000" TimeoutMailbox2="2000" PortPhys="17" MaxSlotCount="256" MaxSlotGroupCount="1" SlotPdoIncrement="1" SlotIndexIncrement="16" Type="Wecon VD3E EtherCAT Servo v1.15" Desc="Wecon VD3E EtherCAT Servo v1.15" PortABoxInfo="#x01000014">
 						<SyncMan>001080002600010001000000220000018000001026010000</SyncMan>
 						<SyncMan>801080002200010002000000220000018000801022010000</SyncMan>
-						<SyncMan>00110f006400010003000000000000000900001164010000</SyncMan>
-						<SyncMan>001411002000010004000000000000000f00001420010000</SyncMan>
+						<SyncMan>001117006400010003000000000000000900001164010000</SyncMan>
+						<SyncMan>001419002000010004000000000000000f00001420010000</SyncMan>
 						<Fmmu>0000000000000000001100020100000001000000000000000000000000000000</Fmmu>
 						<Fmmu>0000000000000000001400010100000002000000000000000000000000000000</Fmmu>
 						<Fmmu>00000000000000000d0800010100000003000000000000000000000000000000</Fmmu>
@@ -1463,13 +1463,13 @@
 							<Entry Name="Modes of operation display" Index="#x6061">
 								<Type>SINT</Type>
 							</Entry>
-															<Entry Name="DcBusVoltDisp " Index="#x201e" Sub="#x1f">
-										<Type>UINT</Type>
-									</Entry>
-									<Entry Name="Following error actual value" Index="#x60f4">
-										<Type>DINT</Type>
-									</Entry>
-								</Pdo>
+							<Entry Name="DcBusVoltDisp " Index="#x201e" Sub="#x1f">
+								<Type>UINT</Type>
+							</Entry>
+							<Entry Name="Following error actual value" Index="#x60f4">
+								<Type>DINT</Type>
+							</Entry>
+						</Pdo>
 						<Pdo Name="TxPDO" Index="#x1b01" Flags="#x0000" SyncMan="3">
 							<ExcludePdo>#x1a00</ExcludePdo>
 							<Entry Name="Error Code" Index="#x603f">
@@ -1493,16 +1493,16 @@
 							<Entry Name="Torque demand " Index="#x6074">
 								<Type>INT</Type>
 							</Entry>
-															<Entry Name="DcBusVoltDisp " Index="#x201e" Sub="#x1f">
-										<Type>UINT</Type>
-									</Entry>
-									<Entry Name="InerRatioReal" Index="#x201e" Sub="#x14">
-										<Type>UINT</Type>
-									</Entry>
-									<Entry Name="Following error actual value" Index="#x60f4">
-										<Type>DINT</Type>
-									</Entry>
-								</Pdo>
+							<Entry Name="DcBusVoltDisp " Index="#x201e" Sub="#x1f">
+								<Type>UINT</Type>
+							</Entry>
+							<Entry Name="InerRatioReal" Index="#x201e" Sub="#x14">
+								<Type>UINT</Type>
+							</Entry>
+							<Entry Name="Following error actual value" Index="#x60f4">
+								<Type>DINT</Type>
+							</Entry>
+						</Pdo>
 						<Pdo Name="RxPDO" Index="#x1600" InOut="1" Flags="#x0000">
 							<ExcludePdo>#x1701</ExcludePdo>
 							<ExcludePdo>#x1702</ExcludePdo>
@@ -1556,24 +1556,24 @@
 							<Entry Name="Touch probe function" Index="#x60b8">
 								<Type>UINT</Type>
 							</Entry>
-															<Entry Name="Motor revolutions" Index="#x6091" Sub="#x01">
-										<Type>UDINT</Type>
-									</Entry>
-									<Entry Name="Shaft revolutions" Index="#x6091" Sub="#x02">
-										<Type>UDINT</Type>
-									</Entry>
-								</Pdo>
+							<Entry Name="Motor revolutions" Index="#x6091" Sub="#x01">
+								<Type>UDINT</Type>
+							</Entry>
+							<Entry Name="Shaft revolutions" Index="#x6091" Sub="#x02">
+								<Type>UDINT</Type>
+							</Entry>
+						</Pdo>
 						<CoeProfile ProfileNo="402"/>
 					</EtherCAT>
 				</Box>
-<Box Id="7" Disabled="true" BoxType="9099" BoxFlags="#x00000020">
+				<Box Id="7" Disabled="true" BoxType="9099" BoxFlags="#x00000020">
 					<Name>维控VD3E_4</Name>
 					<ImageId>1001</ImageId>
 					<EtherCAT SlaveType="2" PdiType="#x0e08" MboxDataLinkLayer="true" StateMBoxPolling="true" CycleMBoxPollingTime="0" CoeType="15" VendorId="#x00000eff" ProductCode="#x0d3e0001" RevisionNo="#x00000073" InfoDataAddr="true" InfoDataSoeDS401="true" InfoDataDcTimes="true" TimeoutStateChange1="2000" TimeoutStateChange2="9000" TimeoutMailbox2="2000" PortPhys="17" MaxSlotCount="256" MaxSlotGroupCount="1" SlotPdoIncrement="1" SlotIndexIncrement="16" Type="Wecon VD3E EtherCAT Servo v1.15" Desc="Wecon VD3E EtherCAT Servo v1.15" PortABoxInfo="#x01000014">
 						<SyncMan>001080002600010001000000220000018000001026010000</SyncMan>
 						<SyncMan>801080002200010002000000220000018000801022010000</SyncMan>
-						<SyncMan>00110f006400010003000000000000000900001164010000</SyncMan>
-						<SyncMan>001411002000010004000000000000000f00001420010000</SyncMan>
+						<SyncMan>001117006400010003000000000000000900001164010000</SyncMan>
+						<SyncMan>001419002000010004000000000000000f00001420010000</SyncMan>
 						<Fmmu>0000000000000000001100020100000001000000000000000000000000000000</Fmmu>
 						<Fmmu>0000000000000000001400010100000002000000000000000000000000000000</Fmmu>
 						<Fmmu>00000000000000000d0800010100000003000000000000000000000000000000</Fmmu>
@@ -1609,13 +1609,13 @@
 							<Entry Name="Modes of operation display" Index="#x6061">
 								<Type>SINT</Type>
 							</Entry>
-															<Entry Name="DcBusVoltDisp " Index="#x201e" Sub="#x1f">
-										<Type>UINT</Type>
-									</Entry>
-									<Entry Name="Following error actual value" Index="#x60f4">
-										<Type>DINT</Type>
-									</Entry>
-								</Pdo>
+							<Entry Name="DcBusVoltDisp " Index="#x201e" Sub="#x1f">
+								<Type>UINT</Type>
+							</Entry>
+							<Entry Name="Following error actual value" Index="#x60f4">
+								<Type>DINT</Type>
+							</Entry>
+						</Pdo>
 						<Pdo Name="TxPDO" Index="#x1b01" Flags="#x0000" SyncMan="3">
 							<ExcludePdo>#x1a00</ExcludePdo>
 							<Entry Name="Error Code" Index="#x603f">
@@ -1639,16 +1639,16 @@
 							<Entry Name="Torque demand " Index="#x6074">
 								<Type>INT</Type>
 							</Entry>
-															<Entry Name="DcBusVoltDisp " Index="#x201e" Sub="#x1f">
-										<Type>UINT</Type>
-									</Entry>
-									<Entry Name="InerRatioReal" Index="#x201e" Sub="#x14">
-										<Type>UINT</Type>
-									</Entry>
-									<Entry Name="Following error actual value" Index="#x60f4">
-										<Type>DINT</Type>
-									</Entry>
-								</Pdo>
+							<Entry Name="DcBusVoltDisp " Index="#x201e" Sub="#x1f">
+								<Type>UINT</Type>
+							</Entry>
+							<Entry Name="InerRatioReal" Index="#x201e" Sub="#x14">
+								<Type>UINT</Type>
+							</Entry>
+							<Entry Name="Following error actual value" Index="#x60f4">
+								<Type>DINT</Type>
+							</Entry>
+						</Pdo>
 						<Pdo Name="RxPDO" Index="#x1600" InOut="1" Flags="#x0000">
 							<ExcludePdo>#x1701</ExcludePdo>
 							<ExcludePdo>#x1702</ExcludePdo>
@@ -1702,20 +1702,20 @@
 							<Entry Name="Touch probe function" Index="#x60b8">
 								<Type>UINT</Type>
 							</Entry>
-															<Entry Name="Motor revolutions" Index="#x6091" Sub="#x01">
-										<Type>UDINT</Type>
-									</Entry>
-									<Entry Name="Shaft revolutions" Index="#x6091" Sub="#x02">
-										<Type>UDINT</Type>
-									</Entry>
-								</Pdo>
+							<Entry Name="Motor revolutions" Index="#x6091" Sub="#x01">
+								<Type>UDINT</Type>
+							</Entry>
+							<Entry Name="Shaft revolutions" Index="#x6091" Sub="#x02">
+								<Type>UDINT</Type>
+							</Entry>
+						</Pdo>
 						<CoeProfile ProfileNo="402"/>
 					</EtherCAT>
 				</Box>
 				<Box Id="4" Disabled="true" BoxType="9099" BoxFlags="#x00000020">
 					<Name>汇川SV680N</Name>
 					<ImageId>1000</ImageId>
-					<EtherCAT EtherCatAddr="1002" SlaveType="2" AdsServerAddress="000000000000ea03" PdiType="#x0c08" EtherCatAddrFixed="true" MboxDataLinkLayer="true" StateMBoxPolling="true" CycleMBoxPollingTime="0" CoeType="13" EoeType="1" VendorId="#x00100000" ProductCode="#x000c0116" RevisionNo="#x00010000" InfoDataAddr="true" InfoDataSoeDS401="true" InfoDataDcTimes="true" TimeoutStateChange2="9000" TimeoutMailbox2="2000" PortPhys="17" MaxSlotCount="256" MaxSlotGroupCount="1" SlotPdoIncrement="1" SlotIndexIncrement="16" Type="SV680N_1Axis_04002" Desc="InoSV680N" PortABoxInfo="#x01000001">
+					<EtherCAT EtherCatAddr="1002" SlaveType="2" AdsServerAddress="000000000000ea03" PdiType="#x0c08" EtherCatAddrFixed="true" MboxDataLinkLayer="true" StateMBoxPolling="true" CycleMBoxPollingTime="0" CoeType="13" EoeType="1" VendorId="#x00100000" ProductCode="#x000c0116" RevisionNo="#x00010000" InfoDataAddr="true" InfoDataSoeDS401="true" InfoDataDcTimes="true" TimeoutStateChange2="9000" TimeoutMailbox2="2000" PortPhys="17" MaxSlotCount="256" MaxSlotGroupCount="1" SlotPdoIncrement="1" SlotIndexIncrement="16" Type="SV680N_1Axis_04002" Desc="InoSV680N" PortABoxInfo="#x01000007">
 						<SyncMan>001000012600010001000000220000020001001026010000</SyncMan>
 						<SyncMan>001400012200010002000000220000020001001422010000</SyncMan>
 						<SyncMan>001817006400010003000000000000000c00001864010000</SyncMan>

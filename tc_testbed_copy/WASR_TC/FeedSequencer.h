@@ -56,6 +56,8 @@ private:
     double        m_fTriggerPhase;  /* 锁定的启动相位 mm（整圈对齐+补偿） */
     double        m_fCamOrigin;     /* 凸轮相位原点 mm（= m_fTriggerPhase） */
     int           m_nStopTicks;     /* 停止保持计数 */
+    double        m_fPrevPhase;     /* 上一拍主轴相位 mm（差分求主轴速度，供超前补偿） */
+    bool          m_bPrevValid;     /* 上一拍相位有效标志（init 后首拍不差分） */
 };
 
 #endif /* FEED_SEQUENCER_H__20261117 */

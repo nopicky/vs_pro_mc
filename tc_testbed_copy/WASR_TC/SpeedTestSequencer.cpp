@@ -957,10 +957,15 @@ void SpeedTestSequencer::Update(ExperimentType_T experiment,
         float lineMMin = (sigOffset != NULL) ? *sigOffset : 0.0f;
         feedMaster.setVelocity((double)lineMMin * 1000.0 / 60.0);
 
-        // Start 触发: SigAmp 0→非0 上升沿触发一次送纸循环 (循环中忽略, 再触发先回 0)
+        // Start 触发: SigAmp 0→非0 上升沿启动, 回 0 释放
+        //   连续模式: 回 0 → 当前这张纸送完即停 (循环间隙回 0 则立即停, 不再续送)
+        //   单次模式: 回 0 只释放启动标志, 不影响已完成的循环 (需新上升沿再触发)
         float startSig = (sigAmp != NULL) ? *sigAmp : 0.0f;
         if (startSig > 0.0f && feedPrevSigAmp <= 0.0f) {
             feedSeq.setStart(true);
+        }
+        if (startSig <= 0.0f) {
+            feedSeq.setStart(false);   // 释放: 连续模式据此停车
         }
         feedPrevSigAmp = startSig;
 
@@ -979,12 +984,11 @@ void SpeedTestSequencer::Update(ExperimentType_T experiment,
         // 轴0 指令: 指令原点 + 凸轮位置 × 换算 (double 累加, 同 POS_WAVE 精度处理)
         posCmdOut = feedActPos0 + feedCmdMm[0] * feedMmToUnit;
 
-        // SigFreq 回读: IDLE = 换算系数 feedMmToUnit (诊断: 应 ≈ 671, 0 = 未挂载),
-        //                运行中 = 凸轮相位 camX [mm]
+        // SigFreq 回读凸轮相位 camX [mm] (Scope 观测; 未触发时保持 0)
         if (sigFreq != NULL) {
             FEED_MONITOR_T mon;
             feedSeq.getMonitor(&mon);
-            *sigFreq = (mon.nState == 0) ? (float)feedMmToUnit : (float)mon.fCamX;
+            *sigFreq = (float)mon.fCamX;
         }
         SetSpdCmd(spdCmd, 0.0f);   // CSP 下速度指令不用
         return;
