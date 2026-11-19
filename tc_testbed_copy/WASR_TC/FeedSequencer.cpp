@@ -22,7 +22,7 @@ FEED_CONFIG_T g_cfgFeed = {
     {10.0, 0.0, 0.0, 0.0},         /* afOvertravel：轴1 +10mm（科威达工艺） */
     0.0,                           /* fStartPhaseComp */
     350.0,                         /* fMaxLineSpeedMMin */
-    false,                         /* bContinuous：默认单次触发 */
+    true,                          /* bContinuous：默认连续循环（Start 撤销后当前循环走完即停） */
     false                          /* bLoadSideEnable：默认不接负载伺服 */
 };
 
