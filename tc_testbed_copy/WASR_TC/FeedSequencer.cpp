@@ -24,7 +24,8 @@ FEED_CONFIG_T g_cfgFeed = {
     400.0,                         /* fMaxLineSpeedMMin */
     true,                          /* bContinuous：默认连续循环（Start 撤销后当前循环走完即停） */
     false,                         /* bLoadSideEnable：默认不接负载伺服 */
-    19.5                           /* fLeadTimeMs：350m/min 实测扫参最佳值（0 = 关闭，恢复无超前行为） */
+    19.5                           /* fLeadTimeMs：实测反算最优 T=19.2±0.4ms，19.5 已基本到位（残余 -1.8mm）
+                                      再往下调会反向过头（每 1ms ≈ 5.8mm），不再盲调；0 = 关闭 */
 };
 
 /* 走完凸轮后保持终值的周期数（125us×8000 ≈ 1s），之后回 IDLE 等下一次 Start */
@@ -180,14 +181,17 @@ void CFeedSequencer::tick(double fMasterPhase, double fDtSec, const double* afAc
        再减去，形成「先正冲、后倒退」的两次大跳变（实测 ±450k 指令单位） */
     double fCamXEff = (m_eState == FEED_CAM_RUN) ? fCamX : 0.0;
     double fLeadSec = m_cfg.fLeadTimeMs * 0.001;    /* ms → s */
+    double afIdealMm[4] = {0.0, 0.0, 0.0, 0.0};
     for (int i = 0; i < 4; i++) {
         if (i < m_nAxisCount) {
+            /* 凸轮理论位置（不含超前）：工艺期望的实际位置 */
+            double fIdeal = m_afPosBase[i] + m_aFeeder[i].evalPos(fCamXEff);
             /* 超前补偿（替代驱动器速度前馈）：指令前移「轴速度 × T」
                轴速度 = 速比×主轴速度，故前移量 = evalVel(x)·v_master·T（一阶泰勒，等价相位提前）
                凸轮两端速比为 0 → 起停无跳变；T=0 时与原实现完全一致 */
             double fLead = m_aFeeder[i].evalVel(fCamXEff) * fMasterVel * fLeadSec;
-            afCmdPosMm[i] = m_afPosBase[i] + m_aFeeder[i].evalPos(fCamXEff) + fLead
-                            + compensationHook(i);
+            afIdealMm[i] = fIdeal;
+            afCmdPosMm[i] = fIdeal + fLead + compensationHook(i);
         } else {
             afCmdPosMm[i] = 0.0;
         }
@@ -202,8 +206,11 @@ void CFeedSequencer::tick(double fMasterPhase, double fDtSec, const double* afAc
         if (afActPosMm != 0 && i < m_nAxisCount) {
             /* 对齐 FAE 显示习惯：跟随偏差 = 指令 - 实际 - 启动相位补偿 */
             m_mon.afFollowErr[i] = afCmdPosMm[i] - afActPosMm[i] - m_cfg.fStartPhaseComp;
+            /* 理想偏差 = 凸轮理论位置 - 实际（正 = 实际落后于曲线） */
+            m_mon.afIdealErr[i] = afIdealMm[i] - afActPosMm[i];
         } else {
             m_mon.afFollowErr[i] = 0.0;
+            m_mon.afIdealErr[i] = 0.0;
         }
     }
 }

@@ -520,6 +520,30 @@
             <BaseType GUID="{18071995-0000-0000-0000-00000000000e}">LREAL</BaseType>
             <Unit><![CDATA[mm]]></Unit>
           </Symbol>
+          <Symbol CreateSymbol="true">
+            <Name>FeedIdealErr0</Name>
+            <Comment TxtId=""><![CDATA[轴0 相对凸轮理论曲线的偏差 (理想-实际), 指令单位; 正=实际落后]]></Comment>
+            <BaseType GUID="{18071995-0000-0000-0000-00000000000e}">LREAL</BaseType>
+            <Unit><![CDATA[指令单位]]></Unit>
+          </Symbol>
+          <Symbol CreateSymbol="true">
+            <Name>FeedIdealErr1</Name>
+            <Comment TxtId=""><![CDATA[轴1 相对凸轮理论曲线的偏差, 指令单位]]></Comment>
+            <BaseType GUID="{18071995-0000-0000-0000-00000000000e}">LREAL</BaseType>
+            <Unit><![CDATA[指令单位]]></Unit>
+          </Symbol>
+          <Symbol CreateSymbol="true">
+            <Name>FeedIdealErr2</Name>
+            <Comment TxtId=""><![CDATA[轴2 相对凸轮理论曲线的偏差, 指令单位]]></Comment>
+            <BaseType GUID="{18071995-0000-0000-0000-00000000000e}">LREAL</BaseType>
+            <Unit><![CDATA[指令单位]]></Unit>
+          </Symbol>
+          <Symbol CreateSymbol="true">
+            <Name>FeedIdealErr3</Name>
+            <Comment TxtId=""><![CDATA[轴3 相对凸轮理论曲线的偏差, 指令单位]]></Comment>
+            <BaseType GUID="{18071995-0000-0000-0000-00000000000e}">LREAL</BaseType>
+            <Unit><![CDATA[指令单位]]></Unit>
+          </Symbol>
         </DataArea>
       </DataAreas>
       <InterfacePointers>
@@ -535,6 +559,6 @@
   </Modules>
   <Library>
     <Name>WASR_TC</Name>
-    <Version>0.0.0.2</Version>
+    <Version>0.0.0.3</Version>
   </Library>
 </TcModuleClass>

@@ -187,6 +187,10 @@ typedef struct _WASR_TCStatus
 	double FeedFollowErrMm1;
 	double FeedFollowErrMm2;
 	double FeedFollowErrMm3;
+	double FeedIdealErr0;
+	double FeedIdealErr1;
+	double FeedIdealErr2;
+	double FeedIdealErr3;
 } WASR_TCStatus, *PWASR_TCStatus;
 #pragma pack(pop)
 

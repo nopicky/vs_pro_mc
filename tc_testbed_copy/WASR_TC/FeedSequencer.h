@@ -18,8 +18,10 @@ typedef struct tagFEED_MONITOR_T {
     int    nState;          /* 当前状态 FEED_STATE_E */
     double fMasterPhase;    /* 主轴相位 mm */
     double fCamX;           /* 凸轮内部相位 mm（主轴相位 - 启动原点） */
-    double afCmdPosMm[4];   /* 4 轴位置指令 mm */
+    double afCmdPosMm[4];   /* 4 轴位置指令 mm（含超前补偿） */
     double afFollowErr[4];  /* 4 轴跟随偏差 mm（指令-实际，对齐 FAE 习惯扣除启动相位补偿） */
+    double afIdealErr[4];   /* 4 轴相对凸轮理论曲线的偏差 mm（理想-实际，正=实际落后）
+                               —— 评价超前补偿/前馈效果看这个，不是 afFollowErr */
 } FEED_MONITOR_T;
 
 /* 送纸工艺状态机：只依赖 CVirtualMaster 相位输入与 CCamFeeder，不碰 PDO */

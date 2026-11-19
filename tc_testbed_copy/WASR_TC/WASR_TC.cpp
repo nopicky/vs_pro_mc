@@ -652,19 +652,26 @@ HRESULT CWASR_TC::CycleUpdate(ITcTask* ipTask, ITcUnknown* ipCaller, ULONG_PTR c
 
 	// 送纸凸轮监视量上 ADS (Scope 直接录): 主轴相位 [mm] +
 	// 跟随偏差双单位 (指令单位=同事对接口径, mm=工艺口径)
+	// 另有「相对凸轮理论曲线的偏差」(理想-实际)：评价超前补偿效果看这个，
+	// 跟随偏差(指令-实际)在开超前后恒等于超前量，不能用于评价
 	{
 		FEED_MONITOR_T mon;
 		m_testSeq.feedSeq.getMonitor(&mon);
 		m_Status.FeedMasterPhase = mon.fMasterPhase;
 		for (int i = 0; i < 4; i++) {
-			double fErrMm = mon.afFollowErr[i];
+			double fErrMm  = mon.afFollowErr[i];
+			double fIdealU = mon.afIdealErr[i] * m_testSeq.feedMmToUnit;
 			/* 指令单位 = mm × feedMmToUnit (未挂载时为 0) */
 			double fErrUnits = fErrMm * m_testSeq.feedMmToUnit;
 			switch (i) {
-				case 0: m_Status.FeedFollowErr0 = fErrUnits; m_Status.FeedFollowErrMm0 = fErrMm; break;
-				case 1: m_Status.FeedFollowErr1 = fErrUnits; m_Status.FeedFollowErrMm1 = fErrMm; break;
-				case 2: m_Status.FeedFollowErr2 = fErrUnits; m_Status.FeedFollowErrMm2 = fErrMm; break;
-				default: m_Status.FeedFollowErr3 = fErrUnits; m_Status.FeedFollowErrMm3 = fErrMm; break;
+				case 0: m_Status.FeedFollowErr0 = fErrUnits; m_Status.FeedFollowErrMm0 = fErrMm;
+				        m_Status.FeedIdealErr0 = fIdealU; break;
+				case 1: m_Status.FeedFollowErr1 = fErrUnits; m_Status.FeedFollowErrMm1 = fErrMm;
+				        m_Status.FeedIdealErr1 = fIdealU; break;
+				case 2: m_Status.FeedFollowErr2 = fErrUnits; m_Status.FeedFollowErrMm2 = fErrMm;
+				        m_Status.FeedIdealErr2 = fIdealU; break;
+				default: m_Status.FeedFollowErr3 = fErrUnits; m_Status.FeedFollowErrMm3 = fErrMm;
+				        m_Status.FeedIdealErr3 = fIdealU; break;
 			}
 		}
 	}
