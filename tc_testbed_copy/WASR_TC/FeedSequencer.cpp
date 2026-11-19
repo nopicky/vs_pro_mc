@@ -190,11 +190,15 @@ void CFeedSequencer::tick(double fMasterPhase, double fDtSec, const double* afAc
                轴速度 = 速比×主轴速度，故前移量 = evalVel(x)·v_master·T（一阶泰勒，等价相位提前）
                凸轮两端速比为 0 → 起停无跳变；T=0 时与原实现完全一致 */
             double fLead = m_aFeeder[i].evalVel(fCamXEff) * fMasterVel * fLeadSec;
-            /* 二阶项：加速段一阶超前会过冲，按 -T²·a 回调（a 为从轴加速度 = 曲率×主轴速度²）
-               同步段曲率为 0 → 该项不影响稳态段 */
+            /* 二阶项：前馈量 = T·v + k·a（a 为从轴加速度 = 曲率 × 主轴速度²）
+               实测（350m/min, T=20.3ms）加速段残余 +9.2mm（实际落后）、
+               减速段残余 -6.8mm（实际超前）——两者都说明「轴跟不上速度变化」，
+               故加速(a>0)要多给超前、减速(a<0)要少给，符号为 **加**。
+               同步段曲率为 0 → 该项不影响稳态段，只修加减速过渡。
+               k 的量纲是 ms²，起点建议 30~60（k=50 时在 350 档约补 9mm） */
             if (m_cfg.fLeadAccMs2 > 0.0) {
                 double fAccAxis = m_aFeeder[i].evalAcc(fCamXEff) * fMasterVel * fMasterVel;
-                fLead -= fAccAxis * (m_cfg.fLeadAccMs2 * 1.0e-6);
+                fLead += fAccAxis * (m_cfg.fLeadAccMs2 * 1.0e-6);
             }
             afIdealMm[i] = fIdeal;
             afCmdPosMm[i] = fIdeal + fLead + compensationHook(i);
