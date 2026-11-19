@@ -5,12 +5,12 @@
   <Children>
     <Node>
       <Title>ScopeWizard</Title>
-      <Expanded>False</Expanded>
+      <Expanded>True</Expanded>
       <FileName>D:\work\w2026\vs_pro_mc\tc_measurement\ScopeWizard.tcscopex</FileName>
       <Children>
         <Node>
           <Title>DataPool</Title>
-          <Expanded>False</Expanded>
+          <Expanded>True</Expanded>
           <FileName></FileName>
           <Children>
             <Node>
@@ -128,6 +128,12 @@
               <Children />
             </Node>
             <Node>
+              <Title>FeedIdealErr0</Title>
+              <Expanded>False</Expanded>
+              <FileName></FileName>
+              <Children />
+            </Node>
+            <Node>
               <Title>SigOffset</Title>
               <Expanded>False</Expanded>
               <FileName></FileName>
@@ -149,7 +155,7 @@
         </Node>
         <Node>
           <Title>驱动侧</Title>
-          <Expanded>False</Expanded>
+          <Expanded>True</Expanded>
           <FileName></FileName>
           <Children>
             <Node>
@@ -282,7 +288,7 @@
               <FileName></FileName>
               <Children>
                 <Node>
-                  <Title>FeedFollowErrMm0 (1)</Title>
+                  <Title>FeedFollowErrMm0</Title>
                   <Expanded>False</Expanded>
                   <FileName></FileName>
                   <Children />
@@ -291,11 +297,24 @@
             </Node>
             <Node>
               <Title>6077 实际转矩(0.1%)</Title>
-              <Expanded>False</Expanded>
+              <Expanded>True</Expanded>
               <FileName></FileName>
               <Children>
                 <Node>
                   <Title>Torque_actual_value</Title>
+                  <Expanded>False</Expanded>
+                  <FileName></FileName>
+                  <Children />
+                </Node>
+              </Children>
+            </Node>
+            <Node>
+              <Title>「理想−实际，指令单位</Title>
+              <Expanded>True</Expanded>
+              <FileName></FileName>
+              <Children>
+                <Node>
+                  <Title>FeedIdealErr0</Title>
                   <Expanded>False</Expanded>
                   <FileName></FileName>
                   <Children />

@@ -71,6 +71,20 @@ static double evalSegVel(const QUINTIC_SEG_T* pSeg, double fX) {
     return (fH / fL) * dp;
 }
 
+/* 段内曲率 d2Y/dX2 = (H/L^2)*p''(u) */
+static double evalSegAcc(const QUINTIC_SEG_T* pSeg, double fX) {
+
+    double fL = pSeg->fX1 - pSeg->fX0;
+    double fH = pSeg->fY1 - pSeg->fY0;
+    double u = (fX - pSeg->fX0) / fL;
+    if (u < 0.0 || u > 1.0) {
+        return 0.0;
+    }
+    const double* a = pSeg->a;
+    double ddp = 2.0 * a[2] + u * (6.0 * a[3] + u * (12.0 * a[4] + u * 20.0 * a[5]));
+    return (fH / (fL * fL)) * ddp;
+}
+
 bool CCamFeeder::build(double fSyncLen, double fOvertravel,
                        double fAccelX, double fAccelY, double fDecelX, double fDecelY) {
 
@@ -127,6 +141,20 @@ double CCamFeeder::evalVel(double fX) const {
         return 1.0;
     }
     return evalSegVel(&m_decelSeg, fX - m_fAccelX - m_fSyncLen);
+}
+
+double CCamFeeder::evalAcc(double fX) const {
+
+    if (fX <= 0.0 || fX >= m_fTotalLen) {
+        return 0.0;
+    }
+    if (fX < m_fAccelX) {
+        return evalSegAcc(&m_accelSeg, fX);
+    }
+    if (fX < m_fAccelX + m_fSyncLen) {
+        return 0.0;                                    /* 同步段：直线，曲率为 0 */
+    }
+    return evalSegAcc(&m_decelSeg, fX - m_fAccelX - m_fSyncLen);
 }
 
 double CCamFeeder::getLength() const {

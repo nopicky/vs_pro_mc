@@ -21,10 +21,12 @@ typedef struct tagFEED_CONFIG_T {
     bool   bContinuous;         /* 运行模式：false=单次触发（默认，调试）；true=连续循环
                                    （凸轮走完立即等主轴下一整圈自动续送，Start 撤销后当前循环走完即停） */
     bool   bLoadSideEnable;     /* 负载侧(CST)使能开关：false=不接负载伺服（默认，首测/实际机台） */
-    double fLeadTimeMs;         /* 位置超前(相位提前)补偿 ms：0=关闭(等同现值)
-                                   原理：位置环滞后 T 使实际 ≈ 指令延迟 T，把指令按「轴速度×T」提前量
-                                   前移即可抵消（等价于速度前馈，纯软件实现，无需驱动器 60B1h）
-                                   350m/min 实测等效 T≈20ms，建议从 0 起逐步加，看同步段偏差均值收敛 */
+    double fLeadTimeMs;         /* 位置超前(相位提前)补偿 ms：0=关闭
+                                   位置环滞后 T 使实际 ≈ 指令延迟 T，把指令按「轴速度×T」前移即可抵消
+                                   350m/min 实测最优 ≈20.3ms */
+    double fLeadAccMs2;         /* 二阶(加速度)前馈 ms²：0=关闭（推荐起步 0.05~0.2）
+                                   一阶超前在加速段会过冲（实测同步段入口略超前），
+                                   理论上应按「T·v - T²·a」补偿，此项即 -T²·a 的系数 */
 } FEED_CONFIG_T;
 
 /* 全局工艺参数实例

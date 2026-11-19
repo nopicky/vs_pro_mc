@@ -32,6 +32,8 @@ public:
     double evalPos(double fX) const;
     /* 主轴相位 fX(mm) → 速比 dY/dX（速度前馈用） */
     double evalVel(double fX) const;
+    /* 主轴相位 fX(mm) → 曲率 d2Y/dX2（加速度前馈用；同步段为 0） */
+    double evalAcc(double fX) const;
     /* 凸轮总长（主轴 mm） */
     double getLength() const;
 

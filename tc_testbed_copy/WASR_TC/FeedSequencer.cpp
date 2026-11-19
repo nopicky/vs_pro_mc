@@ -24,8 +24,8 @@ FEED_CONFIG_T g_cfgFeed = {
     400.0,                         /* fMaxLineSpeedMMin */
     true,                          /* bContinuous：默认连续循环（Start 撤销后当前循环走完即停） */
     false,                         /* bLoadSideEnable：默认不接负载伺服 */
-    19.5                           /* fLeadTimeMs：实测反算最优 T=19.2±0.4ms，19.5 已基本到位（残余 -1.8mm）
-                                      再往下调会反向过头（每 1ms ≈ 5.8mm），不再盲调；0 = 关闭 */
+    20.3,                          /* fLeadTimeMs：实测反算 350 档 20.14ms / 120 档 20.55ms，取 20.3 兼顾 */
+    0.0                            /* fLeadAccMs2：加速度前馈默认关（扫参起点 0.05~0.2） */
 };
 
 /* 走完凸轮后保持终值的周期数（125us×8000 ≈ 1s），之后回 IDLE 等下一次 Start */
@@ -190,6 +190,12 @@ void CFeedSequencer::tick(double fMasterPhase, double fDtSec, const double* afAc
                轴速度 = 速比×主轴速度，故前移量 = evalVel(x)·v_master·T（一阶泰勒，等价相位提前）
                凸轮两端速比为 0 → 起停无跳变；T=0 时与原实现完全一致 */
             double fLead = m_aFeeder[i].evalVel(fCamXEff) * fMasterVel * fLeadSec;
+            /* 二阶项：加速段一阶超前会过冲，按 -T²·a 回调（a 为从轴加速度 = 曲率×主轴速度²）
+               同步段曲率为 0 → 该项不影响稳态段 */
+            if (m_cfg.fLeadAccMs2 > 0.0) {
+                double fAccAxis = m_aFeeder[i].evalAcc(fCamXEff) * fMasterVel * fMasterVel;
+                fLead -= fAccAxis * (m_cfg.fLeadAccMs2 * 1.0e-6);
+            }
             afIdealMm[i] = fIdeal;
             afCmdPosMm[i] = fIdeal + fLead + compensationHook(i);
         } else {
