@@ -2,8 +2,8 @@
 <TcSmProject xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.beckhoff.com/schemas/2012/07/TcSmProject" TcSmVersion="1.0" TcVersion="3.1.4026.25">
 	<DataTypes>
 		<DataType>
-			<Name GUID="{3EA188CF-A9B9-4934-9F74-3938A094C484}" AutoDeleteType="true">ServoInputs</Name>
-			<BitSize>128</BitSize>
+			<Name GUID="{945BCE8D-4E9B-4EA2-A1BE-727F8500DE9B}" AutoDeleteType="true">ServoInputs</Name>
+			<BitSize>160</BitSize>
 			<SubItem>
 				<Name>Error_code</Name>
 				<Type GUID="{18071995-0000-0000-0000-000000000005}">UINT</Type>
@@ -40,6 +40,12 @@
 				<BitSize>16</BitSize>
 				<BitOffs>112</BitOffs>
 			</SubItem>
+			<SubItem>
+				<Name>Following_error_actual_value</Name>
+				<Type GUID="{18071995-0000-0000-0000-000000000009}">DINT</Type>
+				<BitSize>32</BitSize>
+				<BitOffs>128</BitOffs>
+			</SubItem>
 			<Hides>
 				<Hide GUID="{CEB17EF3-3352-48A7-9733-E07A8EFDBF5F}"/>
 				<Hide GUID="{3CD78E58-1DFD-4BC4-8A10-07BFA445D2C5}"/>
@@ -58,6 +64,8 @@
 				<Hide GUID="{120AAAE2-7C00-4E45-BCF6-C4242565E8CD}"/>
 				<Hide GUID="{C9B7194D-327B-491C-BE6E-2345D7FEF2CC}"/>
 				<Hide GUID="{5599EC67-8337-4157-BF04-44DD1DCFC431}"/>
+				<Hide GUID="{3EA188CF-A9B9-4934-9F74-3938A094C484}"/>
+				<Hide GUID="{CC68A970-00F3-46EE-BF00-204C1991747D}"/>
 			</Hides>
 		</DataType>
 		<DataType>
@@ -122,6 +130,65 @@
 				<Hide GUID="{8747089C-D338-43C2-8306-9F5EAFE8070D}"/>
 				<Hide GUID="{5B20F12C-D23D-40E1-A973-85C19CA8D268}"/>
 				<Hide GUID="{82BD95D3-8E81-42DD-9060-3C500F22D41B}"/>
+			</Hides>
+		</DataType>
+		<DataType>
+			<Name GUID="{3EA188CF-A9B9-4934-9F74-3938A094C484}" AutoDeleteType="true">ServoInputs</Name>
+			<BitSize>128</BitSize>
+			<SubItem>
+				<Name>Error_code</Name>
+				<Type GUID="{18071995-0000-0000-0000-000000000005}">UINT</Type>
+				<BitSize>16</BitSize>
+				<BitOffs>0</BitOffs>
+			</SubItem>
+			<SubItem>
+				<Name>Status_word</Name>
+				<Type GUID="{18071995-0000-0000-0000-000000000005}">UINT</Type>
+				<BitSize>16</BitSize>
+				<BitOffs>16</BitOffs>
+			</SubItem>
+			<SubItem>
+				<Name>Position_actual_value</Name>
+				<Type GUID="{18071995-0000-0000-0000-000000000009}">DINT</Type>
+				<BitSize>32</BitSize>
+				<BitOffs>32</BitOffs>
+			</SubItem>
+			<SubItem>
+				<Name>Torque_actual_value</Name>
+				<Type GUID="{18071995-0000-0000-0000-000000000006}">INT</Type>
+				<BitSize>16</BitSize>
+				<BitOffs>64</BitOffs>
+			</SubItem>
+			<SubItem>
+				<Name>Velocity_actual_value</Name>
+				<Type GUID="{18071995-0000-0000-0000-000000000009}">DINT</Type>
+				<BitSize>32</BitSize>
+				<BitOffs>80</BitOffs>
+			</SubItem>
+			<SubItem>
+				<Name>Torque_demand</Name>
+				<Type GUID="{18071995-0000-0000-0000-000000000006}">INT</Type>
+				<BitSize>16</BitSize>
+				<BitOffs>112</BitOffs>
+			</SubItem>
+			<Hides>
+				<Hide GUID="{CEB17EF3-3352-48A7-9733-E07A8EFDBF5F}"/>
+				<Hide GUID="{3CD78E58-1DFD-4BC4-8A10-07BFA445D2C5}"/>
+				<Hide GUID="{8C8621D8-A3C9-4345-8946-C72D62995208}"/>
+				<Hide GUID="{6F53DAA2-0963-48FA-B9A8-2E814B61931C}"/>
+				<Hide GUID="{62ACA03C-9DE4-48BF-8BD4-5D5A42B97A3E}"/>
+				<Hide GUID="{39CE18E1-8D08-4435-9128-5E0DC355BB5A}"/>
+				<Hide GUID="{833BEDB9-097F-49E8-97E2-43447650AFF6}"/>
+				<Hide GUID="{35FB91F9-43E9-4427-A083-FFF655DAE0BB}"/>
+				<Hide GUID="{37540F0D-39F1-48E9-A3A7-CBF3ADDD5E2D}"/>
+				<Hide GUID="{AC79AAF5-B920-44E9-8041-FF338E379846}"/>
+				<Hide GUID="{9FEB0389-635A-457D-9D04-A3FA6C349A89}"/>
+				<Hide GUID="{8F71F502-A4A4-4029-90C4-296BB04532C2}"/>
+				<Hide GUID="{AF4C8D9B-FF12-49FA-BBEA-81772338A568}"/>
+				<Hide GUID="{D03C70BD-D4D1-4C24-8D84-664367D1AA8B}"/>
+				<Hide GUID="{120AAAE2-7C00-4E45-BCF6-C4242565E8CD}"/>
+				<Hide GUID="{C9B7194D-327B-491C-BE6E-2345D7FEF2CC}"/>
+				<Hide GUID="{5599EC67-8337-4157-BF04-44DD1DCFC431}"/>
 			</Hides>
 		</DataType>
 		<DataType>
@@ -433,22 +500,22 @@
 						</Parameters>
 						<DataAreas>
 							<DataArea>
-								<AreaNo AreaType="InputDst" CreateSymbols="true" ShowSymbols="true">0</AreaNo>
+								<AreaNo AreaType="InputDst" CreateSymbols="true">0</AreaNo>
 								<Name>Inputs</Name>
 								<ContextId>1</ContextId>
-							<ByteSize>40</ByteSize>
-							<Symbol>
-								<Name>Servo0</Name>
-								<BitSize>160</BitSize>
-									<BaseType GUID="{3EA188CF-A9B9-4934-9F74-3938A094C484}">ServoInputs</BaseType>
+								<ByteSize>40</ByteSize>
+								<Symbol>
+									<Name>Servo0</Name>
+									<BitSize>160</BitSize>
+									<BaseType GUID="{945BCE8D-4E9B-4EA2-A1BE-727F8500DE9B}">ServoInputs</BaseType>
 									<BitOffs>0</BitOffs>
 								</Symbol>
-							<Symbol>
-								<Name>Servo1</Name>
-								<BitSize>160</BitSize>
-								<BaseType GUID="{3EA188CF-A9B9-4934-9F74-3938A094C484}">ServoInputs</BaseType>
-								<BitOffs>160</BitOffs>
-							</Symbol>
+								<Symbol>
+									<Name>Servo1</Name>
+									<BitSize>160</BitSize>
+									<BaseType GUID="{945BCE8D-4E9B-4EA2-A1BE-727F8500DE9B}">ServoInputs</BaseType>
+									<BitOffs>160</BitOffs>
+								</Symbol>
 							</DataArea>
 							<DataArea>
 								<AreaNo AreaType="OutputSrc">1</AreaNo>
@@ -2168,7 +2235,6 @@
 		</Io>
 		<SymbolWatch>
 			<Variable>TIXC^WASR_TC^WASR_TC_Obj1 (WASR_TC)^Outputs^Servo0</Variable>
-			<Variable>TIXC^WASR_TC^WASR_TC_Obj1 (WASR_TC)^Inputs^Servo0</Variable>
 		</SymbolWatch>
 	</Project>
 	<Mappings>
@@ -2195,6 +2261,7 @@
 				<Link VarA="维控VD5L^RxPDO^Target torque" VarB="Outputs^Servo0^Target_torque"/>
 				<Link VarA="维控VD5L^RxPDO^Target velocity" VarB="Outputs^Servo0^Target_velocity"/>
 				<Link VarA="维控VD5L^TxPDO^Error Code" VarB="Inputs^Servo0^Error_code"/>
+				<Link VarA="维控VD5L^TxPDO^Following error actual value" VarB="Inputs^Servo0^Following_error_actual_value"/>
 				<Link VarA="维控VD5L^TxPDO^Position actual value" VarB="Inputs^Servo0^Position_actual_value"/>
 				<Link VarA="维控VD5L^TxPDO^Torque actual value" VarB="Inputs^Servo0^Torque_actual_value"/>
 				<Link VarA="维控VD5L^TxPDO^Torque demand " VarB="Inputs^Servo0^Torque_demand"/>

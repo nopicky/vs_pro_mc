@@ -5,7 +5,7 @@
   </Vendor>
   <DataTypes>
     <DataType>
-      <Name GUID="{3ea188cf-a9b9-4934-9f74-3938a094c484}" AutoDeleteType="true">ServoInputs</Name>
+      <Name GUID="{945bce8d-4e9b-4ea2-a1be-727f8500de9b}" AutoDeleteType="true">ServoInputs</Name>
       <SubItem>
         <Name>Error_code</Name>
         <Type GUID="{18071995-0000-0000-0000-000000000005}">UINT</Type>
@@ -52,6 +52,8 @@
         <Hide GUID="{120aaae2-7c00-4e45-bcf6-c4242565e8cd}" />
         <Hide GUID="{c9b7194d-327b-491c-be6e-2345d7fef2cc}" />
         <Hide GUID="{5599ec67-8337-4157-bf04-44dd1dcfc431}" />
+        <Hide GUID="{3ea188cf-a9b9-4934-9f74-3938a094c484}" />
+        <Hide GUID="{cc68a970-00f3-46ee-bf00-204c1991747d}" />
       </Hides>
     </DataType>
     <DataType>
@@ -280,7 +282,7 @@
       <Name GUID="{e8fbc83c-dcba-48a3-8f3c-de0bff168393}">ServoIO</Name>
       <SubItem>
         <Name>Inputs</Name>
-        <Type GUID="{3ea188cf-a9b9-4934-9f74-3938a094c484}" PointerTo="1">ServoInputs</Type>
+        <Type GUID="{945bce8d-4e9b-4ea2-a1be-727f8500de9b}" PointerTo="1">ServoInputs</Type>
       </SubItem>
       <SubItem>
         <Name>Outputs</Name>
@@ -370,11 +372,11 @@
           <ContextId>1</ContextId>
           <Symbol>
             <Name>Servo0</Name>
-            <BaseType GUID="{3ea188cf-a9b9-4934-9f74-3938a094c484}">ServoInputs</BaseType>
+            <BaseType GUID="{945bce8d-4e9b-4ea2-a1be-727f8500de9b}">ServoInputs</BaseType>
           </Symbol>
           <Symbol CreateSymbol="true">
             <Name>Servo1</Name>
-            <BaseType GUID="{3ea188cf-a9b9-4934-9f74-3938a094c484}">ServoInputs</BaseType>
+            <BaseType GUID="{945bce8d-4e9b-4ea2-a1be-727f8500de9b}">ServoInputs</BaseType>
           </Symbol>
         </DataArea>
         <DataArea>
