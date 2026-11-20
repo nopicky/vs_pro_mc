@@ -169,8 +169,9 @@ protected:
 	double   m_afActPosUnits[SITE_AXIS_MAX];
 	// CiA402 步号 (每槽位一份): 0=init, 1=ready-to-switch-on, 2=switched-on, 3=operation-enabled
 	uint8_t m_aucCia402Step[SITE_SLOT_MAX];
-	// 本拍各轴 Operation Enabled
+	// 本拍各轴 Operation Enabled (CiA402_Update 写, 输出层读)
 	bool m_abOpDrive[SITE_AXIS_MAX];
+	bool m_abOpLoad[SITE_AXIS_MAX];
 	// 上一拍驱动轴0 的 Operation Enabled (上升沿复位上位机速度环)
 	bool m_bPrevOpDrive;
 	// 上一拍 Enable

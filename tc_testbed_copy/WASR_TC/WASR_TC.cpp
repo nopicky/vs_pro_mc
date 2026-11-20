@@ -236,6 +236,7 @@ CWASR_TC::CWASR_TC()
 		m_apLoad[i]          = NULL;
 		m_afActPosUnits[i]   = 0.0;
 		m_abOpDrive[i]       = false;
+		m_abOpLoad[i]        = false;
 	}
 	m_nDriveAxisCount = 0;
 	m_nLoadAxisCount  = 0;
