@@ -81,3 +81,5 @@ Desktop.ini
 $RECYCLE.BIN/
 ehthumbs.db
 *.tmp
+# TortoiseGit 每个仓库的本地设置（不是工程配置，换台机器就得重设）
+.tgitconfig

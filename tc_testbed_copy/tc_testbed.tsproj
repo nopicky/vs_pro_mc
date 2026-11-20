@@ -1,4 +1,4 @@
-﻿<?xml version="1.0"?>
+<?xml version="1.0"?>
 <TcSmProject xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.beckhoff.com/schemas/2012/07/TcSmProject" TcSmVersion="1.0" TcVersion="3.1.4026.25">
 	<DataTypes>
 		<DataType>
@@ -69,7 +69,7 @@
 			</Hides>
 		</DataType>
 		<DataType>
-			<Name GUID="{B2423A46-CA74-4CEB-90A5-4087FA1A95A1}">ServoOutputs</Name>
+			<Name GUID="{B2423A46-CA74-4CEB-90A5-4087FA1A95A1}" AutoDeleteType="true">ServoOutputs</Name>
 			<BitSize>168</BitSize>
 			<SubItem>
 				<Name>Controlword</Name>
@@ -130,65 +130,6 @@
 				<Hide GUID="{8747089C-D338-43C2-8306-9F5EAFE8070D}"/>
 				<Hide GUID="{5B20F12C-D23D-40E1-A973-85C19CA8D268}"/>
 				<Hide GUID="{82BD95D3-8E81-42DD-9060-3C500F22D41B}"/>
-			</Hides>
-		</DataType>
-		<DataType>
-			<Name GUID="{3EA188CF-A9B9-4934-9F74-3938A094C484}" AutoDeleteType="true">ServoInputs</Name>
-			<BitSize>128</BitSize>
-			<SubItem>
-				<Name>Error_code</Name>
-				<Type GUID="{18071995-0000-0000-0000-000000000005}">UINT</Type>
-				<BitSize>16</BitSize>
-				<BitOffs>0</BitOffs>
-			</SubItem>
-			<SubItem>
-				<Name>Status_word</Name>
-				<Type GUID="{18071995-0000-0000-0000-000000000005}">UINT</Type>
-				<BitSize>16</BitSize>
-				<BitOffs>16</BitOffs>
-			</SubItem>
-			<SubItem>
-				<Name>Position_actual_value</Name>
-				<Type GUID="{18071995-0000-0000-0000-000000000009}">DINT</Type>
-				<BitSize>32</BitSize>
-				<BitOffs>32</BitOffs>
-			</SubItem>
-			<SubItem>
-				<Name>Torque_actual_value</Name>
-				<Type GUID="{18071995-0000-0000-0000-000000000006}">INT</Type>
-				<BitSize>16</BitSize>
-				<BitOffs>64</BitOffs>
-			</SubItem>
-			<SubItem>
-				<Name>Velocity_actual_value</Name>
-				<Type GUID="{18071995-0000-0000-0000-000000000009}">DINT</Type>
-				<BitSize>32</BitSize>
-				<BitOffs>80</BitOffs>
-			</SubItem>
-			<SubItem>
-				<Name>Torque_demand</Name>
-				<Type GUID="{18071995-0000-0000-0000-000000000006}">INT</Type>
-				<BitSize>16</BitSize>
-				<BitOffs>112</BitOffs>
-			</SubItem>
-			<Hides>
-				<Hide GUID="{CEB17EF3-3352-48A7-9733-E07A8EFDBF5F}"/>
-				<Hide GUID="{3CD78E58-1DFD-4BC4-8A10-07BFA445D2C5}"/>
-				<Hide GUID="{8C8621D8-A3C9-4345-8946-C72D62995208}"/>
-				<Hide GUID="{6F53DAA2-0963-48FA-B9A8-2E814B61931C}"/>
-				<Hide GUID="{62ACA03C-9DE4-48BF-8BD4-5D5A42B97A3E}"/>
-				<Hide GUID="{39CE18E1-8D08-4435-9128-5E0DC355BB5A}"/>
-				<Hide GUID="{833BEDB9-097F-49E8-97E2-43447650AFF6}"/>
-				<Hide GUID="{35FB91F9-43E9-4427-A083-FFF655DAE0BB}"/>
-				<Hide GUID="{37540F0D-39F1-48E9-A3A7-CBF3ADDD5E2D}"/>
-				<Hide GUID="{AC79AAF5-B920-44E9-8041-FF338E379846}"/>
-				<Hide GUID="{9FEB0389-635A-457D-9D04-A3FA6C349A89}"/>
-				<Hide GUID="{8F71F502-A4A4-4029-90C4-296BB04532C2}"/>
-				<Hide GUID="{AF4C8D9B-FF12-49FA-BBEA-81772338A568}"/>
-				<Hide GUID="{D03C70BD-D4D1-4C24-8D84-664367D1AA8B}"/>
-				<Hide GUID="{120AAAE2-7C00-4E45-BCF6-C4242565E8CD}"/>
-				<Hide GUID="{C9B7194D-327B-491C-BE6E-2345D7FEF2CC}"/>
-				<Hide GUID="{5599EC67-8337-4157-BF04-44DD1DCFC431}"/>
 			</Hides>
 		</DataType>
 		<DataType>
@@ -319,7 +260,7 @@
 			<BitSize X64="480">416</BitSize>
 			<SubItem>
 				<Name>Inputs</Name>
-				<Type GUID="{3EA188CF-A9B9-4934-9F74-3938A094C484}" PointerTo="1">ServoInputs</Type>
+				<Type GUID="{945BCE8D-4E9B-4EA2-A1BE-727F8500DE9B}" PointerTo="1">ServoInputs</Type>
 				<BitSize X64="64">32</BitSize>
 				<BitOffs>0</BitOffs>
 			</SubItem>
@@ -413,6 +354,11 @@
 				<Enum>8</Enum>
 				<Comment><![CDATA[电流环PRBS实验]]></Comment>
 			</EnumInfo>
+			<EnumInfo>
+				<Text><![CDATA[ExperimentType_FeedCamTest]]></Text>
+				<Enum>9</Enum>
+				<Comment><![CDATA[送纸凸轮实验]]></Comment>
+			</EnumInfo>
 			<Hides>
 				<Hide GUID="{607F3DD5-A6E7-477A-9EF1-53240F8703EA}"/>
 				<Hide GUID="{DFED6A86-459D-4DA1-AE45-AE1E6BD76328}"/>
@@ -453,9 +399,9 @@
 		</System>
 		<Cpp>
 			<Project GUID="{049664A0-8452-41E5-A966-0529CE74E06E}" Name="WASR_TC" PrjFilePath="WASR_TC\WASR_TC.vcxproj" TmcFilePath="WASR_TC\WASR_TC.tmc">
-				<Instance Id="#x01010010" KeepUnrestoredLinks="2" AutoReloadTmc="true" ClassFactoryId="C++ Module Vendor|WASR_TC|0.0.0.4">
+				<Instance Id="#x01010010" KeepUnrestoredLinks="2" AutoReloadTmc="true" ClassFactoryId="C++ Module Vendor|WASR_TC|0.0.0.5">
 					<Name>WASR_TC_Obj1 (WASR_TC)</Name>
-					<TmcDesc GUID="{ACD873DF-2063-4B77-9A90-AF0ED06810F6}" ClassFactoryId="C++ Module Vendor|WASR_TC|0.0.0.4">
+					<TmcDesc GUID="{ACD873DF-2063-4B77-9A90-AF0ED06810F6}" ClassFactoryId="C++ Module Vendor|WASR_TC|0.0.0.5">
 						<Name>WASR_TC</Name>
 						<CLSID ClassFactory="WASR_TC">{ACD873DF-2063-4B77-9A90-AF0ED06810F6}</CLSID>
 						<Licenses>
@@ -666,7 +612,7 @@
 								<Name>Status</Name>
 								<Comment><![CDATA[状态]]></Comment>
 								<ContextId>1</ContextId>
-								<ByteSize>171</ByteSize>
+								<ByteSize>176</ByteSize>
 								<Symbol>
 									<Name>Enable</Name>
 									<BitSize>8</BitSize>
@@ -674,60 +620,67 @@
 									<BitOffs>0</BitOffs>
 								</Symbol>
 								<Symbol>
-									<Name>Driver_Servo_number</Name>
+									<Name>bFeedStart</Name>
+									<Comment TxtId=""><![CDATA[送纸启动 (1=启动/续送, 0=停止)。原来是借 SigAmp 的上升沿当触发, 语义别扭且容易误碰, 现在独立一位]]></Comment>
 									<BitSize>8</BitSize>
 									<BaseType GUID="{18071995-0000-0000-0000-000000000002}">USINT</BaseType>
 									<BitOffs>8</BitOffs>
 								</Symbol>
 								<Symbol>
+									<Name>Driver_Servo_number</Name>
+									<BitSize>8</BitSize>
+									<BaseType GUID="{18071995-0000-0000-0000-000000000002}">USINT</BaseType>
+									<BitOffs>16</BitOffs>
+								</Symbol>
+								<Symbol>
 									<Name>Driver_Modes_of_operation</Name>
 									<BitSize>8</BitSize>
 									<BaseType GUID="{18071995-0000-0000-0000-000000000003}">SINT</BaseType>
-									<BitOffs>16</BitOffs>
+									<BitOffs>24</BitOffs>
 								</Symbol>
 								<Symbol>
 									<Name>Driver_Inertia_ratio</Name>
 									<BitSize>16</BitSize>
 									<BaseType GUID="{18071995-0000-0000-0000-000000000005}">UINT</BaseType>
-									<BitOffs>24</BitOffs>
+									<BitOffs>32</BitOffs>
 								</Symbol>
 								<Symbol>
 									<Name>Driver_Rigidity_level</Name>
 									<BitSize>16</BitSize>
 									<BaseType GUID="{18071995-0000-0000-0000-000000000005}">UINT</BaseType>
-									<BitOffs>40</BitOffs>
+									<BitOffs>48</BitOffs>
 								</Symbol>
 								<Symbol>
 									<Name>Driver_SpdLoop_Kp</Name>
 									<BitSize>16</BitSize>
 									<BaseType GUID="{18071995-0000-0000-0000-000000000005}">UINT</BaseType>
-									<BitOffs>56</BitOffs>
+									<BitOffs>64</BitOffs>
 								</Symbol>
 								<Symbol>
 									<Name>Driver_SpdLoop_Ti</Name>
 									<BitSize>16</BitSize>
 									<BaseType GUID="{18071995-0000-0000-0000-000000000005}">UINT</BaseType>
-									<BitOffs>72</BitOffs>
+									<BitOffs>80</BitOffs>
 								</Symbol>
 								<Symbol>
 									<Name>ExperimentType</Name>
 									<BitSize>16</BitSize>
 									<BaseType GUID="{357956CC-D1A1-4576-B5A4-10FF5D8A9034}">ExperimentType_T</BaseType>
-									<BitOffs>88</BitOffs>
+									<BitOffs>96</BitOffs>
 								</Symbol>
 								<Symbol CreateSymbol="true">
 									<Name>SigFreq</Name>
 									<Comment TxtId=""><![CDATA[扰动频率]]></Comment>
 									<BitSize>32</BitSize>
 									<BaseType GUID="{18071995-0000-0000-0000-00000000000D}">REAL</BaseType>
-									<BitOffs>104</BitOffs>
+									<BitOffs>112</BitOffs>
 								</Symbol>
 								<Symbol>
 									<Name>SigAmp</Name>
 									<Comment TxtId=""><![CDATA[扰动幅值: 速度波形 [rpm], 位置波形 [指令单位], 负载扫描回读 [% 负载额定], 只读]]></Comment>
 									<BitSize>32</BitSize>
 									<BaseType GUID="{18071995-0000-0000-0000-00000000000D}">REAL</BaseType>
-									<BitOffs>136</BitOffs>
+									<BitOffs>144</BitOffs>
 								</Symbol>
 								<Symbol CreateSymbol="true">
 									<Name>SigOffset</Name>
@@ -735,7 +688,7 @@
 									<BitSize>32</BitSize>
 									<BaseType GUID="{18071995-0000-0000-0000-00000000000D}">REAL</BaseType>
 									<Unit><![CDATA[0.1%RatedTorque]]></Unit>
-									<BitOffs>168</BitOffs>
+									<BitOffs>176</BitOffs>
 								</Symbol>
 								<Symbol CreateSymbol="true">
 									<Name>FeedMasterPhase</Name>
@@ -743,205 +696,233 @@
 									<BitSize>64</BitSize>
 									<BaseType GUID="{18071995-0000-0000-0000-00000000000E}">LREAL</BaseType>
 									<Unit><![CDATA[mm]]></Unit>
-									<BitOffs>200</BitOffs>
+									<BitOffs>208</BitOffs>
 								</Symbol>
 								<Symbol CreateSymbol="true">
-									<Name>FeedFollowErr0</Name>
-									<Comment TxtId=""><![CDATA[轴0 跟随偏差 (指令-实际-启动相位补偿), 指令单位]]></Comment>
+									<Name>Axis0Slot</Name>
+									<Comment TxtId=""><![CDATA[轴0 当前所在槽位号 (0=Servo0)。轴号≠槽位号: 现在对拖是 Servo1, 看这个才知道轴0 是哪台驱动器]]></Comment>
+									<BitSize>8</BitSize>
+									<BaseType GUID="{18071995-0000-0000-0000-000000000002}">USINT</BaseType>
+									<BitOffs>272</BitOffs>
+								</Symbol>
+								<Symbol CreateSymbol="true">
+									<Name>Axis1Slot</Name>
+									<Comment TxtId=""><![CDATA[轴1 当前所在槽位号 (0=Servo0)。轴号≠槽位号: 现在对拖是 Servo2, 看这个才知道轴1 是哪台驱动器]]></Comment>
+									<BitSize>8</BitSize>
+									<BaseType GUID="{18071995-0000-0000-0000-000000000002}">USINT</BaseType>
+									<BitOffs>280</BitOffs>
+								</Symbol>
+								<Symbol CreateSymbol="true">
+									<Name>Axis2Slot</Name>
+									<Comment TxtId=""><![CDATA[轴2 当前所在槽位号 (0=Servo0)。轴号≠槽位号: 现在对拖是 Servo3, 看这个才知道轴2 是哪台驱动器]]></Comment>
+									<BitSize>8</BitSize>
+									<BaseType GUID="{18071995-0000-0000-0000-000000000002}">USINT</BaseType>
+									<BitOffs>288</BitOffs>
+								</Symbol>
+								<Symbol CreateSymbol="true">
+									<Name>Axis3Slot</Name>
+									<Comment TxtId=""><![CDATA[轴3 当前所在槽位号 (0=Servo0)。轴号≠槽位号: 现在对拖是 Servo4, 看这个才知道轴3 是哪台驱动器]]></Comment>
+									<BitSize>8</BitSize>
+									<BaseType GUID="{18071995-0000-0000-0000-000000000002}">USINT</BaseType>
+									<BitOffs>296</BitOffs>
+								</Symbol>
+								<Symbol CreateSymbol="true">
+									<Name>Axis0FollowErr</Name>
+									<Comment TxtId=""><![CDATA[轴0 跟随偏差 (指令-实际-启动相位补偿)。评价超前补偿别看这个, 看 Axis0IdealErr]]></Comment>
 									<BitSize>64</BitSize>
 									<BaseType GUID="{18071995-0000-0000-0000-00000000000E}">LREAL</BaseType>
 									<Unit><![CDATA[指令单位]]></Unit>
-									<BitOffs>264</BitOffs>
+									<BitOffs>304</BitOffs>
 								</Symbol>
 								<Symbol CreateSymbol="true">
-									<Name>FeedFollowErr1</Name>
-									<Comment TxtId=""><![CDATA[轴1 跟随偏差, 指令单位]]></Comment>
+									<Name>Axis1FollowErr</Name>
+									<Comment TxtId=""><![CDATA[轴1 跟随偏差 (指令-实际-启动相位补偿)。评价超前补偿别看这个, 看 Axis1IdealErr]]></Comment>
 									<BitSize>64</BitSize>
 									<BaseType GUID="{18071995-0000-0000-0000-00000000000E}">LREAL</BaseType>
 									<Unit><![CDATA[指令单位]]></Unit>
-									<BitOffs>328</BitOffs>
+									<BitOffs>368</BitOffs>
 								</Symbol>
 								<Symbol CreateSymbol="true">
-									<Name>FeedFollowErr2</Name>
-									<Comment TxtId=""><![CDATA[轴2 跟随偏差, 指令单位]]></Comment>
+									<Name>Axis2FollowErr</Name>
+									<Comment TxtId=""><![CDATA[轴2 跟随偏差 (指令-实际-启动相位补偿)。评价超前补偿别看这个, 看 Axis2IdealErr]]></Comment>
 									<BitSize>64</BitSize>
 									<BaseType GUID="{18071995-0000-0000-0000-00000000000E}">LREAL</BaseType>
 									<Unit><![CDATA[指令单位]]></Unit>
-									<BitOffs>392</BitOffs>
+									<BitOffs>432</BitOffs>
 								</Symbol>
 								<Symbol CreateSymbol="true">
-									<Name>FeedFollowErr3</Name>
-									<Comment TxtId=""><![CDATA[轴3 跟随偏差, 指令单位]]></Comment>
+									<Name>Axis3FollowErr</Name>
+									<Comment TxtId=""><![CDATA[轴3 跟随偏差 (指令-实际-启动相位补偿)。评价超前补偿别看这个, 看 Axis3IdealErr]]></Comment>
 									<BitSize>64</BitSize>
 									<BaseType GUID="{18071995-0000-0000-0000-00000000000E}">LREAL</BaseType>
 									<Unit><![CDATA[指令单位]]></Unit>
-									<BitOffs>456</BitOffs>
+									<BitOffs>496</BitOffs>
 								</Symbol>
 								<Symbol CreateSymbol="true">
-									<Name>FeedFollowErrMm0</Name>
-									<Comment TxtId=""><![CDATA[轴0 跟随偏差, mm (工艺口径)]]></Comment>
+									<Name>Axis0FollowErrMm</Name>
+									<Comment TxtId=""><![CDATA[轴0 跟随偏差 [mm] (同上, 工艺口径)]]></Comment>
 									<BitSize>64</BitSize>
 									<BaseType GUID="{18071995-0000-0000-0000-00000000000E}">LREAL</BaseType>
 									<Unit><![CDATA[mm]]></Unit>
-									<BitOffs>520</BitOffs>
+									<BitOffs>560</BitOffs>
 								</Symbol>
 								<Symbol CreateSymbol="true">
-									<Name>FeedFollowErrMm1</Name>
-									<Comment TxtId=""><![CDATA[轴1 跟随偏差, mm]]></Comment>
+									<Name>Axis1FollowErrMm</Name>
+									<Comment TxtId=""><![CDATA[轴1 跟随偏差 [mm] (同上, 工艺口径)]]></Comment>
 									<BitSize>64</BitSize>
 									<BaseType GUID="{18071995-0000-0000-0000-00000000000E}">LREAL</BaseType>
 									<Unit><![CDATA[mm]]></Unit>
-									<BitOffs>584</BitOffs>
+									<BitOffs>624</BitOffs>
 								</Symbol>
 								<Symbol CreateSymbol="true">
-									<Name>FeedFollowErrMm2</Name>
-									<Comment TxtId=""><![CDATA[轴2 跟随偏差, mm]]></Comment>
+									<Name>Axis2FollowErrMm</Name>
+									<Comment TxtId=""><![CDATA[轴2 跟随偏差 [mm] (同上, 工艺口径)]]></Comment>
 									<BitSize>64</BitSize>
 									<BaseType GUID="{18071995-0000-0000-0000-00000000000E}">LREAL</BaseType>
 									<Unit><![CDATA[mm]]></Unit>
-									<BitOffs>648</BitOffs>
+									<BitOffs>688</BitOffs>
 								</Symbol>
 								<Symbol CreateSymbol="true">
-									<Name>FeedFollowErrMm3</Name>
-									<Comment TxtId=""><![CDATA[轴3 跟随偏差, mm]]></Comment>
+									<Name>Axis3FollowErrMm</Name>
+									<Comment TxtId=""><![CDATA[轴3 跟随偏差 [mm] (同上, 工艺口径)]]></Comment>
 									<BitSize>64</BitSize>
 									<BaseType GUID="{18071995-0000-0000-0000-00000000000E}">LREAL</BaseType>
 									<Unit><![CDATA[mm]]></Unit>
-									<BitOffs>712</BitOffs>
+									<BitOffs>752</BitOffs>
 								</Symbol>
 								<Symbol CreateSymbol="true">
-									<Name>FeedIdealErr0</Name>
-									<Comment TxtId=""><![CDATA[轴0 相对凸轮理论曲线的偏差 (理想-实际), 指令单位; 正=实际落后]]></Comment>
+									<Name>Axis0IdealErr</Name>
+									<Comment TxtId=""><![CDATA[轴0 相对凸轮理论曲线的偏差 (理想-实际, 正=实际落后) [mm]]]></Comment>
 									<BitSize>64</BitSize>
 									<BaseType GUID="{18071995-0000-0000-0000-00000000000E}">LREAL</BaseType>
-									<Unit><![CDATA[指令单位]]></Unit>
-									<BitOffs>776</BitOffs>
+									<Unit><![CDATA[mm]]></Unit>
+									<BitOffs>816</BitOffs>
 								</Symbol>
 								<Symbol CreateSymbol="true">
-									<Name>FeedIdealErr1</Name>
-									<Comment TxtId=""><![CDATA[轴1 相对凸轮理论曲线的偏差, 指令单位]]></Comment>
+									<Name>Axis1IdealErr</Name>
+									<Comment TxtId=""><![CDATA[轴1 相对凸轮理论曲线的偏差 (理想-实际, 正=实际落后) [mm]]]></Comment>
 									<BitSize>64</BitSize>
 									<BaseType GUID="{18071995-0000-0000-0000-00000000000E}">LREAL</BaseType>
-									<Unit><![CDATA[指令单位]]></Unit>
-									<BitOffs>840</BitOffs>
+									<Unit><![CDATA[mm]]></Unit>
+									<BitOffs>880</BitOffs>
 								</Symbol>
 								<Symbol CreateSymbol="true">
-									<Name>FeedIdealErr2</Name>
-									<Comment TxtId=""><![CDATA[轴2 相对凸轮理论曲线的偏差, 指令单位]]></Comment>
+									<Name>Axis2IdealErr</Name>
+									<Comment TxtId=""><![CDATA[轴2 相对凸轮理论曲线的偏差 (理想-实际, 正=实际落后) [mm]]]></Comment>
 									<BitSize>64</BitSize>
 									<BaseType GUID="{18071995-0000-0000-0000-00000000000E}">LREAL</BaseType>
-									<Unit><![CDATA[指令单位]]></Unit>
-									<BitOffs>904</BitOffs>
+									<Unit><![CDATA[mm]]></Unit>
+									<BitOffs>944</BitOffs>
 								</Symbol>
 								<Symbol CreateSymbol="true">
-									<Name>FeedIdealErr3</Name>
-									<Comment TxtId=""><![CDATA[轴3 相对凸轮理论曲线的偏差, 指令单位]]></Comment>
+									<Name>Axis3IdealErr</Name>
+									<Comment TxtId=""><![CDATA[轴3 相对凸轮理论曲线的偏差 (理想-实际, 正=实际落后) [mm]]]></Comment>
 									<BitSize>64</BitSize>
 									<BaseType GUID="{18071995-0000-0000-0000-00000000000E}">LREAL</BaseType>
-									<Unit><![CDATA[指令单位]]></Unit>
-									<BitOffs>968</BitOffs>
+									<Unit><![CDATA[mm]]></Unit>
+									<BitOffs>1008</BitOffs>
+								</Symbol>
+								<Symbol CreateSymbol="true">
+									<Name>Axis0MmToUnit</Name>
+									<Comment TxtId=""><![CDATA[轴0 mm→指令单位 换算系数 (台架应 ≈671)。只读, 由站点表算出]]></Comment>
+									<BitSize>64</BitSize>
+									<BaseType GUID="{18071995-0000-0000-0000-00000000000E}">LREAL</BaseType>
+									<Unit><![CDATA[指令单位/mm]]></Unit>
+									<BitOffs>1072</BitOffs>
+								</Symbol>
+								<Symbol CreateSymbol="true">
+									<Name>Axis1MmToUnit</Name>
+									<Comment TxtId=""><![CDATA[轴1 mm→指令单位 换算系数 (台架应 ≈671)。只读, 由站点表算出]]></Comment>
+									<BitSize>64</BitSize>
+									<BaseType GUID="{18071995-0000-0000-0000-00000000000E}">LREAL</BaseType>
+									<Unit><![CDATA[指令单位/mm]]></Unit>
+									<BitOffs>1136</BitOffs>
+								</Symbol>
+								<Symbol CreateSymbol="true">
+									<Name>Axis2MmToUnit</Name>
+									<Comment TxtId=""><![CDATA[轴2 mm→指令单位 换算系数 (台架应 ≈671)。只读, 由站点表算出]]></Comment>
+									<BitSize>64</BitSize>
+									<BaseType GUID="{18071995-0000-0000-0000-00000000000E}">LREAL</BaseType>
+									<Unit><![CDATA[指令单位/mm]]></Unit>
+									<BitOffs>1200</BitOffs>
+								</Symbol>
+								<Symbol CreateSymbol="true">
+									<Name>Axis3MmToUnit</Name>
+									<Comment TxtId=""><![CDATA[轴3 mm→指令单位 换算系数 (台架应 ≈671)。只读, 由站点表算出]]></Comment>
+									<BitSize>64</BitSize>
+									<BaseType GUID="{18071995-0000-0000-0000-00000000000E}">LREAL</BaseType>
+									<Unit><![CDATA[指令单位/mm]]></Unit>
+									<BitOffs>1264</BitOffs>
 								</Symbol>
 								<Symbol CreateSymbol="true">
 									<Name>SiteProfile</Name>
 									<Comment TxtId=""><![CDATA[站点形态: 0=本机单轴, 1=对拖4驱动, 2=对拖4驱动+4负载; 只能在 Enable=0 且各轴 IDLE 时改]]></Comment>
 									<BitSize>8</BitSize>
 									<BaseType GUID="{18071995-0000-0000-0000-000000000002}">USINT</BaseType>
-									<BitOffs>1032</BitOffs>
+									<BitOffs>1328</BitOffs>
 								</Symbol>
 								<Symbol CreateSymbol="true">
 									<Name>AxisCount</Name>
 									<Comment TxtId=""><![CDATA[实际生效的驱动轴数 (1..4), 只读]]></Comment>
 									<BitSize>8</BitSize>
 									<BaseType GUID="{18071995-0000-0000-0000-000000000002}">USINT</BaseType>
-									<BitOffs>1040</BitOffs>
+									<BitOffs>1336</BitOffs>
 								</Symbol>
 								<Symbol CreateSymbol="true">
 									<Name>AxisRole0</Name>
 									<Comment TxtId=""><![CDATA[槽位0 角色: 0=未用, 1=驱动, 2=负载, 只读]]></Comment>
 									<BitSize>8</BitSize>
 									<BaseType GUID="{18071995-0000-0000-0000-000000000002}">USINT</BaseType>
-									<BitOffs>1048</BitOffs>
+									<BitOffs>1344</BitOffs>
 								</Symbol>
 								<Symbol CreateSymbol="true">
 									<Name>AxisRole1</Name>
 									<Comment TxtId=""><![CDATA[槽位1 角色, 只读]]></Comment>
 									<BitSize>8</BitSize>
 									<BaseType GUID="{18071995-0000-0000-0000-000000000002}">USINT</BaseType>
-									<BitOffs>1056</BitOffs>
+									<BitOffs>1352</BitOffs>
 								</Symbol>
 								<Symbol CreateSymbol="true">
 									<Name>AxisRole2</Name>
 									<Comment TxtId=""><![CDATA[槽位2 角色, 只读]]></Comment>
 									<BitSize>8</BitSize>
 									<BaseType GUID="{18071995-0000-0000-0000-000000000002}">USINT</BaseType>
-									<BitOffs>1064</BitOffs>
+									<BitOffs>1360</BitOffs>
 								</Symbol>
 								<Symbol CreateSymbol="true">
 									<Name>AxisRole3</Name>
 									<Comment TxtId=""><![CDATA[槽位3 角色, 只读]]></Comment>
 									<BitSize>8</BitSize>
 									<BaseType GUID="{18071995-0000-0000-0000-000000000002}">USINT</BaseType>
-									<BitOffs>1072</BitOffs>
+									<BitOffs>1368</BitOffs>
 								</Symbol>
 								<Symbol CreateSymbol="true">
 									<Name>AxisRole4</Name>
 									<Comment TxtId=""><![CDATA[槽位4 角色, 只读]]></Comment>
 									<BitSize>8</BitSize>
 									<BaseType GUID="{18071995-0000-0000-0000-000000000002}">USINT</BaseType>
-									<BitOffs>1080</BitOffs>
+									<BitOffs>1376</BitOffs>
 								</Symbol>
 								<Symbol CreateSymbol="true">
 									<Name>AxisRole5</Name>
 									<Comment TxtId=""><![CDATA[槽位5 角色, 只读]]></Comment>
 									<BitSize>8</BitSize>
 									<BaseType GUID="{18071995-0000-0000-0000-000000000002}">USINT</BaseType>
-									<BitOffs>1088</BitOffs>
+									<BitOffs>1384</BitOffs>
 								</Symbol>
 								<Symbol CreateSymbol="true">
 									<Name>AxisRole6</Name>
 									<Comment TxtId=""><![CDATA[槽位6 角色, 只读]]></Comment>
 									<BitSize>8</BitSize>
 									<BaseType GUID="{18071995-0000-0000-0000-000000000002}">USINT</BaseType>
-									<BitOffs>1096</BitOffs>
+									<BitOffs>1392</BitOffs>
 								</Symbol>
 								<Symbol CreateSymbol="true">
 									<Name>AxisRole7</Name>
 									<Comment TxtId=""><![CDATA[槽位7 角色, 只读]]></Comment>
 									<BitSize>8</BitSize>
 									<BaseType GUID="{18071995-0000-0000-0000-000000000002}">USINT</BaseType>
-									<BitOffs>1104</BitOffs>
-								</Symbol>
-								<Symbol CreateSymbol="true">
-									<Name>FeedMmToUnit0</Name>
-									<Comment TxtId=""><![CDATA[轴0 mm→指令单位 换算 (台架应 ≈ 671), 只读]]></Comment>
-									<BitSize>64</BitSize>
-									<BaseType GUID="{18071995-0000-0000-0000-00000000000E}">LREAL</BaseType>
-									<Unit><![CDATA[指令单位/mm]]></Unit>
-									<BitOffs>1112</BitOffs>
-								</Symbol>
-								<Symbol CreateSymbol="true">
-									<Name>FeedMmToUnit1</Name>
-									<Comment TxtId=""><![CDATA[轴1 mm→指令单位 换算, 只读]]></Comment>
-									<BitSize>64</BitSize>
-									<BaseType GUID="{18071995-0000-0000-0000-00000000000E}">LREAL</BaseType>
-									<Unit><![CDATA[指令单位/mm]]></Unit>
-									<BitOffs>1176</BitOffs>
-								</Symbol>
-								<Symbol CreateSymbol="true">
-									<Name>FeedMmToUnit2</Name>
-									<Comment TxtId=""><![CDATA[轴2 mm→指令单位 换算, 只读]]></Comment>
-									<BitSize>64</BitSize>
-									<BaseType GUID="{18071995-0000-0000-0000-00000000000E}">LREAL</BaseType>
-									<Unit><![CDATA[指令单位/mm]]></Unit>
-									<BitOffs>1240</BitOffs>
-								</Symbol>
-								<Symbol CreateSymbol="true">
-									<Name>FeedMmToUnit3</Name>
-									<Comment TxtId=""><![CDATA[轴3 mm→指令单位 换算, 只读]]></Comment>
-									<BitSize>64</BitSize>
-									<BaseType GUID="{18071995-0000-0000-0000-00000000000E}">LREAL</BaseType>
-									<Unit><![CDATA[指令单位/mm]]></Unit>
-									<BitOffs>1304</BitOffs>
+									<BitOffs>1400</BitOffs>
 								</Symbol>
 							</DataArea>
 						</DataAreas>
@@ -2417,7 +2398,7 @@
 						<CoeProfile ProfileNo="402"/>
 					</EtherCAT>
 				</Box>
-				<Box Id="3" Disabled="true" BoxType="9099" BoxFlags="#x00000020">
+				<Box Id="3" BoxType="9099" BoxFlags="#x00000020">
 					<Name>维控VD5L</Name>
 					<ImageId>1001</ImageId>
 					<EtherCAT EtherCatAddr="1001" SlaveType="2" AdsServerAddress="000000000000e903" PdiType="#x0e80" EtherCatAddrFixed="true" MboxDataLinkLayer="true" StateMBoxPolling="true" CycleMBoxPollingTime="0" CoeType="15" VendorId="#x00000eff" ProductCode="#x0d510001" RevisionNo="#x00000066" InfoDataAddr="true" InfoDataSoeDS401="true" InfoDataDcTimes="true" TimeoutStateChange1="2000" TimeoutStateChange2="9000" TimeoutMailbox2="2000" PortPhys="17" MaxSlotCount="256" MaxSlotGroupCount="1" SlotPdoIncrement="1" SlotIndexIncrement="16" Type="Wecon VD5 EtherCAT Servo V1.02" Desc="Wecon VD5 EtherCAT Servo V1.02" PortABoxInfo="#x01000007">
@@ -2926,84 +2907,81 @@
 				</EtherCAT>
 			</Device>
 		</Io>
-		<SymbolWatch>
-			<Variable>TIXC^WASR_TC^WASR_TC_Obj1 (WASR_TC)^Outputs^Servo0</Variable>
-		</SymbolWatch>
 	</Project>
 	<Mappings>
 		<MappingInfo Identifier="{00000000-0010-0304-1000-010110000403}" Id="#x02030010"/>
 		<OwnerA Name="TIID^主站">
 			<OwnerB Name="TIXC^WASR_TC^WASR_TC_Obj1 (WASR_TC)">
-					<Link VarA="维控VD5L^RxPDO^ControlWord" VarB="Outputs^Servo0^Controlword"/>
-					<Link VarA="维控VD5L^RxPDO^Modes of operation" VarB="Outputs^Servo0^Modes_of_operation"/>
-					<Link VarA="维控VD5L^RxPDO^Motor revolutions" VarB="Outputs^Servo0^Motor_revolutions"/>
-					<Link VarA="维控VD5L^RxPDO^Shaft revolutions" VarB="Outputs^Servo0^Shaft_revolutions"/>
-					<Link VarA="维控VD5L^RxPDO^Target position" VarB="Outputs^Servo0^Target_position"/>
-					<Link VarA="维控VD5L^RxPDO^Target torque" VarB="Outputs^Servo0^Target_torque"/>
-					<Link VarA="维控VD5L^RxPDO^Target velocity" VarB="Outputs^Servo0^Target_velocity"/>
-					<Link VarA="维控VD5L^TxPDO^Error Code" VarB="Inputs^Servo0^Error_code"/>
-					<Link VarA="维控VD5L^TxPDO^Following error actual value" VarB="Inputs^Servo0^Following_error_actual_value"/>
-					<Link VarA="维控VD5L^TxPDO^Position actual value" VarB="Inputs^Servo0^Position_actual_value"/>
-					<Link VarA="维控VD5L^TxPDO^Torque actual value" VarB="Inputs^Servo0^Torque_actual_value"/>
-					<Link VarA="维控VD5L^TxPDO^Torque demand " VarB="Inputs^Servo0^Torque_demand"/>
-					<Link VarA="维控VD5L^TxPDO^Velocity actual value" VarB="Inputs^Servo0^Velocity_actual_value"/>
-					<Link VarA="维控VD5L^TxPDO^statusWord" VarB="Inputs^Servo0^Status_word"/>
-					<Link VarA="维控VD3E_1^RxPDO^ControlWord" VarB="Outputs^Servo1^Controlword"/>
-					<Link VarA="维控VD3E_1^RxPDO^Modes of operation" VarB="Outputs^Servo1^Modes_of_operation"/>
-					<Link VarA="维控VD3E_1^RxPDO^Motor revolutions" VarB="Outputs^Servo1^Motor_revolutions"/>
-					<Link VarA="维控VD3E_1^RxPDO^Shaft revolutions" VarB="Outputs^Servo1^Shaft_revolutions"/>
-					<Link VarA="维控VD3E_1^RxPDO^Target position" VarB="Outputs^Servo1^Target_position"/>
-					<Link VarA="维控VD3E_1^RxPDO^Target torque" VarB="Outputs^Servo1^Target_torque"/>
-					<Link VarA="维控VD3E_1^RxPDO^Target velocity" VarB="Outputs^Servo1^Target_velocity"/>
-					<Link VarA="维控VD3E_1^TxPDO^Error Code" VarB="Inputs^Servo1^Error_code"/>
-					<Link VarA="维控VD3E_1^TxPDO^Following error actual value" VarB="Inputs^Servo1^Following_error_actual_value"/>
-					<Link VarA="维控VD3E_1^TxPDO^Position actual value" VarB="Inputs^Servo1^Position_actual_value"/>
-					<Link VarA="维控VD3E_1^TxPDO^Torque actual value" VarB="Inputs^Servo1^Torque_actual_value"/>
-					<Link VarA="维控VD3E_1^TxPDO^Torque demand " VarB="Inputs^Servo1^Torque_demand"/>
-					<Link VarA="维控VD3E_1^TxPDO^Velocity actual value" VarB="Inputs^Servo1^Velocity_actual_value"/>
-					<Link VarA="维控VD3E_1^TxPDO^statusWord" VarB="Inputs^Servo1^Status_word"/>
-					<Link VarA="维控VD3E_2^RxPDO^ControlWord" VarB="Outputs^Servo2^Controlword"/>
-					<Link VarA="维控VD3E_2^RxPDO^Modes of operation" VarB="Outputs^Servo2^Modes_of_operation"/>
-					<Link VarA="维控VD3E_2^RxPDO^Motor revolutions" VarB="Outputs^Servo2^Motor_revolutions"/>
-					<Link VarA="维控VD3E_2^RxPDO^Shaft revolutions" VarB="Outputs^Servo2^Shaft_revolutions"/>
-					<Link VarA="维控VD3E_2^RxPDO^Target position" VarB="Outputs^Servo2^Target_position"/>
-					<Link VarA="维控VD3E_2^RxPDO^Target torque" VarB="Outputs^Servo2^Target_torque"/>
-					<Link VarA="维控VD3E_2^RxPDO^Target velocity" VarB="Outputs^Servo2^Target_velocity"/>
-					<Link VarA="维控VD3E_2^TxPDO^Error Code" VarB="Inputs^Servo2^Error_code"/>
-					<Link VarA="维控VD3E_2^TxPDO^Following error actual value" VarB="Inputs^Servo2^Following_error_actual_value"/>
-					<Link VarA="维控VD3E_2^TxPDO^Position actual value" VarB="Inputs^Servo2^Position_actual_value"/>
-					<Link VarA="维控VD3E_2^TxPDO^Torque actual value" VarB="Inputs^Servo2^Torque_actual_value"/>
-					<Link VarA="维控VD3E_2^TxPDO^Torque demand " VarB="Inputs^Servo2^Torque_demand"/>
-					<Link VarA="维控VD3E_2^TxPDO^Velocity actual value" VarB="Inputs^Servo2^Velocity_actual_value"/>
-					<Link VarA="维控VD3E_2^TxPDO^statusWord" VarB="Inputs^Servo2^Status_word"/>
-					<Link VarA="维控VD3E_3^RxPDO^ControlWord" VarB="Outputs^Servo3^Controlword"/>
-					<Link VarA="维控VD3E_3^RxPDO^Modes of operation" VarB="Outputs^Servo3^Modes_of_operation"/>
-					<Link VarA="维控VD3E_3^RxPDO^Motor revolutions" VarB="Outputs^Servo3^Motor_revolutions"/>
-					<Link VarA="维控VD3E_3^RxPDO^Shaft revolutions" VarB="Outputs^Servo3^Shaft_revolutions"/>
-					<Link VarA="维控VD3E_3^RxPDO^Target position" VarB="Outputs^Servo3^Target_position"/>
-					<Link VarA="维控VD3E_3^RxPDO^Target torque" VarB="Outputs^Servo3^Target_torque"/>
-					<Link VarA="维控VD3E_3^RxPDO^Target velocity" VarB="Outputs^Servo3^Target_velocity"/>
-					<Link VarA="维控VD3E_3^TxPDO^Error Code" VarB="Inputs^Servo3^Error_code"/>
-					<Link VarA="维控VD3E_3^TxPDO^Following error actual value" VarB="Inputs^Servo3^Following_error_actual_value"/>
-					<Link VarA="维控VD3E_3^TxPDO^Position actual value" VarB="Inputs^Servo3^Position_actual_value"/>
-					<Link VarA="维控VD3E_3^TxPDO^Torque actual value" VarB="Inputs^Servo3^Torque_actual_value"/>
-					<Link VarA="维控VD3E_3^TxPDO^Torque demand " VarB="Inputs^Servo3^Torque_demand"/>
-					<Link VarA="维控VD3E_3^TxPDO^Velocity actual value" VarB="Inputs^Servo3^Velocity_actual_value"/>
-					<Link VarA="维控VD3E_3^TxPDO^statusWord" VarB="Inputs^Servo3^Status_word"/>
-					<Link VarA="维控VD3E_4^RxPDO^ControlWord" VarB="Outputs^Servo4^Controlword"/>
-					<Link VarA="维控VD3E_4^RxPDO^Modes of operation" VarB="Outputs^Servo4^Modes_of_operation"/>
-					<Link VarA="维控VD3E_4^RxPDO^Motor revolutions" VarB="Outputs^Servo4^Motor_revolutions"/>
-					<Link VarA="维控VD3E_4^RxPDO^Shaft revolutions" VarB="Outputs^Servo4^Shaft_revolutions"/>
-					<Link VarA="维控VD3E_4^RxPDO^Target position" VarB="Outputs^Servo4^Target_position"/>
-					<Link VarA="维控VD3E_4^RxPDO^Target torque" VarB="Outputs^Servo4^Target_torque"/>
-					<Link VarA="维控VD3E_4^RxPDO^Target velocity" VarB="Outputs^Servo4^Target_velocity"/>
-					<Link VarA="维控VD3E_4^TxPDO^Error Code" VarB="Inputs^Servo4^Error_code"/>
-					<Link VarA="维控VD3E_4^TxPDO^Following error actual value" VarB="Inputs^Servo4^Following_error_actual_value"/>
-					<Link VarA="维控VD3E_4^TxPDO^Position actual value" VarB="Inputs^Servo4^Position_actual_value"/>
-					<Link VarA="维控VD3E_4^TxPDO^Torque actual value" VarB="Inputs^Servo4^Torque_actual_value"/>
-					<Link VarA="维控VD3E_4^TxPDO^Torque demand " VarB="Inputs^Servo4^Torque_demand"/>
-					<Link VarA="维控VD3E_4^TxPDO^Velocity actual value" VarB="Inputs^Servo4^Velocity_actual_value"/>
-					<Link VarA="维控VD3E_4^TxPDO^statusWord" VarB="Inputs^Servo4^Status_word"/>
+				<Link VarA="维控VD3E_1^RxPDO^ControlWord" VarB="Outputs^Servo1^Controlword"/>
+				<Link VarA="维控VD3E_1^RxPDO^Modes of operation" VarB="Outputs^Servo1^Modes_of_operation"/>
+				<Link VarA="维控VD3E_1^RxPDO^Motor revolutions" VarB="Outputs^Servo1^Motor_revolutions"/>
+				<Link VarA="维控VD3E_1^RxPDO^Shaft revolutions" VarB="Outputs^Servo1^Shaft_revolutions"/>
+				<Link VarA="维控VD3E_1^RxPDO^Target position" VarB="Outputs^Servo1^Target_position"/>
+				<Link VarA="维控VD3E_1^RxPDO^Target torque" VarB="Outputs^Servo1^Target_torque"/>
+				<Link VarA="维控VD3E_1^RxPDO^Target velocity" VarB="Outputs^Servo1^Target_velocity"/>
+				<Link VarA="维控VD3E_1^TxPDO^Error Code" VarB="Inputs^Servo1^Error_code"/>
+				<Link VarA="维控VD3E_1^TxPDO^Following error actual value" VarB="Inputs^Servo1^Following_error_actual_value"/>
+				<Link VarA="维控VD3E_1^TxPDO^Position actual value" VarB="Inputs^Servo1^Position_actual_value"/>
+				<Link VarA="维控VD3E_1^TxPDO^Torque actual value" VarB="Inputs^Servo1^Torque_actual_value"/>
+				<Link VarA="维控VD3E_1^TxPDO^Torque demand " VarB="Inputs^Servo1^Torque_demand"/>
+				<Link VarA="维控VD3E_1^TxPDO^Velocity actual value" VarB="Inputs^Servo1^Velocity_actual_value"/>
+				<Link VarA="维控VD3E_1^TxPDO^statusWord" VarB="Inputs^Servo1^Status_word"/>
+				<Link VarA="维控VD3E_2^RxPDO^ControlWord" VarB="Outputs^Servo2^Controlword"/>
+				<Link VarA="维控VD3E_2^RxPDO^Modes of operation" VarB="Outputs^Servo2^Modes_of_operation"/>
+				<Link VarA="维控VD3E_2^RxPDO^Motor revolutions" VarB="Outputs^Servo2^Motor_revolutions"/>
+				<Link VarA="维控VD3E_2^RxPDO^Shaft revolutions" VarB="Outputs^Servo2^Shaft_revolutions"/>
+				<Link VarA="维控VD3E_2^RxPDO^Target position" VarB="Outputs^Servo2^Target_position"/>
+				<Link VarA="维控VD3E_2^RxPDO^Target torque" VarB="Outputs^Servo2^Target_torque"/>
+				<Link VarA="维控VD3E_2^RxPDO^Target velocity" VarB="Outputs^Servo2^Target_velocity"/>
+				<Link VarA="维控VD3E_2^TxPDO^Error Code" VarB="Inputs^Servo2^Error_code"/>
+				<Link VarA="维控VD3E_2^TxPDO^Following error actual value" VarB="Inputs^Servo2^Following_error_actual_value"/>
+				<Link VarA="维控VD3E_2^TxPDO^Position actual value" VarB="Inputs^Servo2^Position_actual_value"/>
+				<Link VarA="维控VD3E_2^TxPDO^Torque actual value" VarB="Inputs^Servo2^Torque_actual_value"/>
+				<Link VarA="维控VD3E_2^TxPDO^Torque demand " VarB="Inputs^Servo2^Torque_demand"/>
+				<Link VarA="维控VD3E_2^TxPDO^Velocity actual value" VarB="Inputs^Servo2^Velocity_actual_value"/>
+				<Link VarA="维控VD3E_2^TxPDO^statusWord" VarB="Inputs^Servo2^Status_word"/>
+				<Link VarA="维控VD3E_3^RxPDO^ControlWord" VarB="Outputs^Servo3^Controlword"/>
+				<Link VarA="维控VD3E_3^RxPDO^Modes of operation" VarB="Outputs^Servo3^Modes_of_operation"/>
+				<Link VarA="维控VD3E_3^RxPDO^Motor revolutions" VarB="Outputs^Servo3^Motor_revolutions"/>
+				<Link VarA="维控VD3E_3^RxPDO^Shaft revolutions" VarB="Outputs^Servo3^Shaft_revolutions"/>
+				<Link VarA="维控VD3E_3^RxPDO^Target position" VarB="Outputs^Servo3^Target_position"/>
+				<Link VarA="维控VD3E_3^RxPDO^Target torque" VarB="Outputs^Servo3^Target_torque"/>
+				<Link VarA="维控VD3E_3^RxPDO^Target velocity" VarB="Outputs^Servo3^Target_velocity"/>
+				<Link VarA="维控VD3E_3^TxPDO^Error Code" VarB="Inputs^Servo3^Error_code"/>
+				<Link VarA="维控VD3E_3^TxPDO^Following error actual value" VarB="Inputs^Servo3^Following_error_actual_value"/>
+				<Link VarA="维控VD3E_3^TxPDO^Position actual value" VarB="Inputs^Servo3^Position_actual_value"/>
+				<Link VarA="维控VD3E_3^TxPDO^Torque actual value" VarB="Inputs^Servo3^Torque_actual_value"/>
+				<Link VarA="维控VD3E_3^TxPDO^Torque demand " VarB="Inputs^Servo3^Torque_demand"/>
+				<Link VarA="维控VD3E_3^TxPDO^Velocity actual value" VarB="Inputs^Servo3^Velocity_actual_value"/>
+				<Link VarA="维控VD3E_3^TxPDO^statusWord" VarB="Inputs^Servo3^Status_word"/>
+				<Link VarA="维控VD3E_4^RxPDO^ControlWord" VarB="Outputs^Servo4^Controlword"/>
+				<Link VarA="维控VD3E_4^RxPDO^Modes of operation" VarB="Outputs^Servo4^Modes_of_operation"/>
+				<Link VarA="维控VD3E_4^RxPDO^Motor revolutions" VarB="Outputs^Servo4^Motor_revolutions"/>
+				<Link VarA="维控VD3E_4^RxPDO^Shaft revolutions" VarB="Outputs^Servo4^Shaft_revolutions"/>
+				<Link VarA="维控VD3E_4^RxPDO^Target position" VarB="Outputs^Servo4^Target_position"/>
+				<Link VarA="维控VD3E_4^RxPDO^Target torque" VarB="Outputs^Servo4^Target_torque"/>
+				<Link VarA="维控VD3E_4^RxPDO^Target velocity" VarB="Outputs^Servo4^Target_velocity"/>
+				<Link VarA="维控VD3E_4^TxPDO^Error Code" VarB="Inputs^Servo4^Error_code"/>
+				<Link VarA="维控VD3E_4^TxPDO^Following error actual value" VarB="Inputs^Servo4^Following_error_actual_value"/>
+				<Link VarA="维控VD3E_4^TxPDO^Position actual value" VarB="Inputs^Servo4^Position_actual_value"/>
+				<Link VarA="维控VD3E_4^TxPDO^Torque actual value" VarB="Inputs^Servo4^Torque_actual_value"/>
+				<Link VarA="维控VD3E_4^TxPDO^Torque demand " VarB="Inputs^Servo4^Torque_demand"/>
+				<Link VarA="维控VD3E_4^TxPDO^Velocity actual value" VarB="Inputs^Servo4^Velocity_actual_value"/>
+				<Link VarA="维控VD3E_4^TxPDO^statusWord" VarB="Inputs^Servo4^Status_word"/>
+				<Link VarA="维控VD5L^RxPDO^ControlWord" VarB="Outputs^Servo0^Controlword"/>
+				<Link VarA="维控VD5L^RxPDO^Modes of operation" VarB="Outputs^Servo0^Modes_of_operation"/>
+				<Link VarA="维控VD5L^RxPDO^Motor revolutions" VarB="Outputs^Servo0^Motor_revolutions"/>
+				<Link VarA="维控VD5L^RxPDO^Shaft revolutions" VarB="Outputs^Servo0^Shaft_revolutions"/>
+				<Link VarA="维控VD5L^RxPDO^Target position" VarB="Outputs^Servo0^Target_position"/>
+				<Link VarA="维控VD5L^RxPDO^Target torque" VarB="Outputs^Servo0^Target_torque"/>
+				<Link VarA="维控VD5L^RxPDO^Target velocity" VarB="Outputs^Servo0^Target_velocity"/>
+				<Link VarA="维控VD5L^TxPDO^Error Code" VarB="Inputs^Servo0^Error_code"/>
+				<Link VarA="维控VD5L^TxPDO^Following error actual value" VarB="Inputs^Servo0^Following_error_actual_value"/>
+				<Link VarA="维控VD5L^TxPDO^Position actual value" VarB="Inputs^Servo0^Position_actual_value"/>
+				<Link VarA="维控VD5L^TxPDO^Torque actual value" VarB="Inputs^Servo0^Torque_actual_value"/>
+				<Link VarA="维控VD5L^TxPDO^Torque demand " VarB="Inputs^Servo0^Torque_demand"/>
+				<Link VarA="维控VD5L^TxPDO^Velocity actual value" VarB="Inputs^Servo0^Velocity_actual_value"/>
+				<Link VarA="维控VD5L^TxPDO^statusWord" VarB="Inputs^Servo0^Status_word"/>
 			</OwnerB>
 		</OwnerA>
 	</Mappings>
