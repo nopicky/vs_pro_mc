@@ -163,8 +163,8 @@ protected:
 	ServoIO* m_apLoad[SITE_AXIS_MAX];
 	uint8_t  m_nDriveAxisCount;
 	uint8_t  m_nLoadAxisCount;
-	// 各轴 mm→指令单位 换算 (站点表 afMmPerMotorRev 与每转指令单位数算出)
-	double   m_afFeedMmToUnit[SITE_AXIS_MAX];
+	// 各轴 mm→指令单位 换算只有一份: m_testSeq.feedMmToUnit[]
+	// (以前这里存过一份 m_afFeedMmToUnit, 只写不读 —— 两份副本迟早会不一致, 已删)
 	// 各轴 6064h 实际位置快照 [指令单位] (送纸凸轮指令原点/监视)
 	double   m_afActPosUnits[SITE_AXIS_MAX];
 	// CiA402 步号 (每槽位一份): 0=init, 1=ready-to-switch-on, 2=switched-on, 3=operation-enabled

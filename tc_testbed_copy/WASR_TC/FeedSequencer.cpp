@@ -42,6 +42,7 @@ CFeedSequencer::CFeedSequencer() {
     m_fMaxCamLen = 0.0;
     m_fPrevPhase = 0.0;
     m_bPrevValid = false;
+    m_fPhaseUnwrapped = 0.0;
     for (int i = 0; i < 4; i++) {
         m_afPosBase[i] = 0.0;
     }
@@ -89,6 +90,7 @@ bool CFeedSequencer::init(const FEED_CONFIG_T* pCfg) {
     m_fCamOrigin = 0.0;
     m_fPrevPhase = 0.0;
     m_bPrevValid = false;
+    m_fPhaseUnwrapped = 0.0;
     for (int i = 0; i < 4; i++) {
         m_afPosBase[i] = 0.0;
     }
@@ -104,19 +106,46 @@ void CFeedSequencer::setStart(bool bStart) {
 void CFeedSequencer::tick(double fMasterPhase, double fDtSec, const double* afActPosMm,
                           double afCmdPosMm[4]) {
 
-    /* 主轴速度：相位差分（供超前补偿用；反向不计，v1 只做正向送纸）
-       仅在上一拍有效时差分，避免 init 后首拍产生巨大虚假速度 */
+    /* ---- 主轴相位解缠: 外部相位 -> 内部单调累加相位 ----
+       虚拟主轴是无界累加的, 现场主轴相位却来自滚筒编码器, 取值在 [0, 周长) 内循环。
+       下游(整圈对齐 floor(相位/周长)、凸轮相位差、超前补偿)都要求单调相位,
+       所以统一在这里解缠一次, 调用方给哪种都行:
+         - 编码器值: 跨圈那一拍差分是 -周长, 补一个周长回来
+         - 虚拟主轴: 差分恒为正, 解缠结果与原值一致 (差异仅为浮点累加误差)
+       反向不支持(凸轮单向送纸): 负差分按 0 处理, 相位冻结,
+       此时指令与实际会拉开, 由跟随偏差暴露成故障, 不会反向冲纸 */
     double fMasterVel = 0.0;
-    if (m_bPrevValid && fDtSec > 1e-9) {
-        fMasterVel = (fMasterPhase - m_fPrevPhase) / fDtSec;
-        if (fMasterVel < 0.0) {
-            fMasterVel = 0.0;
+    if (!m_bPrevValid) {
+        /* 首拍: 没有历史可比, 直接以输入值起算, 不产生虚假速度 */
+        m_fPhaseUnwrapped = fMasterPhase;
+        m_bPrevValid = true;
+    } else {
+        double fDelta = fMasterPhase - m_fPrevPhase;
+        double fHalfCirc = 0.5 * m_cfg.fMasterCircum;
+        if (fDelta < -fHalfCirc) {
+            fDelta += m_cfg.fMasterCircum;   /* 正转跨圈: 相位回绕 */
+        } else if (fDelta > fHalfCirc) {
+            fDelta -= m_cfg.fMasterCircum;   /* 反转跨圈(下面按 0 处理) */
         }
+        if (fDelta < 0.0) {
+            fDelta = 0.0;
+        }
+        if (fDtSec > 1e-9) {
+            fMasterVel = fDelta / fDtSec;
+            /* 上限: 1.5 × 配置线速度上限。只挡坏样本(相位跳变/丢帧),
+               正常加速有 50% 余量, 不会削掉真实速度 */
+            double fVelMax = m_cfg.fMaxLineSpeedMMin * 1000.0 / 60.0 * 1.5;
+            if (fVelMax > 0.0 && fMasterVel > fVelMax) {
+                fMasterVel = fVelMax;
+            }
+        }
+        m_fPhaseUnwrapped += fDelta;
     }
     m_fPrevPhase = fMasterPhase;
-    m_bPrevValid = true;
 
-    double fCamX = fMasterPhase - m_fCamOrigin;
+    /* 以下全部用解缠后的单调相位 */
+    const double fPhase = m_fPhaseUnwrapped;
+    double fCamX = fPhase - m_fCamOrigin;
 
     switch (m_eState) {
         case FEED_IDLE: {
@@ -128,7 +157,7 @@ void CFeedSequencer::tick(double fMasterPhase, double fDtSec, const double* afAc
         case FEED_ARMED: {
             /* 整圈对齐：启动相位 = 主轴下一整圈 + 相位补偿（对齐 FAE 工程02） */
             double fCirc = m_cfg.fMasterCircum;
-            double fTurns = floor(fMasterPhase / fCirc) + 1.0;
+            double fTurns = floor(fPhase / fCirc) + 1.0;
             m_fTriggerPhase = fTurns * fCirc + m_cfg.fStartPhaseComp;
             m_fCamOrigin = m_fTriggerPhase;
             m_eState = FEED_WAIT_PHASE;
@@ -138,7 +167,7 @@ void CFeedSequencer::tick(double fMasterPhase, double fDtSec, const double* afAc
             /* 等相位期间撤销 Start: 直接回待命 (连续模式间隙停车, 不再续送下一张) */
             if (!m_bStart) {
                 m_eState = FEED_IDLE;
-            } else if (fMasterPhase >= m_fTriggerPhase) {
+            } else if (fPhase >= m_fTriggerPhase) {
                 m_eState = FEED_CAM_RUN;
             }
         } break;
@@ -209,7 +238,7 @@ void CFeedSequencer::tick(double fMasterPhase, double fDtSec, const double* afAc
 
     /* 监视量登记 */
     m_mon.nState = (int)m_eState;
-    m_mon.fMasterPhase = fMasterPhase;
+    m_mon.fMasterPhase = fPhase;   /* 解缠后的单调相位（Scope 上连续，不会每圈跳回 0） */
     m_mon.fCamX = fCamX;
     for (int i = 0; i < 4; i++) {
         m_mon.afCmdPosMm[i] = afCmdPosMm[i];

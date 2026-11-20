@@ -234,7 +234,6 @@ CWASR_TC::CWASR_TC()
 	for (int i = 0; i < SITE_AXIS_MAX; i++) {
 		m_apDrive[i]         = NULL;
 		m_apLoad[i]          = NULL;
-		m_afFeedMmToUnit[i]  = 0.0;
 		m_afActPosUnits[i]   = 0.0;
 		m_abOpDrive[i]       = false;
 	}
@@ -320,6 +319,14 @@ HRESULT CWASR_TC::SetObjStatePS(PTComInitDataHdr pInitData)
 ///////////////////////////////////////////////////////////////////////////////
 void CWASR_TC::ApplySiteProfile(unsigned char ucProfile)
 {
+	// 越界取值归一: 界面填错不是"静默回退", 回写实际生效值让现场一眼看出不一致
+	// (否则 Status.SiteProfile 停在 7, 行为却是形态 0, 排查时最容易走弯路)
+	if (ucProfile >= SITE_PROFILE_COUNT) {
+		m_Trace.Log(tlAlways, "WASR_TC: SiteProfile %d out of range, fallback to %d",
+		            (int)ucProfile, SITE_PROFILE_LOCAL_1AX);
+		ucProfile = SITE_PROFILE_LOCAL_1AX;
+		m_Status.SiteProfile = ucProfile;
+	}
 	const SITE_PROFILE_T* pProfile = SiteProfileGet(ucProfile);
 
 	// Status 里 8 个角色字段的地址 (回写供现场核对)
@@ -470,22 +477,26 @@ void CWASR_TC::InitControl(float dtSec)
 
 	// 各驱动轴 mm→指令单位 = 每转指令单位数 / 电机每转工艺 mm
 	// 轴电机不同时各自不同 (以前用一个标量, 4 轴混机型会算错且不报错)
+	// 这是 feedMmToUnit 的唯一写入点: 换机型/换辊只改站点表, 换算跟着走
 	const SITE_PROFILE_T* pProfile = SiteProfileGet((unsigned char)m_nAppliedProfile);
 	double afMmToUnit[SITE_AXIS_MAX] = {0.0, 0.0, 0.0, 0.0};
 	for (int a = 0; a < SITE_AXIS_MAX; a++) {
 		ServoIO* pServo = m_apDrive[a];
 		if (pServo == NULL) {
-			m_afFeedMmToUnit[a]       = 0.0;
-			m_testSeq.feedMmToUnit[a] = 0.0;
+			m_testSeq.feedMmToUnit[a] = 0.0;   // 未接的轴: 0 = 该轴不下发位置
 			continue;
 		}
 		int nSlot = SlotOfServo(m_apServo, pServo);
 		double fUnitsPerRev = 60.0 / (double)m_speedScaleServo[nSlot];
 		double fMmPerRev = pProfile->afMmPerMotorRev[a];
 		double fMmToUnit = (fMmPerRev > 0.0) ? (fUnitsPerRev / fMmPerRev) : 0.0;
-		m_afFeedMmToUnit[a]       = fMmToUnit;
 		m_testSeq.feedMmToUnit[a] = fMmToUnit;
 		afMmToUnit[a]             = fMmToUnit;
+		if (fMmToUnit <= 0.0) {
+			// 站点表 afMmPerMotorRev 填了 0/负值: 该轴不会动, 得报出来
+			m_Trace.Log(tlAlways, "WASR_TC: axis %d mmPerRev=%g invalid, mm->unit disabled",
+			            a, fMmPerRev);
+		}
 	}
 	m_Status.FeedMmToUnit0 = afMmToUnit[0];
 	m_Status.FeedMmToUnit1 = afMmToUnit[1];
@@ -795,23 +806,9 @@ HRESULT CWASR_TC::CycleUpdate(ITcTask* ipTask, ITcUnknown* ipCaller, ULONG_PTR c
 			m_encFilter[i].Update(m_apServo[i]->Inputs->Position_actual_value);
 	}
 
-	// 送纸凸轮换算兜底: 挂载点未执行/未生效时, 每拍保证各驱动轴 feedMmToUnit 有效
-	{
-		const SITE_PROFILE_T* pProfile = SiteProfileGet((unsigned char)m_nAppliedProfile);
-		for (int a = 0; a < SITE_AXIS_MAX; a++) {
-			ServoIO* pServo = m_apDrive[a];
-			if (pServo == NULL) {
-				continue;
-			}
-			double fMmPerRev = pProfile->afMmPerMotorRev[a];
-			if (m_testSeq.feedMmToUnit[a] <= 0.0 && fMmPerRev > 0.0) {
-				int nSlot = SlotOfServo(m_apServo, pServo);
-				m_testSeq.feedMmToUnit[a] = 60.0 / (double)m_speedScaleServo[nSlot] / fMmPerRev;
-				m_afFeedMmToUnit[a]       = m_testSeq.feedMmToUnit[a];
-			}
-		}
-	}
-
+	// 送纸凸轮换算 (feedMmToUnit[]) 只由 InitControl 写: 构造/换形态/首拍/
+	// Enable 上升沿各一次。这里不再每拍重算一遍 —— 同一公式写两处,
+	// 改一处忘另一处就会算错, 且算错了没有任何报错
 	m_testSeq.Update(m_Status.ExperimentType,
 	                 &m_Status.Enable, &spdCmd, spdFbServo,
 	                 (uint8_t)(m_bPrevOpDrive ? 1 : 0),
@@ -826,22 +823,26 @@ HRESULT CWASR_TC::CycleUpdate(ITcTask* ipTask, ITcUnknown* ipCaller, ULONG_PTR c
 		FEED_MONITOR_T mon;
 		m_testSeq.feedSeq.getMonitor(&mon);
 		m_Status.FeedMasterPhase = mon.fMasterPhase;
-		for (int i = 0; i < 4; i++) {
-			// 每轴各自的换算 (轴电机不同则不同; 未挂载的轴为 0)
+		// 与 AxisRole0..7 同一种写法: 字段地址成表, 循环下发
+		// (原来按轴写 4 个 case, 加轴/改口径得改 4 处, 漏一处就静默错)
+		double* apFollowErr[SITE_AXIS_MAX] = {
+			&m_Status.FeedFollowErr0, &m_Status.FeedFollowErr1,
+			&m_Status.FeedFollowErr2, &m_Status.FeedFollowErr3
+		};
+		double* apFollowErrMm[SITE_AXIS_MAX] = {
+			&m_Status.FeedFollowErrMm0, &m_Status.FeedFollowErrMm1,
+			&m_Status.FeedFollowErrMm2, &m_Status.FeedFollowErrMm3
+		};
+		double* apIdealErr[SITE_AXIS_MAX] = {
+			&m_Status.FeedIdealErr0, &m_Status.FeedIdealErr1,
+			&m_Status.FeedIdealErr2, &m_Status.FeedIdealErr3
+		};
+		for (int i = 0; i < SITE_AXIS_MAX; i++) {
+			// 每轴各自的换算 (轴电机不同则不同; 未接的轴为 0 -> 监视量也 0)
 			double fMmToUnit = m_testSeq.feedMmToUnit[i];
-			double fErrMm    = mon.afFollowErr[i];
-			double fErrUnits = fErrMm * fMmToUnit;
-			double fIdealU   = mon.afIdealErr[i] * fMmToUnit;
-			switch (i) {
-				case 0: m_Status.FeedFollowErr0 = fErrUnits; m_Status.FeedFollowErrMm0 = fErrMm;
-				        m_Status.FeedIdealErr0 = fIdealU; break;
-				case 1: m_Status.FeedFollowErr1 = fErrUnits; m_Status.FeedFollowErrMm1 = fErrMm;
-				        m_Status.FeedIdealErr1 = fIdealU; break;
-				case 2: m_Status.FeedFollowErr2 = fErrUnits; m_Status.FeedFollowErrMm2 = fErrMm;
-				        m_Status.FeedIdealErr2 = fIdealU; break;
-				default: m_Status.FeedFollowErr3 = fErrUnits; m_Status.FeedFollowErrMm3 = fErrMm;
-				        m_Status.FeedIdealErr3 = fIdealU; break;
-			}
+			*apFollowErrMm[i] = mon.afFollowErr[i];
+			*apFollowErr[i]   = mon.afFollowErr[i] * fMmToUnit;
+			*apIdealErr[i]    = mon.afIdealErr[i] * fMmToUnit;
 		}
 	}
 
@@ -1047,8 +1048,8 @@ void CWASR_TC::CiA402_Update()
 		}
 		int nSlot = SlotOfServo(m_apServo, pServo);
 		bool bEnable = (m_Status.Enable != 0) && (a < nActiveAxes);
-		// 轴0 跟实验模式, 轴1..3 只跑凸轮 = CSP
-		SHORT mode = (a == 0) ? modeDrive : (SHORT)8;
+		// 轴0 跟实验模式, 轴1..3 只跑凸轮 = 固定 CSP
+		SHORT mode = (a == 0) ? modeDrive : DriveModeCode(SpeedTestSequencer::DRIVE_CSP);
 		m_abOpDrive[a] = CiA402_Step(pServo, bEnable, rising, m_aucCia402Step[nSlot], mode);
 	}
 

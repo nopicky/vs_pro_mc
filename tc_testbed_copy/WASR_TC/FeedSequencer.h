@@ -24,7 +24,8 @@ typedef struct tagFEED_MONITOR_T {
                                —— 评价超前补偿/前馈效果看这个，不是 afFollowErr */
 } FEED_MONITOR_T;
 
-/* 送纸工艺状态机：只依赖 CVirtualMaster 相位输入与 CCamFeeder，不碰 PDO */
+/* 送纸工艺状态机：只依赖主轴相位输入（虚拟主轴 / 现场编码器均可）与 CCamFeeder，
+   不碰 PDO —— 换主轴来源不动这一层 */
 class CFeedSequencer {
 public:
     CFeedSequencer();
@@ -37,6 +38,8 @@ public:
     void setStart(bool bStart);
 
     /* 每周期（125us）：推进状态机，输出 4 轴位置指令 mm
+       fMasterPhase：主轴相位 mm。**无界累加值或 [0,周长) 的编码器值都可以**，
+                     内部按差分解缠成单调相位（跨圈/反向都不影响对齐与凸轮）
        afActPosMm：4 轴实际位置反馈（用于跟随偏差监视），传 0 = 不监视 */
     void tick(double fMasterPhase, double fDtSec, const double* afActPosMm,
               double afCmdPosMm[4]);
@@ -58,8 +61,9 @@ private:
     double        m_fTriggerPhase;  /* 锁定的启动相位 mm（整圈对齐+补偿） */
     double        m_fCamOrigin;     /* 凸轮相位原点 mm（= m_fTriggerPhase） */
     int           m_nStopTicks;     /* 停止保持计数 */
-    double        m_fPrevPhase;     /* 上一拍主轴相位 mm（差分求主轴速度，供超前补偿） */
+    double        m_fPrevPhase;     /* 上一拍外部主轴相位 mm（差分求速度 + 回绕修正） */
     bool          m_bPrevValid;     /* 上一拍相位有效标志（init 后首拍不差分） */
+    double        m_fPhaseUnwrapped;/* 解缠后的内部主轴相位 mm（单调累加，下游统一用它） */
 };
 
 #endif /* FEED_SEQUENCER_H__20261117 */

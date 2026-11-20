@@ -182,9 +182,7 @@ void SpeedTestSequencer::Init(float dt, float inertia, float ratedTorque, float 
     for (int i = 0; i < SITE_AXIS_MAX; i++) {
         feedMmToUnit[i] = 0.0;
         feedActPos0[i]  = 0.0;
-    }
-    for (int i = 0; i < 4; i++) {
-        feedCmdMm[i] = 0.0;
+        feedCmdMm[i]    = 0.0;
     }
 
     torSweepSub             = TOR_SWEEP_STANDBY;
@@ -987,15 +985,16 @@ void SpeedTestSequencer::Update(ExperimentType_T experiment,
         }
         feedPrevSigAmp = startSig;
 
-        // 各轴实际位置换算 [mm] (跟随偏差监视); 换算未挂载 (=0) 时该轴不监视
-        double actMm[4] = {0.0, 0.0, 0.0, 0.0};
-        const double* pAct = NULL;
+        // 各轴实际位置换算 [mm] (跟随偏差监视); 换算未挂载 (=0) 的轴不换算
+        double actMm[SITE_AXIS_MAX] = {0.0};
+        bool   bAnyAct = false;
         for (int i = 0; i < SITE_AXIS_MAX; i++) {
             if (feedMmToUnit[i] > 0.0 && afActPosUnits != NULL) {
                 actMm[i] = (afActPosUnits[i] - feedActPos0[i]) / feedMmToUnit[i];
-                pAct = actMm;   // 至少一轴挂上才传指针
+                bAnyAct  = true;
             }
         }
+        const double* pAct = bAnyAct ? actMm : NULL;   // 一轴都没挂上就不监视
 
         // 虚拟主轴积分 + 状态机推进 (4 轴指令 [mm])
         feedMaster.tick(dtSec);

@@ -2,6 +2,17 @@
 #pragma hdrstop
 
 #include "CamProfile.h"
+#include <string.h>
+
+CCamFeeder::CCamFeeder() {
+
+    memset(&m_accelSeg, 0, sizeof(m_accelSeg));
+    memset(&m_decelSeg, 0, sizeof(m_decelSeg));
+    m_fSyncLen  = 0.0;
+    m_fAccelX   = 0.0;
+    m_fDecelX   = 0.0;
+    m_fTotalLen = 0.0;
+}
 
 bool makeQuintic(double fX0, double fY0, double fV0, double fA0,
                  double fX1, double fY1, double fV1, double fA1,

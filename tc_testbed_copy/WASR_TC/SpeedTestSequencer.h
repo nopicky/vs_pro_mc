@@ -213,7 +213,7 @@ struct SpeedTestSequencer
     // 进实验时各轴 6064h 实际位置 [指令单位] (指令原点, 防跳变)
     double feedActPos0[SITE_AXIS_MAX];
     float  feedPrevSigAmp;          // SigAmp 上一拍值 (Start 上升沿检测)
-    double feedCmdMm[4];            // 本拍 4 轴位置指令 [mm]
+    double feedCmdMm[SITE_AXIS_MAX];// 本拍各轴位置指令 [mm]
 
     // 停机
     float    lastSpdCmd;            // 上一拍速度指令 [rpm]

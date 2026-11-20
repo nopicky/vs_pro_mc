@@ -22,6 +22,10 @@ bool makeQuintic(double fX0, double fY0, double fV0, double fA0,
    纯算法，零硬件依赖（仅 <cmath>），可原样移植到量产控制器 */
 class CCamFeeder {
 public:
+    /* 构造: 全部归零 -> 未 build 时 evalPos/evalVel 恒返回 0（安全空凸轮），
+       避免"忘记 build"变成读未初始化成员（NaN 进实时环最麻烦） */
+    CCamFeeder();
+
     /* 构建凸轮：fSyncLen 同步段长 mm；fOvertravel 过送补偿 mm（v1：并入同步段长）
        fAccelX/fAccelY：加速段主轴/从轴行程 mm；fDecelX/fDecelY：减速段同理
        内部拼接三段并做边界自校验，不合格返回 false（坏曲线不进实时环） */
