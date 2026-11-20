@@ -128,11 +128,20 @@ typedef struct _ServoIO
 const GUID GUID_ServoIO = {0xE8FBC83C, 0xDCBA, 0x48A3, {0x8F, 0x3C, 0xDE, 0x0B, 0xFF, 0x16, 0x83, 0x93}};
 #endif // !defined(_TC_TYPE_E8FBC83C_DCBA_48A3_8F3C_DE0BFF168393_INCLUDED_)
 
+// 8 个伺服槽位 (Servo0..Servo7): XAE 里每个槽位链接一个物理从站的 PDO。
+// 一次开够 8 个槽, 以后加设备再也不用改接口 (改接口就要重链 100 多条 PDO)。
+// 哪个槽位"接什么"由站点表 (SiteConfig.h) 决定, 与结构无关。
 #pragma pack(push,1)
 typedef struct _WASR_TCInputs
 {
 	ServoInputs Servo0;
 	ServoInputs Servo1;
+	ServoInputs Servo2;
+	ServoInputs Servo3;
+	ServoInputs Servo4;
+	ServoInputs Servo5;
+	ServoInputs Servo6;
+	ServoInputs Servo7;
 } WASR_TCInputs, *PWASR_TCInputs;
 #pragma pack(pop)
 
@@ -141,6 +150,12 @@ typedef struct _WASR_TCOutputs
 {
 	ServoOutputs Servo0;
 	ServoOutputs Servo1;
+	ServoOutputs Servo2;
+	ServoOutputs Servo3;
+	ServoOutputs Servo4;
+	ServoOutputs Servo5;
+	ServoOutputs Servo6;
+	ServoOutputs Servo7;
 } WASR_TCOutputs, *PWASR_TCOutputs;
 #pragma pack(pop)
 
@@ -149,8 +164,12 @@ typedef struct _WASR_TCServos
 {
 	ServoIO Servo0;
 	ServoIO Servo1;
-	ServoIO* DriveSide;
-	ServoIO* LoadSide;
+	ServoIO Servo2;
+	ServoIO Servo3;
+	ServoIO Servo4;
+	ServoIO Servo5;
+	ServoIO Servo6;
+	ServoIO Servo7;
 } WASR_TCServos, *PWASR_TCServos;
 #elif defined(_X64_) || defined(_64BIT_)
 #pragma pack(push,1)
@@ -158,8 +177,12 @@ typedef struct _WASR_TCServos
 {
 	ServoIO Servo0;
 	ServoIO Servo1;
-	ServoIO* DriveSide;
-	ServoIO* LoadSide;
+	ServoIO Servo2;
+	ServoIO Servo3;
+	ServoIO Servo4;
+	ServoIO Servo5;
+	ServoIO Servo6;
+	ServoIO Servo7;
 } WASR_TCServos, *PWASR_TCServos;
 #pragma pack(pop)
 #endif
@@ -191,6 +214,27 @@ typedef struct _WASR_TCStatus
 	double FeedIdealErr1;
 	double FeedIdealErr2;
 	double FeedIdealErr3;
+	// ---- 站点表 (多机台形态) ----
+	// SiteProfile: 选中的站点形态 (SiteConfig.h 的 SITE_PROFILE_xxx),
+	//   只能在 Enable = 0 且所有轴回 IDLE 时改, 改完整套角色/电机/换算一起换
+	unsigned char SiteProfile;
+	// AxisCount: 实际生效的驱动轴数 (1..4), 由站点表回写, 只读
+	unsigned char AxisCount;
+	// AxisRole0..7: 各槽位角色 (0=未用, 1=驱动, 2=负载), 由站点表回写, 只读
+	unsigned char AxisRole0;
+	unsigned char AxisRole1;
+	unsigned char AxisRole2;
+	unsigned char AxisRole3;
+	unsigned char AxisRole4;
+	unsigned char AxisRole5;
+	unsigned char AxisRole6;
+	unsigned char AxisRole7;
+	// FeedMmToUnit0..3: 各驱动轴 mm → 指令单位 换算系数, 只读
+	//   (轴0 台架上应 ≈ 671 = 131072 / 195.349; 4 轴电机不同时各自不同)
+	double FeedMmToUnit0;
+	double FeedMmToUnit1;
+	double FeedMmToUnit2;
+	double FeedMmToUnit3;
 } WASR_TCStatus, *PWASR_TCStatus;
 #pragma pack(pop)
 

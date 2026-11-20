@@ -378,6 +378,30 @@
             <Name>Servo1</Name>
             <BaseType GUID="{945bce8d-4e9b-4ea2-a1be-727f8500de9b}">ServoInputs</BaseType>
           </Symbol>
+          <Symbol CreateSymbol="true">
+            <Name>Servo2</Name>
+            <BaseType GUID="{945bce8d-4e9b-4ea2-a1be-727f8500de9b}">ServoInputs</BaseType>
+          </Symbol>
+          <Symbol CreateSymbol="true">
+            <Name>Servo3</Name>
+            <BaseType GUID="{945bce8d-4e9b-4ea2-a1be-727f8500de9b}">ServoInputs</BaseType>
+          </Symbol>
+          <Symbol CreateSymbol="true">
+            <Name>Servo4</Name>
+            <BaseType GUID="{945bce8d-4e9b-4ea2-a1be-727f8500de9b}">ServoInputs</BaseType>
+          </Symbol>
+          <Symbol CreateSymbol="true">
+            <Name>Servo5</Name>
+            <BaseType GUID="{945bce8d-4e9b-4ea2-a1be-727f8500de9b}">ServoInputs</BaseType>
+          </Symbol>
+          <Symbol CreateSymbol="true">
+            <Name>Servo6</Name>
+            <BaseType GUID="{945bce8d-4e9b-4ea2-a1be-727f8500de9b}">ServoInputs</BaseType>
+          </Symbol>
+          <Symbol CreateSymbol="true">
+            <Name>Servo7</Name>
+            <BaseType GUID="{945bce8d-4e9b-4ea2-a1be-727f8500de9b}">ServoInputs</BaseType>
+          </Symbol>
         </DataArea>
         <DataArea>
           <AreaNo AreaType="OutputSrc">1</AreaNo>
@@ -389,6 +413,30 @@
           </Symbol>
           <Symbol>
             <Name>Servo1</Name>
+            <BaseType GUID="{b2423a46-ca74-4ceb-90a5-4087fa1a95a1}">ServoOutputs</BaseType>
+          </Symbol>
+          <Symbol CreateSymbol="true">
+            <Name>Servo2</Name>
+            <BaseType GUID="{b2423a46-ca74-4ceb-90a5-4087fa1a95a1}">ServoOutputs</BaseType>
+          </Symbol>
+          <Symbol CreateSymbol="true">
+            <Name>Servo3</Name>
+            <BaseType GUID="{b2423a46-ca74-4ceb-90a5-4087fa1a95a1}">ServoOutputs</BaseType>
+          </Symbol>
+          <Symbol CreateSymbol="true">
+            <Name>Servo4</Name>
+            <BaseType GUID="{b2423a46-ca74-4ceb-90a5-4087fa1a95a1}">ServoOutputs</BaseType>
+          </Symbol>
+          <Symbol CreateSymbol="true">
+            <Name>Servo5</Name>
+            <BaseType GUID="{b2423a46-ca74-4ceb-90a5-4087fa1a95a1}">ServoOutputs</BaseType>
+          </Symbol>
+          <Symbol CreateSymbol="true">
+            <Name>Servo6</Name>
+            <BaseType GUID="{b2423a46-ca74-4ceb-90a5-4087fa1a95a1}">ServoOutputs</BaseType>
+          </Symbol>
+          <Symbol CreateSymbol="true">
+            <Name>Servo7</Name>
             <BaseType GUID="{b2423a46-ca74-4ceb-90a5-4087fa1a95a1}">ServoOutputs</BaseType>
           </Symbol>
         </DataArea>
@@ -404,13 +452,29 @@
             <Name>Servo1</Name>
             <BaseType GUID="{e8fbc83c-dcba-48a3-8f3c-de0bff168393}">ServoIO</BaseType>
           </Symbol>
-          <Symbol>
-            <Name>DriveSide</Name>
-            <BaseType GUID="{e8fbc83c-dcba-48a3-8f3c-de0bff168393}" PointerTo="1">ServoIO</BaseType>
+          <Symbol CreateSymbol="true">
+            <Name>Servo2</Name>
+            <BaseType GUID="{e8fbc83c-dcba-48a3-8f3c-de0bff168393}">ServoIO</BaseType>
           </Symbol>
-          <Symbol>
-            <Name>LoadSide</Name>
-            <BaseType GUID="{e8fbc83c-dcba-48a3-8f3c-de0bff168393}" PointerTo="1">ServoIO</BaseType>
+          <Symbol CreateSymbol="true">
+            <Name>Servo3</Name>
+            <BaseType GUID="{e8fbc83c-dcba-48a3-8f3c-de0bff168393}">ServoIO</BaseType>
+          </Symbol>
+          <Symbol CreateSymbol="true">
+            <Name>Servo4</Name>
+            <BaseType GUID="{e8fbc83c-dcba-48a3-8f3c-de0bff168393}">ServoIO</BaseType>
+          </Symbol>
+          <Symbol CreateSymbol="true">
+            <Name>Servo5</Name>
+            <BaseType GUID="{e8fbc83c-dcba-48a3-8f3c-de0bff168393}">ServoIO</BaseType>
+          </Symbol>
+          <Symbol CreateSymbol="true">
+            <Name>Servo6</Name>
+            <BaseType GUID="{e8fbc83c-dcba-48a3-8f3c-de0bff168393}">ServoIO</BaseType>
+          </Symbol>
+          <Symbol CreateSymbol="true">
+            <Name>Servo7</Name>
+            <BaseType GUID="{e8fbc83c-dcba-48a3-8f3c-de0bff168393}">ServoIO</BaseType>
           </Symbol>
         </DataArea>
         <DataArea>
@@ -544,6 +608,80 @@
             <BaseType GUID="{18071995-0000-0000-0000-00000000000e}">LREAL</BaseType>
             <Unit><![CDATA[指令单位]]></Unit>
           </Symbol>
+          <Symbol CreateSymbol="true">
+            <Name>SiteProfile</Name>
+            <Comment TxtId=""><![CDATA[站点形态: 0=本机单轴, 1=对拖4驱动, 2=对拖4驱动+4负载; 只能在 Enable=0 且各轴 IDLE 时改]]></Comment>
+            <BaseType GUID="{18071995-0000-0000-0000-000000000002}">USINT</BaseType>
+          </Symbol>
+          <Symbol CreateSymbol="true">
+            <Name>AxisCount</Name>
+            <Comment TxtId=""><![CDATA[实际生效的驱动轴数 (1..4), 只读]]></Comment>
+            <BaseType GUID="{18071995-0000-0000-0000-000000000002}">USINT</BaseType>
+          </Symbol>
+          <Symbol CreateSymbol="true">
+            <Name>AxisRole0</Name>
+            <Comment TxtId=""><![CDATA[槽位0 角色: 0=未用, 1=驱动, 2=负载, 只读]]></Comment>
+            <BaseType GUID="{18071995-0000-0000-0000-000000000002}">USINT</BaseType>
+          </Symbol>
+          <Symbol CreateSymbol="true">
+            <Name>AxisRole1</Name>
+            <Comment TxtId=""><![CDATA[槽位1 角色, 只读]]></Comment>
+            <BaseType GUID="{18071995-0000-0000-0000-000000000002}">USINT</BaseType>
+          </Symbol>
+          <Symbol CreateSymbol="true">
+            <Name>AxisRole2</Name>
+            <Comment TxtId=""><![CDATA[槽位2 角色, 只读]]></Comment>
+            <BaseType GUID="{18071995-0000-0000-0000-000000000002}">USINT</BaseType>
+          </Symbol>
+          <Symbol CreateSymbol="true">
+            <Name>AxisRole3</Name>
+            <Comment TxtId=""><![CDATA[槽位3 角色, 只读]]></Comment>
+            <BaseType GUID="{18071995-0000-0000-0000-000000000002}">USINT</BaseType>
+          </Symbol>
+          <Symbol CreateSymbol="true">
+            <Name>AxisRole4</Name>
+            <Comment TxtId=""><![CDATA[槽位4 角色, 只读]]></Comment>
+            <BaseType GUID="{18071995-0000-0000-0000-000000000002}">USINT</BaseType>
+          </Symbol>
+          <Symbol CreateSymbol="true">
+            <Name>AxisRole5</Name>
+            <Comment TxtId=""><![CDATA[槽位5 角色, 只读]]></Comment>
+            <BaseType GUID="{18071995-0000-0000-0000-000000000002}">USINT</BaseType>
+          </Symbol>
+          <Symbol CreateSymbol="true">
+            <Name>AxisRole6</Name>
+            <Comment TxtId=""><![CDATA[槽位6 角色, 只读]]></Comment>
+            <BaseType GUID="{18071995-0000-0000-0000-000000000002}">USINT</BaseType>
+          </Symbol>
+          <Symbol CreateSymbol="true">
+            <Name>AxisRole7</Name>
+            <Comment TxtId=""><![CDATA[槽位7 角色, 只读]]></Comment>
+            <BaseType GUID="{18071995-0000-0000-0000-000000000002}">USINT</BaseType>
+          </Symbol>
+          <Symbol CreateSymbol="true">
+            <Name>FeedMmToUnit0</Name>
+            <Comment TxtId=""><![CDATA[轴0 mm→指令单位 换算 (台架应 ≈ 671), 只读]]></Comment>
+            <BaseType GUID="{18071995-0000-0000-0000-00000000000e}">LREAL</BaseType>
+            <Unit><![CDATA[指令单位/mm]]></Unit>
+          </Symbol>
+          <Symbol CreateSymbol="true">
+            <Name>FeedMmToUnit1</Name>
+            <Comment TxtId=""><![CDATA[轴1 mm→指令单位 换算, 只读]]></Comment>
+            <BaseType GUID="{18071995-0000-0000-0000-00000000000e}">LREAL</BaseType>
+            <Unit><![CDATA[指令单位/mm]]></Unit>
+          </Symbol>
+          <Symbol CreateSymbol="true">
+            <Name>FeedMmToUnit2</Name>
+            <Comment TxtId=""><![CDATA[轴2 mm→指令单位 换算, 只读]]></Comment>
+            <BaseType GUID="{18071995-0000-0000-0000-00000000000e}">LREAL</BaseType>
+            <Unit><![CDATA[指令单位/mm]]></Unit>
+          </Symbol>
+          <Symbol CreateSymbol="true">
+            <Name>FeedMmToUnit3</Name>
+            <Comment TxtId=""><![CDATA[轴3 mm→指令单位 换算, 只读]]></Comment>
+            <BaseType GUID="{18071995-0000-0000-0000-00000000000e}">LREAL</BaseType>
+            <Unit><![CDATA[指令单位/mm]]></Unit>
+          </Symbol>
         </DataArea>
       </DataAreas>
       <InterfacePointers>
@@ -559,6 +697,6 @@
   </Modules>
   <Library>
     <Name>WASR_TC</Name>
-    <Version>0.0.0.3</Version>
+    <Version>0.0.0.4</Version>
   </Library>
 </TcModuleClass>

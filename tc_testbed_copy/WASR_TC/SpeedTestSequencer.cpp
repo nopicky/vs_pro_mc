@@ -173,12 +173,16 @@ void SpeedTestSequencer::Init(float dt, float inertia, float ratedTorque, float 
     posWaveCycles     = 0;
     posCenter         = 0;
     posStopElapsed    = 0.0f;
-    posCmdOut         = 0.0;
+    for (int i = 0; i < SITE_AXIS_MAX; i++) {
+        posCmdOut[i] = 0.0;
+    }
 
     // 送纸凸轮: 换算未挂载 (=0) 时位置指令保持指令原点, 电机不动 (安全)
-    feedMmToUnit   = 0.0;
-    feedActPos0    = 0.0;
     feedPrevSigAmp = 0.0f;
+    for (int i = 0; i < SITE_AXIS_MAX; i++) {
+        feedMmToUnit[i] = 0.0;
+        feedActPos0[i]  = 0.0;
+    }
     for (int i = 0; i < 4; i++) {
         feedCmdMm[i] = 0.0;
     }
@@ -220,6 +224,7 @@ void SpeedTestSequencer::Init(float dt, float inertia, float ratedTorque, float 
 
     lastSpdCmd    = 0.0f;
     stopClearFreq = 0;
+    stopFromFeedCam = 0;
 
     // 驱动侧默认 CSV, 只有转矩扫频置 CST, 位置环波形置 CSP
     driveMode = DRIVE_CSV;
@@ -264,7 +269,7 @@ void SpeedTestSequencer::Update(ExperimentType_T experiment,
             uint8_t* enable, float* spdCmd, float spdFb,
             uint8_t driveReady,
             float* sigFreq, float* sigAmp, float* sigOffset,
-            double actPosUnits)
+            const double* afActPosUnits)
 {
     // 外部 Enable 快照 (下面可能改写 *enable)
     uint8_t extEnable = *enable;
@@ -284,7 +289,14 @@ void SpeedTestSequencer::Update(ExperimentType_T experiment,
     torSweepSine  = 0.0f;
     torSweepBlend = 1.0f;
     // 位置指令默认停在原点: 位置实验之外不用它, 各位置分支会按需覆盖
-    posCmdOut     = (double)posCenter;
+    // 例外: 送纸凸轮（含其停机保持段）不回原点——回了就是 680mm 反向冲击,
+    //       所以保持上一拍指令不动, 由 FEED_CAM_TEST 分支自己写
+    uint8_t holdFeedPos = ((mode == FEED_CAM_TEST) || (stopFromFeedCam != 0)) ? 1 : 0;
+    if (!holdFeedPos) {
+        for (int i = 0; i < SITE_AXIS_MAX; i++) {
+            posCmdOut[i] = (double)posCenter;
+        }
+    }
     // 负载侧注入转矩默认只有基准值; 仅 LOAD_SCAN_TEST 按 (频率,幅度) 段再叠加
     loadTorInj    = loadBase;
     // 只有 LOAD_SCAN_TEST 把 SigAmp 当回读; 波形/位置实验中是用户输入, 不清零
@@ -298,6 +310,8 @@ void SpeedTestSequencer::Update(ExperimentType_T experiment,
         *enable = 1;
         // 位置环波形: 停机段幅值淡出计时从 0 起
         posStopElapsed = 0.0f;
+        // 送纸凸轮停机: 原地保持当前指令 (不回原点)
+        stopFromFeedCam = (mode == FEED_CAM_TEST) ? 1 : 0;
         // 频率回读只在扫频/转矩扫频/负载扫描中清零 (波形实验是用户输入)
         stopClearFreq = (mode == SWEEP_TEST || mode == TOR_SWEEP_TEST ||
                          mode == LOAD_SCAN_TEST) ? 1 : 0;
@@ -311,7 +325,9 @@ void SpeedTestSequencer::Update(ExperimentType_T experiment,
     // Enable 上升沿: 按 ExperimentType 进入实验 (STOPPING 中忽略, 先停完)
     if (rising && mode != STOPPING) {
         // 默认交还伺服速度环, 转矩扫频改 CST, 位置环波形改 CSP
-        driveMode = DRIVE_CSV;
+        driveMode       = DRIVE_CSV;
+        // 新实验开始: 清掉上一次的送纸停机保持标志
+        stopFromFeedCam = 0;
 
         switch (experiment) {
 
@@ -410,7 +426,7 @@ void SpeedTestSequencer::Update(ExperimentType_T experiment,
             if (sigOffset != NULL) {
                 posCenter = (LONG)(*sigOffset);
             }
-            posCmdOut = (double)posCenter;
+            posCmdOut[0] = (double)posCenter;
             // 位置上不使用速度指令 (CSP 下 60FFh 写 0)
             SetSpdCmd(spdCmd, 0.0f);
             driveMode = DRIVE_CSP;
@@ -442,12 +458,14 @@ void SpeedTestSequencer::Update(ExperimentType_T experiment,
             mode = FEED_CAM_TEST;
             feedMaster.setVelocity(((sigOffset != NULL) ? (double)*sigOffset : 0.0) * 1000.0 / 60.0);
             feedMaster.start();
-            // 指令原点 = 当前实际位置 (6064h): 凸轮位置作为相对偏移叠加, 防使能跳变;
-            // posCenter 同步为该原点 (STOPPING 公共段复用: 停机回原点保持后禁用)
-            feedActPos0    = actPosUnits;
-            posCenter      = (LONG)actPosUnits;
+            // 指令原点 = 各轴当前实际位置 (6064h): 凸轮位置作为相对偏移叠加, 防使能跳变;
+            // posCenter 同步为轴0 原点 (STOPPING 公共段复用: 停机回原点保持后禁用)
+            for (int i = 0; i < SITE_AXIS_MAX; i++) {
+                feedActPos0[i] = (afActPosUnits != NULL) ? afActPosUnits[i] : 0.0;
+                posCmdOut[i]   = feedActPos0[i];
+            }
+            posCenter      = (LONG)feedActPos0[0];
             feedPrevSigAmp = 0.0f;
-            posCmdOut      = actPosUnits;
             SetSpdCmd(spdCmd, 0.0f);
             driveMode      = DRIVE_CSP;
             break;
@@ -905,7 +923,7 @@ void SpeedTestSequencer::Update(ExperimentType_T experiment,
 
         case POS_WAVE_STANDBY: {
             // 先只给原点: 波形开始前不叠加任何偏移
-            posCmdOut = (double)posCenter;
+            posCmdOut[0] = (double)posCenter;
             posWaveSubElapsed += dtSec;
             if (posWaveSubElapsed >= POSWAVE_TEST_STANDBY_DUR) {
                 posWaveSub        = POS_WAVE_ACTIVE;
@@ -938,14 +956,14 @@ void SpeedTestSequencer::Update(ExperimentType_T experiment,
         }
         // 本拍波形值 [-1, 1]
         float wave = WaveValue(posWaveType, posWavePhase);
-        posCmdOut = center + (double)(ampCnt * wave);
+        posCmdOut[0] = center + (double)(ampCnt * wave);
         posWaveSubElapsed += dtSec;
 
         // 跑满设定的周期数: 目标直接给基准位置, 保持 HOLD 后禁用 (不做淡出)
         if ((POSWAVE_TEST_CYCLES > 0) &&
             (posWaveCycles >= (uint32_t)POSWAVE_TEST_CYCLES)) {
-            posStopElapsed = 0.0f;
-            posCmdOut      = (double)posCenter;
+            posStopElapsed  = 0.0f;
+            posCmdOut[0]    = (double)posCenter;
             SetSpdCmd(spdCmd, 0.0f);
             mode = STOPPING;
         }
@@ -969,20 +987,24 @@ void SpeedTestSequencer::Update(ExperimentType_T experiment,
         }
         feedPrevSigAmp = startSig;
 
-        // 实际位置换算 [mm] (跟随偏差监视); 换算未挂载 (=0) 时不监视
+        // 各轴实际位置换算 [mm] (跟随偏差监视); 换算未挂载 (=0) 时该轴不监视
         double actMm[4] = {0.0, 0.0, 0.0, 0.0};
         const double* pAct = NULL;
-        if (feedMmToUnit > 0.0) {
-            actMm[0] = (actPosUnits - feedActPos0) / feedMmToUnit;
-            pAct = actMm;
+        for (int i = 0; i < SITE_AXIS_MAX; i++) {
+            if (feedMmToUnit[i] > 0.0 && afActPosUnits != NULL) {
+                actMm[i] = (afActPosUnits[i] - feedActPos0[i]) / feedMmToUnit[i];
+                pAct = actMm;   // 至少一轴挂上才传指针
+            }
         }
 
-        // 虚拟主轴积分 + 状态机推进 (4 轴指令 [mm], v1 仅轴0 下发)
+        // 虚拟主轴积分 + 状态机推进 (4 轴指令 [mm])
         feedMaster.tick(dtSec);
         feedSeq.tick(feedMaster.getPhase(), dtSec, pAct, feedCmdMm);
 
-        // 轴0 指令: 指令原点 + 凸轮位置 × 换算 (double 累加, 同 POS_WAVE 精度处理)
-        posCmdOut = feedActPos0 + feedCmdMm[0] * feedMmToUnit;
+        // 各轴指令: 指令原点 + 凸轮位置 × 换算 (double 累加, 同 POS_WAVE 精度处理)
+        for (int i = 0; i < SITE_AXIS_MAX; i++) {
+            posCmdOut[i] = feedActPos0[i] + feedCmdMm[i] * feedMmToUnit[i];
+        }
 
         // SigFreq 回读凸轮相位 camX [mm] (Scope 观测; 未触发时保持 0)
         if (sigFreq != NULL) {
@@ -1240,8 +1262,10 @@ void SpeedTestSequencer::Update(ExperimentType_T experiment,
         // 位置环波形: CSP 下不做速度斜坡, 目标位置直接给基准位置 (原点),
         // 保持 POSWAVE_TEST_HOLD_DUR 后禁用驱动器 (不再做幅值淡出)
         if (driveMode == DRIVE_CSP) {
-            // 目标位置 = 基准位置 [指令单位]
-            posCmdOut = (double)posCenter;
+            // 目标位置 = 基准位置 [指令单位]; 送纸凸轮例外: 保持在凸轮终点不动
+            if (!holdFeedPos) {
+                posCmdOut[0] = (double)posCenter;
+            }
 
             // 保持期间使能, 速度指令保持 0 (CSP 下不使用)
             *enable = 1;

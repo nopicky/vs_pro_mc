@@ -56,6 +56,8 @@
 #include "FeedSequencer.h"
 #include "VirtualMaster.h"
 #include "LoadProfiler.h"
+// 站点表: 送纸轴数上限 (SITE_AXIS_MAX)
+#include "SiteConfig.h"
 
 struct SpeedTestSequencer
 {
@@ -158,9 +160,10 @@ struct SpeedTestSequencer
     LONG       posCenter;
     // 停机保持计时 [s] (目标回基准位置后计时, 到 POSWAVE_TEST_HOLD_DUR 禁用)
     float      posStopElapsed;
-    // 本拍驱动侧目标位置 [指令单位] (driveMode = DRIVE_CSP 时写入 607Ah)
+    // 本拍各轴目标位置 [指令单位] (driveMode = DRIVE_CSP 时写入各轴 607Ah)
     // 用 double 累加: 绝对位置可达 2^31, float 尾数只有 24 位, 大位置下会丢小增量
-    double     posCmdOut;
+    // [0] 同时供位置环波形等单轴实验使用; 送纸凸轮用到 [0..3]
+    double     posCmdOut[SITE_AXIS_MAX];
 
     // 转矩扫频
     TorSweepSub torSweepSub;
@@ -200,18 +203,22 @@ struct SpeedTestSequencer
     float    prbsBit;               // 当前 bit 输出 [-1, +1]
 
     // 送纸凸轮实验 (FEED_CAM_TEST): 虚拟主轴 + 凸轮状态机
-    // v1 仅轴0 指令下发 (单轴 VD5L), 其余轴指令仅进 monitor, 扩硬件后逐轴接出
+    // 轴数由站点表 (Status.SiteProfile) 决定: 1~4 个驱动轴各跑一条凸轮,
+    // 每轴位置指令进 posCmdOut[0..3], 由挂载层按槽位下发
     CFeedSequencer feedSeq;         // 送纸工艺状态机 (含 4 轴凸轮)
     CVirtualMaster feedMaster;      // 虚拟主轴
     CLoadProfiler  feedLoad;        // 负载谱 (v1 占位, bLoadSideEnable=false 不用)
-    double feedMmToUnit;            // mm→指令单位换算 (挂载层按驱动侧齿轮比写入, 0=未挂载)
-    double feedActPos0;             // 进实验时的 6064h 实际位置 [指令单位] (指令原点, 防跳变)
+    // mm→指令单位 换算系数, 每轴一份 (轴电机不同则不同, 0 = 未挂载)
+    double feedMmToUnit[SITE_AXIS_MAX];
+    // 进实验时各轴 6064h 实际位置 [指令单位] (指令原点, 防跳变)
+    double feedActPos0[SITE_AXIS_MAX];
     float  feedPrevSigAmp;          // SigAmp 上一拍值 (Start 上升沿检测)
     double feedCmdMm[4];            // 本拍 4 轴位置指令 [mm]
 
     // 停机
     float    lastSpdCmd;            // 上一拍速度指令 [rpm]
     uint8_t  stopClearFreq;         // 1 = 停机完成时把 SigFreq 清 0
+    uint8_t  stopFromFeedCam;       // 1 = 本次停机来自送纸凸轮 (保持指令位置, 不回原点)
 
     // 上位机速度环 (仅 driveMode = DRIVE_CST 时运行)
     MiniSpdLoop spdLoop;
@@ -260,12 +267,13 @@ struct SpeedTestSequencer
      *                    负载扫描回读当前幅度 [% 负载额定]; 位置环波形超
      *                    POSWAVE_TEST_AMP_MAX 时夹紧并回读
      * @param sigOffset   m_Status.SigOffset [in/out]: 偏置 (单位随实验, 见文件头)
-     * @param actPosUnits 驱动侧 6064h 实际位置 [指令单位] (FeedCamTest 指令原点/跟随监视)
+     * @param afActPosUnits 各驱动轴 6064h 实际位置 [指令单位], 长度 SITE_AXIS_MAX
+     *                    (送纸凸轮: 指令原点/跟随监视; 其余实验只用 [0])
      */
     void Update(ExperimentType_T experiment,
                 uint8_t* enable, float* spdCmd, float spdFb,
                 uint8_t driveReady,
                 float* sigFreq, float* sigAmp, float* sigOffset,
-                double actPosUnits);
+                const double* afActPosUnits);
 
 };

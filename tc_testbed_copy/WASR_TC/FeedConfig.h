@@ -2,10 +2,11 @@
 #define FEED_CONFIG_H__20261117
 
 /* 送纸工艺/机械参数：调参唯一入口，只改这里
-   注意：编码器位数与「每转指令单位数」由 ServoPlatformConfig.h 电机分支
-   (WASR_S0_MOTOR 宏) 决定；mm→指令单位换算由挂载层按驱动侧齿轮比自动计算 */
+   注意：编码器位数 / 齿轮比 / 电机每转工艺 mm 现在由站点表 (SiteConfig.h) 与
+   电机规格表 (MotorSpec.h) 决定；挂载层每拍把轴数与 mm→指令单位换算写进
+   nAxisCount / fMmPerMotorRev（下面的默认值只作兜底），换机台改站点表即可 */
 typedef struct tagFEED_CONFIG_T {
-    int    nAxisCount;          /* 启用轴数 1~4：默认 1（单轴 VD5L 先行），借齐伺服后改 4 */
+    int    nAxisCount;          /* 启用轴数 1~4：挂载层按站点表的驱动轴数覆盖 */
     double fFeedRollerCircum;   /* 送纸轴周长 mm，默认 195.349 */
     double fMasterCircum;       /* 主轴(印刷滚筒)周长 mm，默认 1188.78 */
     double fRollerPitch;        /* 轮间距 mm，默认 90（相邻轴同步段长度差） */

@@ -54,7 +54,10 @@
     <ClInclude Include="TestScriptConfig.h">
       <Filter>Configs</Filter>
     </ClInclude>
-    <ClInclude Include="ServoPlatformConfig.h">
+    <ClInclude Include="MotorSpec.h">
+      <Filter>Configs</Filter>
+    </ClInclude>
+    <ClInclude Include="SiteConfig.h">
       <Filter>Configs</Filter>
     </ClInclude>
     <ClInclude Include="WASR_ControlConfig.h">
@@ -87,6 +90,18 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="CoeSdo.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CamProfile.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="FeedSequencer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="MotorSpec.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SiteConfig.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

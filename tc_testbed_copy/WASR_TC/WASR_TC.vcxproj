@@ -121,6 +121,8 @@
     <ClCompile Include="SpeedTestSequencer.cpp" />
     <ClCompile Include="CamProfile.cpp" />
     <ClCompile Include="FeedSequencer.cpp" />
+    <ClCompile Include="MotorSpec.cpp" />
+    <ClCompile Include="SiteConfig.cpp" />
     <ClCompile Include="CoeSdo.cpp" />
     <ClCompile Include="WASR_TC.cpp" />
     <ClCompile Include="WASR_TCClassFactory.cpp" />
@@ -147,7 +149,8 @@
     <ClInclude Include="CoeSdo.h" />
     <ClInclude Include="CoeSdoConfig.h" />
     <ClInclude Include="MiniSpdLoop.h" />
-    <ClInclude Include="ServoPlatformConfig.h" />
+    <ClInclude Include="MotorSpec.h" />
+    <ClInclude Include="SiteConfig.h" />
     <ClInclude Include="SpeedTestSequencer.h" />
     <ClInclude Include="TestScanTables.h" />
     <ClInclude Include="TcPch.h" />

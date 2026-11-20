@@ -1,22 +1,26 @@
 ///////////////////////////////////////////////////////////////////////////////
 // WASR_TC.h
-// @brief  TwinCAT 伺服测试模块: 两台伺服 (Servo0/Servo1) 的 CiA402 控制、
-//         实验序列器输出与状态监视。
+// @brief  TwinCAT 伺服测试模块: 最多 8 个伺服槽位 (Servo0..Servo7) 的 CiA402
+//         控制、实验序列器输出与状态监视。
 //
-// 驱动侧 (DriveSide) 默认用伺服自带速度环 (CSV, 60FFh 速度指令);
-// 转矩扫频实验用 CST(10) + 上位机速度环 (MiniSpdLoop.h), 输出 6071h 转矩;
-// 位置环波形实验用 CSP(8), 输出 607Ah 目标位置 (绕宏 POSWAVE_TEST_ORIGIN 的
-// 原点摆动), 反馈取 6064h 位置实际值。
-// 负载侧 (LoadSide) 固定 CST(10), 目标转矩 = 序列器给出的负载转矩 (SigOffset + 注入)。
-// 角色由 Status.Driver_Servo_number 选择, Enable = 0 时可改。
+// 哪个槽位接什么 = 站点表 (SiteConfig.h) 决定, 运行期用 Status.SiteProfile 选:
+//   0 = 本机单轴 (Servo0 = VD5L, 单轴送纸凸轮验证)
+//   1 = 对拖 4 驱动轴 (Servo0..3 = VD3E, 负载槽预留不接)
+//   2 = 对拖 4 驱动 + 4 负载 (Servo4..7 接上后选这个)
+// 站点表把角色/电机/换算一次性应用到 8 个槽位, 逻辑代码里没有任何机型分支。
+//
+// 驱动轴 (SLOT_ROLE_DRIVE): 默认用伺服自带速度环 (CSV, 60FFh 速度指令);
+//   转矩扫频实验用 CST(10) + 上位机速度环 (MiniSpdLoop.h), 输出 6071h 转矩;
+//   位置环波形 / 送纸凸轮用 CSP(8), 输出 607Ah 目标位置。
+// 负载轴 (SLOT_ROLE_LOAD): 固定 CST(10), 目标转矩 = 序列器给出的负载转矩。
+// 槽位角色为 NONE 的完全不动 (输出全 0, 不跑 CiA402)——未接设备必须声明 NONE,
+// 否则 6041=0 会让状态机每拍重试使能、状态乱跳。
 // 实验类型与曲线见 ExperimentType_T 与 SpeedTestSequencer.h。
-// 速度闭环 PRBS 实验只输出激励序列, 不做在线频响计算; Bode 数据区当前不写
-// (保持全 0), 频响由上位机用录波数据离线做 FFT。
 //
-// 每台伺服的编码器/齿轮/惯量/额定转矩见 ServoPlatformConfig.h, 可经 XAE 数据区
-// 覆盖。驱动侧那台伺服的惯量比/刚性等级由模块每 IR_MON_PERIOD_MS 经 CoE SDO
-// 读回 Status.Driver_Inertia_ratio / Driver_Rigidity_level (只监视, 见
-// WASR_ControlConfig.h)。转矩单位 [0.1% 额定], 速度单位 [rpm]。
+// 电机参数 (编码器/齿轮/惯量/额定转矩) 见 MotorSpec.h 表, 可经 XAE 数据区
+// (Servos.ServoN.Params) 覆盖。驱动轴那台的惯量比/刚性等级由模块每
+// IR_MON_PERIOD_MS 经 CoE SDO 读回 Status.Driver_* (只监视)。
+// 转矩单位 [0.1% 额定], 速度单位 [rpm]。
 ///////////////////////////////////////////////////////////////////////////////
 #pragma once
 
@@ -26,6 +30,10 @@
 
 // 位置差分测速 (SpdFb_PcCalc)
 #include "EncoderDebounce.h"
+
+// 站点表 (槽位/电机/换算) 与电机规格表
+#include "SiteConfig.h"
+#include "MotorSpec.h"
 
 // 实验序列器 (含转矩扫频速度环 MiniSpdLoop.h)
 #include "SpeedTestSequencer.h"
@@ -78,19 +86,28 @@ protected:
 	VOID RemoveModuleFromCaller();
 
 	/**
-	 * 双侧 CiA402 状态机推进 (DriveSide / LoadSide 各自独立步号)
-	 * @param opDrive 输出: 驱动侧已 Operation Enabled
-	 * @param opLoad  输出: 负载侧已 Operation Enabled
+	 * 各槽位 CiA402 状态机推进 (每个槽位独立步号)
+	 * 角色 NONE 的槽位强制 Controlword = 0, 不参与状态机;
+	 * 驱动轴只在当前实验用到的轴数内使能, 负载轴按 bLoadSideEnable 决定。
+	 * 结果写 m_abOpDrive[] / m_abOpLoad[]
 	 */
-	void CiA402_Update(bool& opDrive, bool& opLoad);
+	void CiA402_Update();
 
 	/**
-	 * 驱动侧输出: CSV 写速度指令 / CST 写转矩指令 / CSP 写目标位置
-	 * @param d       驱动侧伺服
-	 * @param spdCmd  速度指令 [rpm]
-	 * @param opDrive 该侧是否已 Operation Enabled (CSV/CST 未使能时输出 0)
+	 * 驱动轴输出: CSV 写速度指令 / CST 写转矩指令 / CSP 写目标位置
+	 * @param pServo  该轴伺服
+	 * @param nAxis   驱动轴序号 (0..3), 决定取 posCmdOut[nAxis]
+	 * @param fSpdCmd 速度指令 [rpm]
+	 * @param bOpEnabled 该轴是否已 Operation Enabled (CSV/CST 未使能时输出 0)
 	 */
-	void DriveOutput_Run(ServoIO* d, float spdCmd, bool opDrive);
+	void DriveOutput_Run(ServoIO* pServo, int nAxis, float fSpdCmd, bool bOpEnabled);
+
+	/**
+	 * 应用站点形态: 8 个槽位的角色/电机参数/换算/测速滤波全部按表重设
+	 * 只能在 Enable = 0 且所有轴回 IDLE 时调用 (换算变了还在跑 = 飞车)
+	 * @param ucProfile SITE_PROFILE_xxx
+	 */
+	void ApplySiteProfile(unsigned char ucProfile);
 
 	/**
 	 * 初始化控制层 (速度换算 / 测速滤波 / 实验序列器)
@@ -130,36 +147,54 @@ protected:
 	UINT m_counter;
 	// 控制周期 [s] (首周期按任务周期自动检测)
 	float m_dtSec;
-	// 驱动侧伺服的 [rpm] ← (指令单位/s) 换算系数
+	// 驱动轴0 的 [rpm] ← (指令单位/s) 换算系数
 	float m_speedScale;
 	// 每台伺服各自的 [rpm] ← (指令单位/s) 换算系数
-	float m_speedScaleServo[2];
-	// CiA402 步号: 0=init, 1=ready-to-switch-on, 2=switched-on, 3=operation-enabled
-	uint8_t m_cia402Step;
-	uint8_t m_cia402StepLoad;
-	// 上一拍 Enable / 驱动侧 Operation Enabled
+	float m_speedScaleServo[SITE_SLOT_MAX];
+	// 槽位指针 (指向 m_Servos.Servo0..Servo7)
+	ServoIO* m_apServo[SITE_SLOT_MAX];
+	// 站点表快照: 角色 / 电机编号 / 监视口径 / 从站地址
+	uint8_t m_aucRole[SITE_SLOT_MAX];
+	uint8_t m_aucMotor[SITE_SLOT_MAX];
+	uint8_t m_aucMon[SITE_SLOT_MAX];
+	ULONG   m_aulSlaveAddr[SITE_SLOT_MAX];
+	// 驱动轴 / 负载轴指针 (NULL = 该轴未接), 由站点表按槽位顺序生成
+	ServoIO* m_apDrive[SITE_AXIS_MAX];
+	ServoIO* m_apLoad[SITE_AXIS_MAX];
+	uint8_t  m_nDriveAxisCount;
+	uint8_t  m_nLoadAxisCount;
+	// 各轴 mm→指令单位 换算 (站点表 afMmPerMotorRev 与每转指令单位数算出)
+	double   m_afFeedMmToUnit[SITE_AXIS_MAX];
+	// 各轴 6064h 实际位置快照 [指令单位] (送纸凸轮指令原点/监视)
+	double   m_afActPosUnits[SITE_AXIS_MAX];
+	// CiA402 步号 (每槽位一份): 0=init, 1=ready-to-switch-on, 2=switched-on, 3=operation-enabled
+	uint8_t m_aucCia402Step[SITE_SLOT_MAX];
+	// 本拍各轴 Operation Enabled
+	bool m_abOpDrive[SITE_AXIS_MAX];
+	// 上一拍驱动轴0 的 Operation Enabled (上升沿复位上位机速度环)
+	bool m_bPrevOpDrive;
+	// 上一拍 Enable
 	uint8_t m_prevEnable;
-	bool    m_prevOpEnabled;
-	// 上一拍的驱动侧伺服指针 (变化时重新初始化)
-	ServoIO* m_lastDriveSide;
-	// 位置实际值 (6064h) → 去抖差分测速 [rpm], 每台一份 (Status.SpdFb_PcCalc)
+	// 当前已应用的站点形态 (-1 = 还没应用过)
+	int m_nAppliedProfile;
+	// 位置实际值 (6064h) → 去抖差分测速 [rpm], 每槽位一份 (Status.SpdFb_PcCalc)
 	// wrap modulus = 每转指令单位数 = 编码器每转计数 × 齿轮比分母 / 分子
-	EncoderSpeedFilter m_encFilter[2];
+	EncoderSpeedFilter m_encFilter[SITE_SLOT_MAX];
 	// 实验序列器
 	SpeedTestSequencer m_testSeq;
 	// CoE SDO 工具 (自带 ADS 端口, 第一次读写时才建)
 	CoeSdo m_coeSdo;
 	// 驱动器监视: 距上次提交的拍数
 	ULONG m_drvMonTick;
-	// 驱动器监视: 每台伺服两个对象各自的在飞请求号 (0 = 没有)
-	ULONG m_drvMonRatioReq[2];
-	ULONG m_drvMonRigReq[2];
-	// 驱动器监视: 读回的原始值 (驱动侧那台由 CycleUpdate 镜像到 Status)
-	USHORT m_drvMonRatio[2];
-	USHORT m_drvMonRig[2];
-	// 驱动器监视: 每台每个对象是否已经读到过值 (只打一次日志)
-	BOOL m_drvMonRatioGot[2];
-	BOOL m_drvMonRigGot[2];
+	// 驱动器监视: 每槽位两个对象各自的在飞请求号 (0 = 没有)
+	ULONG m_drvMonRatioReq[SITE_SLOT_MAX];
+	ULONG m_drvMonRigReq[SITE_SLOT_MAX];
+	// 驱动器监视: 读回的原始值 (驱动轴0 的镜像到 Status)
+	USHORT m_drvMonRatio[SITE_SLOT_MAX];
+	USHORT m_drvMonRig[SITE_SLOT_MAX];
+	// 驱动器监视: 每槽位每个对象是否已经读到过值 (只打一次日志)
+	BOOL m_drvMonRatioGot[SITE_SLOT_MAX];
+	BOOL m_drvMonRigGot[SITE_SLOT_MAX];
 	// 上一次的 ExperimentType (-1 = 还没初始化过)
 	int m_lastExperimentType;
 };
