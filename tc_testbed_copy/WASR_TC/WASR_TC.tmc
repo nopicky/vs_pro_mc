@@ -486,7 +486,7 @@
             <Name>Enable</Name>
             <BaseType GUID="{18071995-0000-0000-0000-000000000002}">USINT</BaseType>
           </Symbol>
-          <Symbol>
+          <Symbol CreateSymbol="true">
             <Name>bFeedStart</Name>
             <Comment TxtId=""><![CDATA[送纸启动 (1=启动/续送, 0=停止)。原来是借 SigAmp 的上升沿当触发, 语义别扭且容易误碰, 现在独立一位]]></Comment>
             <BaseType GUID="{18071995-0000-0000-0000-000000000002}">USINT</BaseType>
