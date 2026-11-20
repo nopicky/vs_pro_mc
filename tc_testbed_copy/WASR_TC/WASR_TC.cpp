@@ -818,12 +818,24 @@ HRESULT CWASR_TC::CycleUpdate(ITcTask* ipTask, ITcUnknown* ipCaller, ULONG_PTR c
 			m_encFilter[i].Update(m_apServo[i]->Inputs->Position_actual_value);
 	}
 
+	// 已挂载的驱动轴是否全部 Operation Enabled (这里读的是上一拍 CiA402 的结果,
+	// 因为 CiA402_Update 在本函数之后才跑; 差一拍 = 125us, 对冻结判定无影响)
+	// 送纸凸轮用它决定"能不能推进指令": 只要有一台没使能就整体冻结,
+	// 否则那一台的 607A 会跑到很远, 一使能就以最大加速度去追 (实测差 4 米)
+	uint8_t drvAllReady = 1;
+	for (int a = 0; a < SITE_AXIS_MAX; a++) {
+		if (m_apDrive[a] != NULL && !m_abOpDrive[a]) {
+			drvAllReady = 0;
+			break;
+		}
+	}
+
 	// 送纸凸轮换算 (feedMmToUnit[]) 只由 InitControl 写: 构造/换形态/首拍/
 	// Enable 上升沿各一次。这里不再每拍重算一遍 —— 同一公式写两处,
 	// 改一处忘另一处就会算错, 且算错了没有任何报错
 	m_testSeq.Update(m_Status.ExperimentType,
 	                 &m_Status.Enable, &spdCmd, spdFbServo,
-	                 (uint8_t)(m_bPrevOpDrive ? 1 : 0),
+	                 drvAllReady,
 	                 &m_Status.SigFreq, &m_Status.SigAmp, &m_Status.SigOffset,
 	                 &m_Status.bFeedStart, m_afActPosUnits);
 

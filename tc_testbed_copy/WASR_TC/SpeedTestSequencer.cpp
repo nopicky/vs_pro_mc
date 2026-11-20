@@ -183,6 +183,7 @@ void SpeedTestSequencer::Init(float dt, float inertia, float ratedTorque, float 
         feedActPos0[i]  = 0.0;
         feedCmdMm[i]    = 0.0;
     }
+    feedStalled = false;
 
     torSweepSub             = TOR_SWEEP_STANDBY;
     torSweepStartPhase      = 0;
@@ -463,6 +464,7 @@ void SpeedTestSequencer::Update(ExperimentType_T experiment,
                 posCmdOut[i]   = feedActPos0[i];
             }
             posCenter      = (LONG)feedActPos0[0];
+            feedStalled    = false;
             SetSpdCmd(spdCmd, 0.0f);
             driveMode      = DRIVE_CSP;
             break;
@@ -971,6 +973,41 @@ void SpeedTestSequencer::Update(ExperimentType_T experiment,
         // 虚拟主轴线速度 [m/min] → [mm/s]: 每周期取 SigOffset, 运行中可改
         float lineMMin = (sigOffset != NULL) ? *sigOffset : 0.0f;
         feedMaster.setVelocity((double)lineMMin * 1000.0 / 60.0);
+
+        // ---- 驱动未全部 Operation Enabled: 冻结凸轮, 指令贴住实际位置 ----
+        // 为什么必须冻结: 607A 是绝对目标位置, 驱动器没使能时"指令照样在走"。
+        // 凸轮每转累加 680mm, 几秒就能把指令甩出几米; 一旦驱动器进入 CSP 使能,
+        // 它会以最大加速度去追这个偏差 —— 实测出现过 4080mm(4 米)的差,
+        // 等同于飞车。原来只在 Enable 上升沿复位 posBase, 挡不住"驱动掉使能
+        // (报警/急停/总线断)但模块还在跑"这条路径。
+        // 冻结期间每拍把指令原点重设为当前实际位置, 所以使能那一拍 607A == 6064,
+        // 物理上不存在跳变; 手动盘车、编码器漂移也都自动吃掉。
+        // 注意必须 return: 主轴相位、状态机、位移基准一个都不能推进。
+        if (driveReady == 0) {
+            for (int i = 0; i < SITE_AXIS_MAX; i++) {
+                // 只对已挂载轴重取原点 (未挂载轴保持 0, 反正不输出)
+                if (afActPosUnits != NULL && feedMmToUnit[i] > 0.0) {
+                    feedActPos0[i] = afActPosUnits[i];
+                }
+                posCmdOut[i] = feedActPos0[i];
+            }
+            posCenter   = (LONG)feedActPos0[0];
+            feedStalled = true;
+            SetSpdCmd(spdCmd, 0.0f);
+            return;
+        }
+
+        // ---- 驱动刚全部进入 Operation Enabled: 整体复位一次 ----
+        // 凸轮基准归零 / 状态机回 IDLE / 相位重新起算, 从这一刻这个位置开始计数。
+        // bFeedStart 不在这里改, 下面照常取当前值 —— 用户先置 1 再使能也能直接跑 (等于锁存)
+        if (feedStalled) {
+            if (!feedSeq.init(&g_cfgFeed)) {
+                feedStalled = true;   // 参数非法: 继续冻结, 宁可不动
+                SetSpdCmd(spdCmd, 0.0f);
+                return;
+            }
+            feedStalled = false;
+        }
 
         // Start 触发: bFeedStart 一位 (1=送纸/续送, 0=停止), 语义直白
         //   连续模式: 回 0 → 当前这张纸送完即停 (循环间隙回 0 则立即停, 不再续送)

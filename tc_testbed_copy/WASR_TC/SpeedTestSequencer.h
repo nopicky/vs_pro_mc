@@ -220,6 +220,11 @@ struct SpeedTestSequencer
     // 进实验时各轴 6064h 实际位置 [指令单位] (指令原点, 防跳变)
     double feedActPos0[SITE_AXIS_MAX];
     double feedCmdMm[SITE_AXIS_MAX];// 本拍各轴位置指令 [mm]
+    // 1 = 上一拍驱动未全部 Operation Enabled, 凸轮被冻结
+    //   冻结期间指令始终贴在 6064h 上, 并使 feedActPos0 每拍重取 (等于持续重新标原点);
+    //   解除冻结的那一拍整体 init 一次 (posBase 归零 / 状态机回 IDLE / 相位重新起算)
+    //   这里给默认值: Init 之前若被调用, 宁可按"冻结"处理 (安全侧)
+    bool   feedStalled = false;
 
     // 停机
     float    lastSpdCmd;            // 上一拍速度指令 [rpm]
@@ -266,7 +271,10 @@ struct SpeedTestSequencer
      * @param enable      m_Status.Enable [in/out]
      * @param spdCmd      速度指令 [in/out]; 转矩扫频中它是速度环参考速度
      * @param spdFb       驱动侧速度反馈 [rpm] (606Ch), 供上位机速度环
-     * @param driveReady  驱动侧已 Operation Enabled = 1 (0 = 速度环不积分)
+     * @param driveReady  已挂载的驱动轴**全部** Operation Enabled = 1 (0 = 未就绪)
+     *                    速度扫频: 0 时上位机速度环不积分;
+     *                    送纸凸轮: 0 时冻结凸轮并让指令贴住实际位置 (见 FEED_CAM_TEST)
+     *                    用上一拍状态即可 (CiA402_Update 在本函数之后跑)
      * @param sigFreq     m_Status.SigFreq [in/out] [Hz]: 波形/PRBS 实验为输入; 扫频/
      *                    转矩扫频/负载扫描回读当前频率 (间隔段 0)
      * @param sigAmp      m_Status.SigAmp [in/out]: 幅值 (单位随实验, 见文件头);
