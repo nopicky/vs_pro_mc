@@ -70,7 +70,7 @@
 		</DataType>
 		<DataType>
 			<Name GUID="{B2423A46-CA74-4CEB-90A5-4087FA1A95A1}" AutoDeleteType="true">ServoOutputs</Name>
-			<BitSize>168</BitSize>
+			<BitSize>200</BitSize>
 			<SubItem>
 				<Name>Controlword</Name>
 				<Type GUID="{18071995-0000-0000-0000-000000000005}">UINT</Type>
@@ -112,6 +112,12 @@
 				<Type GUID="{18071995-0000-0000-0000-000000000008}">UDINT</Type>
 				<BitSize>32</BitSize>
 				<BitOffs>136</BitOffs>
+			</SubItem>
+			<SubItem>
+				<Name>Velocity_offset</Name>
+				<Type GUID="{18071995-0000-0000-0000-000000000009}">DINT</Type>
+				<BitSize>32</BitSize>
+				<BitOffs>168</BitOffs>
 			</SubItem>
 			<Hides>
 				<Hide GUID="{B8510173-70AC-4EB4-839D-8EA04478273D}"/>
@@ -399,9 +405,9 @@
 		</System>
 		<Cpp>
 			<Project GUID="{049664A0-8452-41E5-A966-0529CE74E06E}" Name="WASR_TC" PrjFilePath="WASR_TC\WASR_TC.vcxproj" TmcFilePath="WASR_TC\WASR_TC.tmc">
-				<Instance Id="#x01010010" KeepUnrestoredLinks="2" AutoReloadTmc="true" ClassFactoryId="C++ Module Vendor|WASR_TC|0.0.0.5">
+				<Instance Id="#x01010010" KeepUnrestoredLinks="2" AutoReloadTmc="true" ClassFactoryId="C++ Module Vendor|WASR_TC|0.0.0.7">
 					<Name>WASR_TC_Obj1 (WASR_TC)</Name>
-					<TmcDesc GUID="{ACD873DF-2063-4B77-9A90-AF0ED06810F6}" ClassFactoryId="C++ Module Vendor|WASR_TC|0.0.0.5">
+					<TmcDesc GUID="{ACD873DF-2063-4B77-9A90-AF0ED06810F6}" ClassFactoryId="C++ Module Vendor|WASR_TC|0.0.0.7">
 						<Name>WASR_TC</Name>
 						<CLSID ClassFactory="WASR_TC">{ACD873DF-2063-4B77-9A90-AF0ED06810F6}</CLSID>
 						<Licenses>
@@ -1339,10 +1345,10 @@
 						<CoeProfile ProfileNo="402"/>
 					</EtherCAT>
 				</Box>
-				<Box Id="1" BoxType="9099" BoxFlags="#x00000020">
+				<Box Id="1" Disabled="true" BoxType="9099" BoxFlags="#x00000020">
 					<Name>维控VD3E_1</Name>
 					<ImageId>1001</ImageId>
-					<EtherCAT SlaveType="2" PdiType="#x0e08" MboxDataLinkLayer="true" StateMBoxPolling="true" CycleMBoxPollingTime="0" CoeType="15" VendorId="#x00000eff" ProductCode="#x0d3e0001" RevisionNo="#x00000073" InfoDataAddr="true" InfoDataSoeDS401="true" InfoDataDcTimes="true" TimeoutStateChange1="2000" TimeoutStateChange2="9000" TimeoutMailbox2="2000" PortPhys="17" MaxSlotCount="256" MaxSlotGroupCount="1" SlotPdoIncrement="1" SlotIndexIncrement="16" Type="Wecon VD3E EtherCAT Servo v1.15" Desc="Wecon VD3E EtherCAT Servo v1.15" PortABoxInfo="#x00ffffff">
+					<EtherCAT SlaveType="2" PdiType="#x0e08" MboxDataLinkLayer="true" StateMBoxPolling="true" CycleMBoxPollingTime="0" CoeType="15" VendorId="#x00000eff" ProductCode="#x0d3e0001" RevisionNo="#x00000073" InfoDataAddr="true" InfoDataSoeDS401="true" InfoDataDcTimes="true" TimeoutStateChange1="2000" TimeoutStateChange2="9000" TimeoutMailbox2="2000" PortPhys="17" MaxSlotCount="256" MaxSlotGroupCount="1" SlotPdoIncrement="1" SlotIndexIncrement="16" Type="Wecon VD3E EtherCAT Servo v1.15" Desc="Wecon VD3E EtherCAT Servo v1.15" PortABoxInfo="#x01000014">
 						<SyncMan>001080002600010001000000220000018000001026010000</SyncMan>
 						<SyncMan>801080002200010002000000220000018000801022010000</SyncMan>
 						<SyncMan>001117006400010003000000000000000900001164010000</SyncMan>
@@ -1486,7 +1492,7 @@
 						<CoeProfile ProfileNo="402"/>
 					</EtherCAT>
 				</Box>
-				<Box Id="5" BoxType="9099" BoxFlags="#x00000020">
+				<Box Id="5" Disabled="true" BoxType="9099" BoxFlags="#x00000020">
 					<Name>维控VD3E_2</Name>
 					<ImageId>1001</ImageId>
 					<EtherCAT SlaveType="2" PdiType="#x0e08" MboxDataLinkLayer="true" StateMBoxPolling="true" CycleMBoxPollingTime="0" CoeType="15" VendorId="#x00000eff" ProductCode="#x0d3e0001" RevisionNo="#x00000073" InfoDataAddr="true" InfoDataSoeDS401="true" InfoDataDcTimes="true" TimeoutStateChange1="2000" TimeoutStateChange2="9000" TimeoutMailbox2="2000" PortPhys="17" MaxSlotCount="256" MaxSlotGroupCount="1" SlotPdoIncrement="1" SlotIndexIncrement="16" Type="Wecon VD3E EtherCAT Servo v1.15" Desc="Wecon VD3E EtherCAT Servo v1.15" PortABoxInfo="#x01000001">
@@ -1633,7 +1639,7 @@
 						<CoeProfile ProfileNo="402"/>
 					</EtherCAT>
 				</Box>
-				<Box Id="6" BoxType="9099" BoxFlags="#x00000020">
+				<Box Id="6" Disabled="true" BoxType="9099" BoxFlags="#x00000020">
 					<Name>维控VD3E_3</Name>
 					<ImageId>1001</ImageId>
 					<EtherCAT SlaveType="2" PdiType="#x0e08" MboxDataLinkLayer="true" StateMBoxPolling="true" CycleMBoxPollingTime="0" CoeType="15" VendorId="#x00000eff" ProductCode="#x0d3e0001" RevisionNo="#x00000073" InfoDataAddr="true" InfoDataSoeDS401="true" InfoDataDcTimes="true" TimeoutStateChange1="2000" TimeoutStateChange2="9000" TimeoutMailbox2="2000" PortPhys="17" MaxSlotCount="256" MaxSlotGroupCount="1" SlotPdoIncrement="1" SlotIndexIncrement="16" Type="Wecon VD3E EtherCAT Servo v1.15" Desc="Wecon VD3E EtherCAT Servo v1.15" PortABoxInfo="#x01000005">
@@ -1780,7 +1786,7 @@
 						<CoeProfile ProfileNo="402"/>
 					</EtherCAT>
 				</Box>
-				<Box Id="7" BoxType="9099" BoxFlags="#x00000020">
+				<Box Id="7" Disabled="true" BoxType="9099" BoxFlags="#x00000020">
 					<Name>维控VD3E_4</Name>
 					<ImageId>1001</ImageId>
 					<EtherCAT SlaveType="2" PdiType="#x0e08" MboxDataLinkLayer="true" StateMBoxPolling="true" CycleMBoxPollingTime="0" CoeType="15" VendorId="#x00000eff" ProductCode="#x0d3e0001" RevisionNo="#x00000073" InfoDataAddr="true" InfoDataSoeDS401="true" InfoDataDcTimes="true" TimeoutStateChange1="2000" TimeoutStateChange2="9000" TimeoutMailbox2="2000" PortPhys="17" MaxSlotCount="256" MaxSlotGroupCount="1" SlotPdoIncrement="1" SlotIndexIncrement="16" Type="Wecon VD3E EtherCAT Servo v1.15" Desc="Wecon VD3E EtherCAT Servo v1.15" PortABoxInfo="#x01000006">
@@ -2401,10 +2407,10 @@
 				<Box Id="3" BoxType="9099" BoxFlags="#x00000020">
 					<Name>维控VD5L</Name>
 					<ImageId>1001</ImageId>
-					<EtherCAT EtherCatAddr="1001" SlaveType="2" AdsServerAddress="000000000000e903" PdiType="#x0e80" EtherCatAddrFixed="true" MboxDataLinkLayer="true" StateMBoxPolling="true" CycleMBoxPollingTime="0" CoeType="15" VendorId="#x00000eff" ProductCode="#x0d510001" RevisionNo="#x00000066" InfoDataAddr="true" InfoDataSoeDS401="true" InfoDataDcTimes="true" TimeoutStateChange1="2000" TimeoutStateChange2="9000" TimeoutMailbox2="2000" PortPhys="17" MaxSlotCount="256" MaxSlotGroupCount="1" SlotPdoIncrement="1" SlotIndexIncrement="16" Type="Wecon VD5 EtherCAT Servo V1.02" Desc="Wecon VD5 EtherCAT Servo V1.02" PortABoxInfo="#x01000007">
+					<EtherCAT EtherCatAddr="1001" SlaveType="2" AdsServerAddress="000000000000e903" PdiType="#x0e80" EtherCatAddrFixed="true" MboxDataLinkLayer="true" StateMBoxPolling="true" CycleMBoxPollingTime="0" CoeType="15" VendorId="#x00000eff" ProductCode="#x0d510001" RevisionNo="#x00000066" InfoDataAddr="true" InfoDataSoeDS401="true" InfoDataDcTimes="true" TimeoutStateChange1="2000" TimeoutStateChange2="9000" TimeoutMailbox2="2000" PortPhys="17" MaxSlotCount="256" MaxSlotGroupCount="1" SlotPdoIncrement="1" SlotIndexIncrement="16" Type="Wecon VD5 EtherCAT Servo V1.02" Desc="Wecon VD5 EtherCAT Servo V1.02" PortABoxInfo="#x00ffffff">
 						<SyncMan>001080002600010001000000240000018000001026010000</SyncMan>
 						<SyncMan>801080002200010002000000240000018000801022010000</SyncMan>
-						<SyncMan>001117006400010003000000000000000900001164010000</SyncMan>
+						<SyncMan>001121006400010003000000000000000900001164010000</SyncMan>
 						<SyncMan>001419002000010004000000000000000f00001420010000</SyncMan>
 						<Fmmu>0000000000000000001100020100000001000000000000000000000000000000</Fmmu>
 						<Fmmu>0000000000000000001400010100000002000000000000000000000000000000</Fmmu>
@@ -2540,6 +2546,15 @@
 							</Entry>
 							<Entry Name="Shaft revolutions" Index="#x6091" Sub="#x02">
 								<Type>UDINT</Type>
+							</Entry>
+							<Entry Name="Velocity offset" Index="#x60b1">
+								<Type>DINT</Type>
+							</Entry>
+							<Entry Name="Torque offset" Index="#x60b2">
+								<Type>INT</Type>
+							</Entry>
+							<Entry Name="Position offset" Index="#x60b0">
+								<Type>DINT</Type>
 							</Entry>
 						</Pdo>
 						<CoeProfile ProfileNo="402"/>

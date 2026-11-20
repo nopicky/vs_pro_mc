@@ -5,135 +5,180 @@
   </Vendor>
   <DataTypes>
     <DataType>
-      <Name GUID="{945bce8d-4e9b-4ea2-a1be-727f8500de9b}" AutoDeleteType="true">ServoInputs</Name>
+      <Name GUID="{945BCE8D-4E9B-4EA2-A1BE-727F8500DE9B}" AutoDeleteType="true">ServoInputs</Name>
+      <BitSize>160</BitSize>
       <SubItem>
         <Name>Error_code</Name>
         <Type GUID="{18071995-0000-0000-0000-000000000005}">UINT</Type>
+        <BitSize>16</BitSize>
+        <BitOffs>0</BitOffs>
       </SubItem>
       <SubItem>
         <Name>Status_word</Name>
         <Type GUID="{18071995-0000-0000-0000-000000000005}">UINT</Type>
+        <BitSize>16</BitSize>
+        <BitOffs>16</BitOffs>
       </SubItem>
       <SubItem>
         <Name>Position_actual_value</Name>
         <Type GUID="{18071995-0000-0000-0000-000000000009}">DINT</Type>
+        <BitSize>32</BitSize>
+        <BitOffs>32</BitOffs>
       </SubItem>
       <SubItem>
         <Name>Torque_actual_value</Name>
         <Type GUID="{18071995-0000-0000-0000-000000000006}">INT</Type>
+        <BitSize>16</BitSize>
+        <BitOffs>64</BitOffs>
       </SubItem>
       <SubItem>
         <Name>Velocity_actual_value</Name>
         <Type GUID="{18071995-0000-0000-0000-000000000009}">DINT</Type>
+        <BitSize>32</BitSize>
+        <BitOffs>80</BitOffs>
       </SubItem>
       <SubItem>
         <Name>Torque_demand</Name>
         <Type GUID="{18071995-0000-0000-0000-000000000006}">INT</Type>
+        <BitSize>16</BitSize>
+        <BitOffs>112</BitOffs>
       </SubItem>
       <SubItem>
         <Name>Following_error_actual_value</Name>
         <Type GUID="{18071995-0000-0000-0000-000000000009}">DINT</Type>
+        <BitSize>32</BitSize>
+        <BitOffs>128</BitOffs>
       </SubItem>
       <Hides>
-        <Hide GUID="{ceb17ef3-3352-48a7-9733-e07a8efdbf5f}" />
-        <Hide GUID="{3cd78e58-1dfd-4bc4-8a10-07bfa445d2c5}" />
-        <Hide GUID="{8c8621d8-a3c9-4345-8946-c72d62995208}" />
-        <Hide GUID="{6f53daa2-0963-48fa-b9a8-2e814b61931c}" />
-        <Hide GUID="{62aca03c-9de4-48bf-8bd4-5d5a42b97a3e}" />
-        <Hide GUID="{39ce18e1-8d08-4435-9128-5e0dc355bb5a}" />
-        <Hide GUID="{833bedb9-097f-49e8-97e2-43447650aff6}" />
-        <Hide GUID="{35fb91f9-43e9-4427-a083-fff655dae0bb}" />
-        <Hide GUID="{37540f0d-39f1-48e9-a3a7-cbf3addd5e2d}" />
-        <Hide GUID="{ac79aaf5-b920-44e9-8041-ff338e379846}" />
-        <Hide GUID="{9feb0389-635a-457d-9d04-a3fa6c349a89}" />
-        <Hide GUID="{8f71f502-a4a4-4029-90c4-296bb04532c2}" />
-        <Hide GUID="{af4c8d9b-ff12-49fa-bbea-81772338a568}" />
-        <Hide GUID="{d03c70bd-d4d1-4c24-8d84-664367d1aa8b}" />
-        <Hide GUID="{120aaae2-7c00-4e45-bcf6-c4242565e8cd}" />
-        <Hide GUID="{c9b7194d-327b-491c-be6e-2345d7fef2cc}" />
-        <Hide GUID="{5599ec67-8337-4157-bf04-44dd1dcfc431}" />
-        <Hide GUID="{3ea188cf-a9b9-4934-9f74-3938a094c484}" />
-        <Hide GUID="{cc68a970-00f3-46ee-bf00-204c1991747d}" />
+        <Hide GUID="{CEB17EF3-3352-48A7-9733-E07A8EFDBF5F}" />
+        <Hide GUID="{3CD78E58-1DFD-4BC4-8A10-07BFA445D2C5}" />
+        <Hide GUID="{8C8621D8-A3C9-4345-8946-C72D62995208}" />
+        <Hide GUID="{6F53DAA2-0963-48FA-B9A8-2E814B61931C}" />
+        <Hide GUID="{62ACA03C-9DE4-48BF-8BD4-5D5A42B97A3E}" />
+        <Hide GUID="{39CE18E1-8D08-4435-9128-5E0DC355BB5A}" />
+        <Hide GUID="{833BEDB9-097F-49E8-97E2-43447650AFF6}" />
+        <Hide GUID="{35FB91F9-43E9-4427-A083-FFF655DAE0BB}" />
+        <Hide GUID="{37540F0D-39F1-48E9-A3A7-CBF3ADDD5E2D}" />
+        <Hide GUID="{AC79AAF5-B920-44E9-8041-FF338E379846}" />
+        <Hide GUID="{9FEB0389-635A-457D-9D04-A3FA6C349A89}" />
+        <Hide GUID="{8F71F502-A4A4-4029-90C4-296BB04532C2}" />
+        <Hide GUID="{AF4C8D9B-FF12-49FA-BBEA-81772338A568}" />
+        <Hide GUID="{D03C70BD-D4D1-4C24-8D84-664367D1AA8B}" />
+        <Hide GUID="{120AAAE2-7C00-4E45-BCF6-C4242565E8CD}" />
+        <Hide GUID="{C9B7194D-327B-491C-BE6E-2345D7FEF2CC}" />
+        <Hide GUID="{5599EC67-8337-4157-BF04-44DD1DCFC431}" />
+        <Hide GUID="{3EA188CF-A9B9-4934-9F74-3938A094C484}" />
+        <Hide GUID="{CC68A970-00F3-46EE-BF00-204C1991747D}" />
       </Hides>
     </DataType>
     <DataType>
-      <Name GUID="{b2423a46-ca74-4ceb-90a5-4087fa1a95a1}">ServoOutputs</Name>
+      <Name GUID="{B2423A46-CA74-4CEB-90A5-4087FA1A95A1}" AutoDeleteType="true">ServoOutputs</Name>
+      <BitSize>200</BitSize>
       <SubItem>
         <Name>Controlword</Name>
         <Type GUID="{18071995-0000-0000-0000-000000000005}">UINT</Type>
+        <BitSize>16</BitSize>
+        <BitOffs>0</BitOffs>
       </SubItem>
       <SubItem>
         <Name>Target_position</Name>
         <Type GUID="{18071995-0000-0000-0000-000000000009}">DINT</Type>
+        <BitSize>32</BitSize>
+        <BitOffs>16</BitOffs>
       </SubItem>
       <SubItem>
         <Name>Target_velocity</Name>
         <Type GUID="{18071995-0000-0000-0000-000000000009}">DINT</Type>
+        <BitSize>32</BitSize>
+        <BitOffs>48</BitOffs>
       </SubItem>
       <SubItem>
         <Name>Target_torque</Name>
         <Type GUID="{18071995-0000-0000-0000-000000000006}">INT</Type>
+        <BitSize>16</BitSize>
+        <BitOffs>80</BitOffs>
       </SubItem>
       <SubItem>
         <Name>Modes_of_operation</Name>
         <Type GUID="{18071995-0000-0000-0000-000000000003}">SINT</Type>
+        <BitSize>8</BitSize>
+        <BitOffs>96</BitOffs>
       </SubItem>
       <SubItem>
         <Name>Motor_revolutions</Name>
         <Type GUID="{18071995-0000-0000-0000-000000000008}">UDINT</Type>
+        <BitSize>32</BitSize>
+        <BitOffs>104</BitOffs>
       </SubItem>
       <SubItem>
         <Name>Shaft_revolutions</Name>
         <Type GUID="{18071995-0000-0000-0000-000000000008}">UDINT</Type>
+        <BitSize>32</BitSize>
+        <BitOffs>136</BitOffs>
       </SubItem>
       <SubItem>
         <Name>Velocity_offset</Name>
         <Type GUID="{18071995-0000-0000-0000-000000000009}">DINT</Type>
+        <BitSize>32</BitSize>
+        <BitOffs>168</BitOffs>
       </SubItem>
       <Hides>
         <Hide GUID="{B8510173-70AC-4EB4-839D-8EA04478273D}" />
-        <Hide GUID="{32f10400-8b99-492f-8a6b-abf894d81ed3}" />
-        <Hide GUID="{9e1ab995-80ae-447e-9210-eac0386d80da}" />
-        <Hide GUID="{15524453-de30-46ee-b4a8-a23ed2774062}" />
-        <Hide GUID="{87b7391f-b87e-442e-b6c6-132dad60ef00}" />
-        <Hide GUID="{da1be7b9-2c5a-4a1d-be48-62bb2c1a1f7b}" />
-        <Hide GUID="{4198d6ab-d7b5-45d7-8980-edc29ca411fd}" />
-        <Hide GUID="{17315beb-1fbd-4721-8942-65c19d0ff1aa}" />
-        <Hide GUID="{ffeb4580-d507-4fe3-a032-a05e9d3674cd}" />
-        <Hide GUID="{d5519d93-4719-4165-b240-3c5913d49465}" />
-        <Hide GUID="{d2bf5c20-f9e3-471d-8959-d155545f9161}" />
-        <Hide GUID="{43aa7432-8c17-414e-a420-64241e0738aa}" />
-        <Hide GUID="{ae8301d6-1848-4e95-bf43-350adc9ddbdb}" />
-        <Hide GUID="{8747089c-d338-43c2-8306-9f5eafe8070d}" />
-        <Hide GUID="{5b20f12c-d23d-40e1-a973-85c19ca8d268}" />
-        <Hide GUID="{82bd95d3-8e81-42dd-9060-3c500f22d41b}" />
+        <Hide GUID="{32F10400-8B99-492F-8A6B-ABF894D81ED3}" />
+        <Hide GUID="{9E1AB995-80AE-447E-9210-EAC0386D80DA}" />
+        <Hide GUID="{15524453-DE30-46EE-B4A8-A23ED2774062}" />
+        <Hide GUID="{87B7391F-B87E-442E-B6C6-132DAD60EF00}" />
+        <Hide GUID="{DA1BE7B9-2C5A-4A1D-BE48-62BB2C1A1F7B}" />
+        <Hide GUID="{4198D6AB-D7B5-45D7-8980-EDC29CA411FD}" />
+        <Hide GUID="{17315BEB-1FBD-4721-8942-65C19D0FF1AA}" />
+        <Hide GUID="{FFEB4580-D507-4FE3-A032-A05E9D3674CD}" />
+        <Hide GUID="{D5519D93-4719-4165-B240-3C5913D49465}" />
+        <Hide GUID="{D2BF5C20-F9E3-471D-8959-D155545F9161}" />
+        <Hide GUID="{43AA7432-8C17-414E-A420-64241E0738AA}" />
+        <Hide GUID="{AE8301D6-1848-4E95-BF43-350ADC9DDBDB}" />
+        <Hide GUID="{8747089C-D338-43C2-8306-9F5EAFE8070D}" />
+        <Hide GUID="{5B20F12C-D23D-40E1-A973-85C19CA8D268}" />
+        <Hide GUID="{82BD95D3-8E81-42DD-9060-3C500F22D41B}" />
       </Hides>
     </DataType>
     <DataType>
-      <Name GUID="{d7752026-2e94-4b66-ba6c-cd15d3ee3ea4}">ServoStatus</Name>
+      <Name GUID="{D7752026-2E94-4B66-BA6C-CD15D3EE3EA4}">ServoStatus</Name>
+      <BitSize>192</BitSize>
       <SubItem>
         <Name>SpdCmd</Name>
         <Type GUID="{18071995-0000-0000-0000-00000000000D}">REAL</Type>
+        <BitSize>32</BitSize>
+        <BitOffs>0</BitOffs>
       </SubItem>
       <SubItem>
         <Name>SpdFb_ServoSend</Name>
         <Type GUID="{18071995-0000-0000-0000-00000000000D}">REAL</Type>
+        <BitSize>32</BitSize>
+        <BitOffs>32</BitOffs>
       </SubItem>
       <SubItem>
         <Name>SpdFb_PcCalc</Name>
-        <Type GUID="{18071995-0000-0000-0000-00000000000d}">REAL</Type>
+        <Type GUID="{18071995-0000-0000-0000-00000000000D}">REAL</Type>
+        <BitSize>32</BitSize>
+        <BitOffs>64</BitOffs>
       </SubItem>
       <SubItem>
         <Name>TorCmd_PcSend</Name>
         <Type GUID="{18071995-0000-0000-0000-00000000000D}">REAL</Type>
+        <BitSize>32</BitSize>
+        <BitOffs>96</BitOffs>
       </SubItem>
       <SubItem>
         <Name>TorCmd_ServoRecv</Name>
         <Type GUID="{18071995-0000-0000-0000-00000000000D}">REAL</Type>
+        <BitSize>32</BitSize>
+        <BitOffs>128</BitOffs>
       </SubItem>
       <SubItem>
         <Name>TorFb</Name>
         <Type GUID="{18071995-0000-0000-0000-00000000000D}">REAL</Type>
+        <BitSize>32</BitSize>
+        <BitOffs>160</BitOffs>
       </SubItem>
       <Hides>
         <Hide GUID="{4CA2FC43-2C8F-4E24-855E-EE4D56D16773}" />
@@ -143,73 +188,85 @@
         <Hide GUID="{539761D7-C385-458F-8794-1D61E646FA9E}" />
         <Hide GUID="{5C0DADB3-2001-41E4-A079-C7450F252D23}" />
         <Hide GUID="{A1D9653B-0B56-49CE-808C-6631DE219C59}" />
-        <Hide GUID="{64c3c367-b49a-4843-a882-e5328bf89d57}" />
-        <Hide GUID="{532d2484-cecf-413b-b8b5-c170207231df}" />
-        <Hide GUID="{7e1799d0-19d6-4288-9af9-11d6e14ee3a2}" />
-        <Hide GUID="{3f679f77-05a3-40cd-81f8-696c62aa281e}" />
-        <Hide GUID="{624f6730-e50f-4f53-8666-33752497b607}" />
-        <Hide GUID="{9cba76ca-3c3f-4435-8e41-ad3bf0b8103e}" />
-        <Hide GUID="{a745eee0-d752-4c1f-9ef5-b3f7c5a603f1}" />
-        <Hide GUID="{66389d0d-9201-4ba1-8005-7fce9bac9625}" />
-        <Hide GUID="{02c3d096-cca3-4ae3-a2f7-128b3fce67fe}" />
-        <Hide GUID="{d6c632ce-4be1-4a3c-aa80-2a0eb71b7253}" />
-        <Hide GUID="{b6fe1c1a-b793-4c53-8794-a7e071820886}" />
-        <Hide GUID="{5e27a67d-7392-4f33-b370-682e92ac8dc4}" />
-        <Hide GUID="{85f8089d-8fd6-4684-8291-dab964a38ddc}" />
-        <Hide GUID="{fe29ccb4-2af7-4698-8e47-c5738262e1c0}" />
-        <Hide GUID="{0f952df7-ad46-4bd4-8e3e-38dbaa35e746}" />
-        <Hide GUID="{0f62bb52-8740-4640-bbb4-27c41cf7f426}" />
-        <Hide GUID="{bf6a9052-8e37-4051-b5ec-751de7102f68}" />
-        <Hide GUID="{ed3bb56e-cc8f-4213-b104-2aeb733d0547}" />
-        <Hide GUID="{0326200a-5b70-4d04-9fc4-2d2171ba6735}" />
-        <Hide GUID="{ac33aba6-12da-432f-a868-31e96b7bbed6}" />
-        <Hide GUID="{6b5278e2-59c2-436c-8aa2-9e157747126c}" />
-        <Hide GUID="{af906a95-7dc0-49d6-9574-17c030dc9efa}" />
+        <Hide GUID="{64C3C367-B49A-4843-A882-E5328BF89D57}" />
+        <Hide GUID="{532D2484-CECF-413B-B8B5-C170207231DF}" />
+        <Hide GUID="{7E1799D0-19D6-4288-9AF9-11D6E14EE3A2}" />
+        <Hide GUID="{3F679F77-05A3-40CD-81F8-696C62AA281E}" />
+        <Hide GUID="{624F6730-E50F-4F53-8666-33752497B607}" />
+        <Hide GUID="{9CBA76CA-3C3F-4435-8E41-AD3BF0B8103E}" />
+        <Hide GUID="{A745EEE0-D752-4C1F-9EF5-B3F7C5A603F1}" />
+        <Hide GUID="{66389D0D-9201-4BA1-8005-7FCE9BAC9625}" />
+        <Hide GUID="{02C3D096-CCA3-4AE3-A2F7-128B3FCE67FE}" />
+        <Hide GUID="{D6C632CE-4BE1-4A3C-AA80-2A0EB71B7253}" />
+        <Hide GUID="{B6FE1C1A-B793-4C53-8794-A7E071820886}" />
+        <Hide GUID="{5E27A67D-7392-4F33-B370-682E92AC8DC4}" />
+        <Hide GUID="{85F8089D-8FD6-4684-8291-DAB964A38DDC}" />
+        <Hide GUID="{FE29CCB4-2AF7-4698-8E47-C5738262E1C0}" />
+        <Hide GUID="{0F952DF7-AD46-4BD4-8E3E-38DBAA35E746}" />
+        <Hide GUID="{0F62BB52-8740-4640-BBB4-27C41CF7F426}" />
+        <Hide GUID="{BF6A9052-8E37-4051-B5EC-751DE7102F68}" />
+        <Hide GUID="{ED3BB56E-CC8F-4213-B104-2AEB733D0547}" />
+        <Hide GUID="{0326200A-5B70-4D04-9FC4-2D2171BA6735}" />
+        <Hide GUID="{AC33ABA6-12DA-432F-A868-31E96B7BBED6}" />
+        <Hide GUID="{6B5278E2-59C2-436C-8AA2-9E157747126C}" />
+        <Hide GUID="{AF906A95-7DC0-49D6-9574-17C030DC9EFA}" />
       </Hides>
     </DataType>
     <DataType>
-      <Name GUID="{13cfe965-1f59-4dac-9bcf-7a8f032b5230}">ServoParams</Name>
+      <Name GUID="{13CFE965-1F59-4DAC-9BCF-7A8F032B5230}">ServoParams</Name>
+      <BitSize>160</BitSize>
       <SubItem>
         <Name>EncCntPerRev</Name>
         <Type GUID="{18071995-0000-0000-0000-000000000008}">UDINT</Type>
         <Comment TxtId=""><![CDATA[编码器转一圈计数]]></Comment>
+        <BitSize>32</BitSize>
+        <BitOffs>0</BitOffs>
       </SubItem>
       <SubItem>
         <Name>GearNum</Name>
         <Type GUID="{18071995-0000-0000-0000-000000000008}">UDINT</Type>
         <Comment TxtId=""><![CDATA[齿轮比分子]]></Comment>
+        <BitSize>32</BitSize>
+        <BitOffs>32</BitOffs>
       </SubItem>
       <SubItem>
         <Name>GearDen</Name>
         <Type GUID="{18071995-0000-0000-0000-000000000008}">UDINT</Type>
         <Comment TxtId=""><![CDATA[齿轮比分母]]></Comment>
+        <BitSize>32</BitSize>
+        <BitOffs>64</BitOffs>
       </SubItem>
       <SubItem>
         <Name>InertiaBase</Name>
         <Type GUID="{18071995-0000-0000-0000-00000000000D}">REAL</Type>
         <Comment TxtId=""><![CDATA[转子惯量]]></Comment>
+        <BitSize>32</BitSize>
+        <BitOffs>96</BitOffs>
         <Unit><![CDATA[kg·m2]]></Unit>
       </SubItem>
       <SubItem>
         <Name>RatedTorque</Name>
         <Type GUID="{18071995-0000-0000-0000-00000000000D}">REAL</Type>
         <Comment TxtId=""><![CDATA[电机额定转矩]]></Comment>
+        <BitSize>32</BitSize>
+        <BitOffs>128</BitOffs>
         <Unit><![CDATA[N·m]]></Unit>
       </SubItem>
       <Hides>
-        <Hide GUID="{37e19463-4525-4eb9-ad74-60fc546741aa}" />
-        <Hide GUID="{091d30f5-4a0c-41c9-a96a-cc66ca57bdc6}" />
-        <Hide GUID="{ba8e4da7-5206-49f8-871b-51d489dfe953}" />
-        <Hide GUID="{36be861f-c03b-4973-bd79-35a66de82547}" />
-        <Hide GUID="{56f6f2c2-d93c-4d03-b413-9b2ac11ef1e0}" />
-        <Hide GUID="{c2ad151a-b74b-4329-9ec3-caab10c6f893}" />
-        <Hide GUID="{78bba202-ff83-4536-81e1-91a0012875e5}" />
-        <Hide GUID="{c62f0de5-87fc-4529-8120-b19bcb800af1}" />
-        <Hide GUID="{787ed84a-212b-46ff-ae81-3a70df105751}" />
+        <Hide GUID="{37E19463-4525-4EB9-AD74-60FC546741AA}" />
+        <Hide GUID="{091D30F5-4A0C-41C9-A96A-CC66CA57BDC6}" />
+        <Hide GUID="{BA8E4DA7-5206-49F8-871B-51D489DFE953}" />
+        <Hide GUID="{36BE861F-C03B-4973-BD79-35A66DE82547}" />
+        <Hide GUID="{56F6F2C2-D93C-4D03-B413-9B2AC11EF1E0}" />
+        <Hide GUID="{C2AD151A-B74B-4329-9EC3-CAAB10C6F893}" />
+        <Hide GUID="{78BBA202-FF83-4536-81E1-91A0012875E5}" />
+        <Hide GUID="{C62F0DE5-87FC-4529-8120-B19BCB800AF1}" />
+        <Hide GUID="{787ED84A-212B-46FF-AE81-3A70DF105751}" />
       </Hides>
     </DataType>
     <DataType>
-      <Name GUID="{357956cc-d1a1-4576-b5a4-10ff5d8a9034}">ExperimentType_T</Name>
+      <Name GUID="{357956CC-D1A1-4576-B5A4-10FF5D8A9034}">ExperimentType_T</Name>
+      <BitSize>16</BitSize>
       <BaseType GUID="{18071995-0000-0000-0000-000000000006}">INT</BaseType>
       <EnumInfo>
         <Text><![CDATA[ExperimentType_Manual]]></Text>
@@ -266,61 +323,70 @@
         <Hide GUID="{DFED6A86-459D-4DA1-AE45-AE1E6BD76328}" />
         <Hide GUID="{8D8E9699-BC7B-4458-8610-F23AE13721E5}" />
         <Hide GUID="{E79755B1-5CFB-40CB-AC06-AA4FF3E48545}" />
-        <Hide GUID="{e277027c-e7b0-4d29-ab49-b9fc5b83338b}" />
-        <Hide GUID="{4780d381-3a92-425d-9595-a23fa6078e80}" />
-        <Hide GUID="{e34978f2-db9f-4a95-b89e-9d90f3c62cd3}" />
-        <Hide GUID="{617f8fad-251a-40da-a9d1-1d2938055c49}" />
-        <Hide GUID="{6ec7ff81-7396-4454-a42b-892c6775d0b7}" />
-        <Hide GUID="{e839798b-d263-44d3-9158-51d214830816}" />
-        <Hide GUID="{e4e862b1-7b44-4697-904e-4e0c3e899886}" />
-        <Hide GUID="{ca719973-518a-48ae-b0aa-47ed04d22a20}" />
-        <Hide GUID="{4470f173-ed52-4ba3-b2f5-2ddf8a96fd9c}" />
-        <Hide GUID="{e2adec1c-0825-42cc-b41b-ff22c032e8e2}" />
-        <Hide GUID="{5180f05c-aae9-4d23-b53b-f6000485dfb5}" />
-        <Hide GUID="{098938e6-7766-4583-8797-150b6094644c}" />
-        <Hide GUID="{d58fe9be-27ee-4896-a90d-1d65d47d05ae}" />
-        <Hide GUID="{41915ad9-5a0d-4ca5-a4b8-1b0ac7a6cbc3}" />
+        <Hide GUID="{E277027C-E7B0-4D29-AB49-B9FC5B83338B}" />
+        <Hide GUID="{4780D381-3A92-425D-9595-A23FA6078E80}" />
+        <Hide GUID="{E34978F2-DB9F-4A95-B89E-9D90F3C62CD3}" />
+        <Hide GUID="{617F8FAD-251A-40DA-A9D1-1D2938055C49}" />
+        <Hide GUID="{6EC7FF81-7396-4454-A42B-892C6775D0B7}" />
+        <Hide GUID="{E839798B-D263-44D3-9158-51D214830816}" />
+        <Hide GUID="{E4E862B1-7B44-4697-904E-4E0C3E899886}" />
+        <Hide GUID="{CA719973-518A-48AE-B0AA-47ED04D22A20}" />
+        <Hide GUID="{4470F173-ED52-4BA3-B2F5-2DDF8A96FD9C}" />
+        <Hide GUID="{E2ADEC1C-0825-42CC-B41B-FF22C032E8E2}" />
+        <Hide GUID="{5180F05C-AAE9-4D23-B53B-F6000485DFB5}" />
+        <Hide GUID="{098938E6-7766-4583-8797-150B6094644C}" />
+        <Hide GUID="{D58FE9BE-27EE-4896-A90D-1D65D47D05AE}" />
+        <Hide GUID="{41915AD9-5A0D-4CA5-A4B8-1B0AC7A6CBC3}" />
       </Hides>
     </DataType>
     <DataType>
-      <Name GUID="{e8fbc83c-dcba-48a3-8f3c-de0bff168393}">ServoIO</Name>
+      <Name GUID="{E8FBC83C-DCBA-48A3-8F3C-DE0BFF168393}">ServoIO</Name>
+      <BitSize X64="480">416</BitSize>
       <SubItem>
         <Name>Inputs</Name>
-        <Type GUID="{945bce8d-4e9b-4ea2-a1be-727f8500de9b}" PointerTo="1">ServoInputs</Type>
+        <Type GUID="{945BCE8D-4E9B-4EA2-A1BE-727F8500DE9B}" PointerTo="1">ServoInputs</Type>
+        <BitSize X64="64">32</BitSize>
+        <BitOffs>0</BitOffs>
       </SubItem>
       <SubItem>
         <Name>Outputs</Name>
-        <Type GUID="{b2423a46-ca74-4ceb-90a5-4087fa1a95a1}" PointerTo="1">ServoOutputs</Type>
+        <Type GUID="{B2423A46-CA74-4CEB-90A5-4087FA1A95A1}" PointerTo="1">ServoOutputs</Type>
+        <BitSize X64="64">32</BitSize>
+        <BitOffs X64="64">32</BitOffs>
       </SubItem>
       <SubItem>
         <Name>Status</Name>
-        <Type GUID="{d7752026-2e94-4b66-ba6c-cd15d3ee3ea4}">ServoStatus</Type>
+        <Type GUID="{D7752026-2E94-4B66-BA6C-CD15D3EE3EA4}">ServoStatus</Type>
+        <BitSize>192</BitSize>
+        <BitOffs X64="128">64</BitOffs>
       </SubItem>
       <SubItem>
         <Name>Params</Name>
-        <Type GUID="{13cfe965-1f59-4dac-9bcf-7a8f032b5230}">ServoParams</Type>
+        <Type GUID="{13CFE965-1F59-4DAC-9BCF-7A8F032B5230}">ServoParams</Type>
+        <BitSize>160</BitSize>
+        <BitOffs X64="320">256</BitOffs>
       </SubItem>
       <Hides>
-        <Hide GUID="{0b33ae30-2d82-40b2-9b68-1ea1432c6b67}" />
-        <Hide GUID="{e981d35b-a707-4aa5-9b94-cd05084df471}" />
-        <Hide GUID="{c8417c24-fa62-44a6-ae4b-620d4b173c1e}" />
-        <Hide GUID="{ea4fcdcc-8c85-441a-b6df-51b915772bb5}" />
-        <Hide GUID="{1ddc22ba-7c03-451d-96c3-7ba085a15e79}" />
-        <Hide GUID="{dd079b10-636e-4fdd-b0a9-a28a44a4614f}" />
-        <Hide GUID="{88388f72-cd1a-4d3c-83ef-30a65d9ac9d2}" />
-        <Hide GUID="{cdd43a3d-c649-43c4-9f1e-2f3a00c25c72}" />
-        <Hide GUID="{efe662ff-4845-4955-91c5-5c1af22d9b70}" />
-        <Hide GUID="{817dc1a7-bd07-490b-97ac-a65eb01314b5}" />
-        <Hide GUID="{3a916db8-3cfa-4274-b3aa-a5dc05bf00bb}" />
-        <Hide GUID="{7a7d4177-55a4-479c-8ed3-d46b74d3af78}" />
-        <Hide GUID="{cba779cf-8764-4ac6-9fbb-fc922b6c9f32}" />
-        <Hide GUID="{3492b193-a531-4552-8292-3f5b8a48ed47}" />
-        <Hide GUID="{1c405f43-ec82-41af-a216-cb59277e2229}" />
-        <Hide GUID="{2a92641b-18d5-4296-8559-c3194108d3e1}" />
-        <Hide GUID="{7e0cb16a-6f0f-4b3a-9ab8-088679514865}" />
-        <Hide GUID="{2827f288-4abc-49b0-88e1-015b042cee0d}" />
-        <Hide GUID="{ed24386a-3637-4b1e-a317-b5117f7c697d}" />
-        <Hide GUID="{50a672e5-fb4a-43ef-8166-0d61c3d209cc}" />
+        <Hide GUID="{0B33AE30-2D82-40B2-9B68-1EA1432C6B67}" />
+        <Hide GUID="{E981D35B-A707-4AA5-9B94-CD05084DF471}" />
+        <Hide GUID="{C8417C24-FA62-44A6-AE4B-620D4B173C1E}" />
+        <Hide GUID="{EA4FCDCC-8C85-441A-B6DF-51B915772BB5}" />
+        <Hide GUID="{1DDC22BA-7C03-451D-96C3-7BA085A15E79}" />
+        <Hide GUID="{DD079B10-636E-4FDD-B0A9-A28A44A4614F}" />
+        <Hide GUID="{88388F72-CD1A-4D3C-83EF-30A65D9AC9D2}" />
+        <Hide GUID="{CDD43A3D-C649-43C4-9F1E-2F3A00C25C72}" />
+        <Hide GUID="{EFE662FF-4845-4955-91C5-5C1AF22D9B70}" />
+        <Hide GUID="{817DC1A7-BD07-490B-97AC-A65EB01314B5}" />
+        <Hide GUID="{3A916DB8-3CFA-4274-B3AA-A5DC05BF00BB}" />
+        <Hide GUID="{7A7D4177-55A4-479C-8ED3-D46B74D3AF78}" />
+        <Hide GUID="{CBA779CF-8764-4AC6-9FBB-FC922B6C9F32}" />
+        <Hide GUID="{3492B193-A531-4552-8292-3F5B8A48ED47}" />
+        <Hide GUID="{1C405F43-EC82-41AF-A216-CB59277E2229}" />
+        <Hide GUID="{2A92641B-18D5-4296-8559-C3194108D3E1}" />
+        <Hide GUID="{7E0CB16A-6F0F-4B3A-9AB8-088679514865}" />
+        <Hide GUID="{2827F288-4ABC-49B0-88E1-015B042CEE0D}" />
+        <Hide GUID="{ED24386A-3637-4B1E-A317-B5117F7C697D}" />
+        <Hide GUID="{50A672E5-FB4A-43EF-8166-0D61C3D209CC}" />
       </Hides>
     </DataType>
   </DataTypes>
@@ -726,6 +792,6 @@
   </Modules>
   <Library>
     <Name>WASR_TC</Name>
-    <Version>0.0.0.6</Version>
+    <Version>0.0.0.7</Version>
   </Library>
 </TcModuleClass>
