@@ -86,6 +86,10 @@
         <Name>Shaft_revolutions</Name>
         <Type GUID="{18071995-0000-0000-0000-000000000008}">UDINT</Type>
       </SubItem>
+      <SubItem>
+        <Name>Velocity_offset</Name>
+        <Type GUID="{18071995-0000-0000-0000-000000000009}">DINT</Type>
+      </SubItem>
       <Hides>
         <Hide GUID="{B8510173-70AC-4EB4-839D-8EA04478273D}" />
         <Hide GUID="{32f10400-8b99-492f-8a6b-abf894d81ed3}" />
@@ -722,6 +726,6 @@
   </Modules>
   <Library>
     <Name>WASR_TC</Name>
-    <Version>0.0.0.5</Version>
+    <Version>0.0.0.6</Version>
   </Library>
 </TcModuleClass>

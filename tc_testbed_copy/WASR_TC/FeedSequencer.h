@@ -22,6 +22,8 @@ typedef struct tagFEED_MONITOR_T {
     double afFollowErr[4];  /* 4 轴跟随偏差 mm（指令-实际，对齐 FAE 习惯扣除启动相位补偿） */
     double afIdealErr[4];   /* 4 轴相对凸轮理论曲线的偏差 mm（理想-实际，正=实际落后）
                                —— 评价超前补偿/前馈效果看这个，不是 afFollowErr */
+    double afVelFfMm[4];    /* 4 轴速度前馈 mm/s（凸轮速比 × 主轴速度；非 CAM_RUN 恒 0）
+                               —— 挂载层乘 mm→指令单位换算后写 60B1h */
 } FEED_MONITOR_T;
 
 /* 送纸工艺状态机：只依赖主轴相位输入（虚拟主轴 / 现场编码器均可）与 CCamFeeder，

@@ -26,10 +26,17 @@ typedef struct tagFEED_CONFIG_T {
     bool   bLoadSideEnable;     /* 负载侧(CST)使能开关：false=不接负载伺服（默认，首测/实际机台） */
     double fLeadTimeMs;         /* 位置超前(相位提前)补偿 ms：0=关闭
                                    位置环滞后 T 使实际 ≈ 指令延迟 T，把指令按「轴速度×T」前移即可抵消
-                                   350m/min 实测最优 ≈20.3ms */
+                                   350m/min 实测最优 ≈20.3ms
+                                   ★ 用驱动器速度前馈(fVelFfGain>0)时必须归 0，否则双重补偿 → 反向超调 */
     double fLeadAccMs2;         /* 二阶(加速度)前馈 ms²：0=关闭（推荐起步 0.05~0.2）
                                    一阶超前在加速段会过冲（实测同步段入口略超前），
                                    理论上应按「T·v - T²·a」补偿，此项即 -T²·a 的系数 */
+    double fVelFfGain;          /* 驱动器速度前馈增益 0~1.2（60B1h，单位 指令单位/s）
+                                   1.0 = 满量：把轴速度原样送进驱动器位置环之后的求和点，
+                                         位置环只修残差 → 稳态滞后理论上归零，不需要 fLeadTimeMs
+                                   0.0 = 关闭（此时靠 fLeadTimeMs 指令超前，老方案）
+                                   调参：0.2 验方向 → 0.5/0.8/1.0 找 Axis*IdealErr 过零点
+                                   ★ 与 fLeadTimeMs 二选一，不能同时满量 */
 } FEED_CONFIG_T;
 
 /* 全局工艺参数实例

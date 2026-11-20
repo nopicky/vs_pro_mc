@@ -55,6 +55,11 @@ typedef struct _ServoOutputs
 	char Modes_of_operation;
 	ULONG Motor_revolutions;
 	ULONG Shaft_revolutions;
+	// 60B1h 速度前馈 [指令单位/s]，与 60FF 同单位。
+	// 驱动器在位置环之后、速度环之前求和（IEC 61800-7-201 图 74），
+	// 所以位置环只修残差 → 稳态滞后不需要再靠指令超前补偿。
+	// 只在 CSP 使用；CSV/CST 与停机时必须写 0（残留 = 电机自己转）。
+	LONG Velocity_offset;
 } ServoOutputs, *PServoOutputs;
 #pragma pack(pop)
 const GUID GUID_ServoOutputs = {0xB2423A46, 0xCA74, 0x4CEB, {0x90, 0xA5, 0x40, 0x87, 0xFA, 0x1A, 0x95, 0xA1}};

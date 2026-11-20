@@ -24,8 +24,10 @@ FEED_CONFIG_T g_cfgFeed = {
     400.0,                         /* fMaxLineSpeedMMin */
     true,                          /* bContinuous：默认连续循环（Start 撤销后当前循环走完即停） */
     false,                         /* bLoadSideEnable：默认不接负载伺服 */
-    20.3,                          /* fLeadTimeMs：实测反算 350 档 20.14ms / 120 档 20.55ms，取 20.3 兼顾 */
-    0.0                            /* fLeadAccMs2：加速度前馈默认关（扫参起点 0.05~0.2） */
+    0.0,                           /* fLeadTimeMs：已改用驱动器 60B1h 前馈，指令超前归 0
+                                      (要回到老方案: 这里填 20.3, fVelFfGain 填 0) */
+    0.0,                           /* fLeadAccMs2：加速度前馈默认关（扫参起点 0.05~0.2） */
+    1.0                            /* fVelFfGain：速度前馈满量（0=关闭） */
 };
 
 /* 走完凸轮后保持终值的周期数（125us×8000 ≈ 1s），之后回 IDLE 等下一次 Start */
@@ -211,14 +213,17 @@ void CFeedSequencer::tick(double fMasterPhase, double fDtSec, const double* afAc
     double fCamXEff = (m_eState == FEED_CAM_RUN) ? fCamX : 0.0;
     double fLeadSec = m_cfg.fLeadTimeMs * 0.001;    /* ms → s */
     double afIdealMm[4] = {0.0, 0.0, 0.0, 0.0};
+    double afVelFf[4]   = {0.0, 0.0, 0.0, 0.0};
     for (int i = 0; i < 4; i++) {
         if (i < m_nAxisCount) {
+            /* 速比一次求值, 位置前馈(指令超前)与速度前馈共用, 避免两处口径漂移 */
+            double fRatio = m_aFeeder[i].evalVel(fCamXEff);
             /* 凸轮理论位置（不含超前）：工艺期望的实际位置 */
             double fIdeal = m_afPosBase[i] + m_aFeeder[i].evalPos(fCamXEff);
             /* 超前补偿（替代驱动器速度前馈）：指令前移「轴速度 × T」
                轴速度 = 速比×主轴速度，故前移量 = evalVel(x)·v_master·T（一阶泰勒，等价相位提前）
                凸轮两端速比为 0 → 起停无跳变；T=0 时与原实现完全一致 */
-            double fLead = m_aFeeder[i].evalVel(fCamXEff) * fMasterVel * fLeadSec;
+            double fLead = fRatio * fMasterVel * fLeadSec;
             /* 二阶项：前馈量 = T·v + k·a（a 为从轴加速度 = 曲率 × 主轴速度²）
                实测（350m/min, T=20.3ms）加速段残余 +9.2mm（实际落后）、
                减速段残余 -6.8mm（实际超前）——两者都说明「轴跟不上速度变化」，
@@ -231,6 +236,9 @@ void CFeedSequencer::tick(double fMasterPhase, double fDtSec, const double* afAc
             }
             afIdealMm[i] = fIdeal;
             afCmdPosMm[i] = fIdeal + fLead + compensationHook(i);
+            /* 速度前馈 = 轴速度 [mm/s]，只表示"这一刻该跑多快"，与 T 无关；
+               非 CAM_RUN 强制 0 (残留的速度偏置会让电机自己跑) */
+            afVelFf[i] = (m_eState == FEED_CAM_RUN) ? (fRatio * fMasterVel) : 0.0;
         } else {
             afCmdPosMm[i] = 0.0;
         }
@@ -242,6 +250,7 @@ void CFeedSequencer::tick(double fMasterPhase, double fDtSec, const double* afAc
     m_mon.fCamX = fCamX;
     for (int i = 0; i < 4; i++) {
         m_mon.afCmdPosMm[i] = afCmdPosMm[i];
+        m_mon.afVelFfMm[i]  = afVelFf[i];
         if (afActPosMm != 0 && i < m_nAxisCount) {
             /* 对齐 FAE 显示习惯：跟随偏差 = 指令 - 实际 - 启动相位补偿 */
             m_mon.afFollowErr[i] = afCmdPosMm[i] - afActPosMm[i] - m_cfg.fStartPhaseComp;

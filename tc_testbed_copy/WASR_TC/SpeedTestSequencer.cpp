@@ -182,6 +182,7 @@ void SpeedTestSequencer::Init(float dt, float inertia, float ratedTorque, float 
         feedMmToUnit[i] = 0.0;
         feedActPos0[i]  = 0.0;
         feedCmdMm[i]    = 0.0;
+        feedVelFf[i]    = 0.0;
     }
     feedStalled = false;
 
@@ -272,6 +273,13 @@ void SpeedTestSequencer::Update(ExperimentType_T experiment,
 {
     // 外部 Enable 快照 (下面可能改写 *enable)
     uint8_t extEnable = *enable;
+
+    // 速度前馈每拍清零: 只有送纸凸轮 CAM_RUN 期间才重新填值。
+    // 这一句是安全底线 —— 60B1h 是速度环前面的偏置, 残留任何非零值都会让电机自己转:
+    // 停机/切实验/驱动掉使能/凸轮走完, 全靠这句保证前馈归零
+    for (int i = 0; i < SITE_AXIS_MAX; i++) {
+        feedVelFf[i] = 0.0;
+    }
 
     uint8_t rising = (prevEnable == 0 && extEnable != 0);
     prevEnable = extEnable;
@@ -1035,11 +1043,20 @@ void SpeedTestSequencer::Update(ExperimentType_T experiment,
             posCmdOut[i] = feedActPos0[i] + feedCmdMm[i] * feedMmToUnit[i];
         }
 
-        // SigFreq 回读凸轮相位 camX [mm] (Scope 观测; 未触发时保持 0)
-        if (sigFreq != NULL) {
+        // 速度前馈 [指令单位/s] 直接写 60B1h: 驱动器在位置环之后、速度环之前求和,
+        // 位置环只修残差 → 稳态滞后不需要再靠指令超前(20.3ms)抵消
+        //   量纲: mm/s × (指令单位/mm) = 指令单位/s, 与 60FF 同单位
+        //   凸轮两端速比为 0 → 起停自动无冲击; 非 CAM_RUN 时 mon 里已经是 0
+        {
             FEED_MONITOR_T mon;
             feedSeq.getMonitor(&mon);
-            *sigFreq = (float)mon.fCamX;
+            for (int i = 0; i < SITE_AXIS_MAX; i++) {
+                feedVelFf[i] = mon.afVelFfMm[i] * feedMmToUnit[i] * g_cfgFeed.fVelFfGain;
+            }
+            // SigFreq 回读凸轮相位 camX [mm] (Scope 观测; 未触发时保持 0)
+            if (sigFreq != NULL) {
+                *sigFreq = (float)mon.fCamX;
+            }
         }
         SetSpdCmd(spdCmd, 0.0f);   // CSP 下速度指令不用
         return;

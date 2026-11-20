@@ -963,6 +963,12 @@ void CWASR_TC::DriveOutput_Run(ServoIO* pServo, int nAxis, float fSpdCmd, bool b
 		pServo->Outputs->Target_position = PosToLong(fPos);
 		pServo->Outputs->Target_velocity = 0;
 		pServo->Outputs->Target_torque   = 0;
+		// 60B1h 速度前馈 [指令单位/s]: 与 607Ah 同拍下发。
+		// 驱动器在「位置环之后、速度环之前」把它加进速度指令 (IEC 61800-7-201 图 74),
+		// 所以位置环只修残差, 稳态滞后不需要再靠指令超前补偿。
+		// 序列器只在 CAM_RUN 期间给非零值, 其余状态每拍清零 —— 残留 = 电机自己转。
+		pServo->Outputs->Velocity_offset =
+			PosToLong(((nAxis >= 0) && (nAxis < SITE_AXIS_MAX)) ? m_testSeq.feedVelFf[nAxis] : 0.0);
 		pServo->Status.TorCmd_PcSend     = 0.0f;
 	} else if (m_testSeq.driveMode == SpeedTestSequencer::DRIVE_CST) {
 		// CST: 速度指令清 0, 转矩来自上位机速度环 (转矩扫频是单轴实验, 只轴0给)
@@ -973,12 +979,14 @@ void CWASR_TC::DriveOutput_Run(ServoIO* pServo, int nAxis, float fSpdCmd, bool b
 		SHORT torOut = (SHORT)torCmd;
 		pServo->Outputs->Target_velocity = 0;
 		pServo->Outputs->Target_torque   = torOut;
+		pServo->Outputs->Velocity_offset = 0;   // 前馈只在 CSP 用, 换模式必须清掉
 		pServo->Status.TorCmd_PcSend     = (float)torOut;
 	} else {
 		// CSV: 伺服自带速度环, 转矩指令清 0; 只有轴0 跟速度曲线, 其余轴给 0
 		float fCmd = (nAxis == 0) ? fSpdCmd : 0.0f;
 		pServo->Outputs->Target_velocity = (LONG)(fCmd / m_speedScaleServo[nSlot]);
 		pServo->Outputs->Target_torque   = 0;
+		pServo->Outputs->Velocity_offset = 0;   // 前馈只在 CSP 用, 换模式必须清掉
 		pServo->Status.TorCmd_PcSend     = 0.0f;
 	}
 

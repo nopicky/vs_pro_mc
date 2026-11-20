@@ -220,6 +220,10 @@ struct SpeedTestSequencer
     // 进实验时各轴 6064h 实际位置 [指令单位] (指令原点, 防跳变)
     double feedActPos0[SITE_AXIS_MAX];
     double feedCmdMm[SITE_AXIS_MAX];// 本拍各轴位置指令 [mm]
+    // 本拍速度前馈 [指令单位/s] —— 直接写驱动器 60B1h (Velocity offset)
+    //   = 凸轮轴速度(mm/s) × mm→指令单位 × g_cfgFeed.fVelFfGain
+    //   每拍在 Update 开头清零, 只有送纸凸轮 CAM_RUN 期间才填 —— 残留的前馈 = 电机自己转
+    double feedVelFf[SITE_AXIS_MAX];
     // 1 = 上一拍驱动未全部 Operation Enabled, 凸轮被冻结
     //   冻结期间指令始终贴在 6064h 上, 并使 feedActPos0 每拍重取 (等于持续重新标原点);
     //   解除冻结的那一拍整体 init 一次 (posBase 归零 / 状态机回 IDLE / 相位重新起算)
