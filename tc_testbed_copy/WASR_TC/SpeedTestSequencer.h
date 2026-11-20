@@ -18,6 +18,10 @@
 //   VelocityClosedLoopPRBS  速度闭环 PRBS: 先到 SigOffset (基础速度), 静置后
 //                     叠加 PRBS (±SigAmp, 位速率 = SigFreq), 只输出激励序列,
 //                     不对频响做任何在线计算 (离线用录波数据做 FFT)。
+//   FeedCamTest       送纸凸轮: 伺服 CSP(8), 虚拟主轴相位驱动 4 条五次曲线凸轮,
+//                     SigOffset = 主轴线速度 [m/min], SigFreq 回读凸轮相位 [mm],
+//                     启停用 **bFeedStart** (1=送纸/续送, 0=停止), SigAmp 不用。
+//                     轴号≠槽位号: 对拖时轴0 在 Servo1, 对应关系见 Status.AxisNSlot。
 //
 // 注入信号统一口径: SigFreq [Hz] / SigAmp / SigOffset, 单位随实验:
 //   速度实验 (Step/Wave/Sweep/TorqueSweep): SigAmp [rpm], SigOffset [rpm]
@@ -25,20 +29,23 @@
 //   负载扫描:  SigOffset [0.1% 额定转矩] 是负载侧基准转矩, SigAmp 回读 [% 负载额定]
 //   位置环波形: SigAmp [指令单位], SigOffset [指令单位] (原点)
 //   PRBS:      SigAmp [rpm], SigOffset [rpm], SigFreq [Hz] 是 PRBS 位速率
+//   送纸凸轮:  SigOffset [m/min] 线速度, 启停走独立位 bFeedStart
 //   SigFreq 在扫频类实验里是回读 (序列器写), 其余实验是用户输入。
 //
 // 驱动侧模式 driveMode: 0 = CSV(9) 伺服自带速度环 (其余实验与 Manual),
 //                       1 = CST(10) + 上位机速度环 (仅转矩扫频及其停机斜坡),
-//                       2 = CSP(8) 位置指令 (仅位置环波形)。
+//                       2 = CSP(8) 位置指令 (位置环波形 / 送纸凸轮)。
 // 停机: 实验结束或 Enable = 0 时按 TEST_RAMP_RATE 减速到 0 再禁用驱动器
-//       (位置环波形为目标回基准位置, 保持 POSWAVE_TEST_HOLD_DUR 后禁用)。
+//       (位置环波形为目标回基准位置, 保持 POSWAVE_TEST_HOLD_DUR 后禁用;
+//        送纸凸轮为原地保持当前指令, 不回原点)。
 //
 // 用法 (每周期, 在 CiA402_Update 之前):
 //   SpeedTestSequencer seq;
 //   seq.Init(dtSec, 总惯量, 额定转矩, 转矩限幅);
 //   seq.Update(m_Status.ExperimentType, &m_Status.Enable, &spdCmd,
 //              spdFb, driveReady,
-//              &m_Status.SigFreq, &m_Status.SigAmp, &m_Status.SigOffset);
+//              &m_Status.SigFreq, &m_Status.SigAmp, &m_Status.SigOffset,
+//              &m_Status.bFeedStart, m_afActPosUnits);
 ///////////////////////////////////////////////////////////////////////////////
 #pragma once
 
@@ -212,7 +219,6 @@ struct SpeedTestSequencer
     double feedMmToUnit[SITE_AXIS_MAX];
     // 进实验时各轴 6064h 实际位置 [指令单位] (指令原点, 防跳变)
     double feedActPos0[SITE_AXIS_MAX];
-    float  feedPrevSigAmp;          // SigAmp 上一拍值 (Start 上升沿检测)
     double feedCmdMm[SITE_AXIS_MAX];// 本拍各轴位置指令 [mm]
 
     // 停机
@@ -267,6 +273,8 @@ struct SpeedTestSequencer
      *                    负载扫描回读当前幅度 [% 负载额定]; 位置环波形超
      *                    POSWAVE_TEST_AMP_MAX 时夹紧并回读
      * @param sigOffset   m_Status.SigOffset [in/out]: 偏置 (单位随实验, 见文件头)
+     * @param feedStart   m_Status.bFeedStart [in]: 送纸启动位 (1=送纸/续送, 0=停止)。
+     *                    只在送纸凸轮实验里用; 原来是借 SigAmp 的上升沿当触发, 已废弃
      * @param afActPosUnits 各驱动轴 6064h 实际位置 [指令单位], 长度 SITE_AXIS_MAX
      *                    (送纸凸轮: 指令原点/跟随监视; 其余实验只用 [0])
      */
@@ -274,6 +282,7 @@ struct SpeedTestSequencer
                 uint8_t* enable, float* spdCmd, float spdFb,
                 uint8_t driveReady,
                 float* sigFreq, float* sigAmp, float* sigOffset,
+                uint8_t* feedStart,
                 const double* afActPosUnits);
 
 };

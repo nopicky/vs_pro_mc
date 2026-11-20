@@ -178,7 +178,6 @@ void SpeedTestSequencer::Init(float dt, float inertia, float ratedTorque, float 
     }
 
     // 送纸凸轮: 换算未挂载 (=0) 时位置指令保持指令原点, 电机不动 (安全)
-    feedPrevSigAmp = 0.0f;
     for (int i = 0; i < SITE_AXIS_MAX; i++) {
         feedMmToUnit[i] = 0.0;
         feedActPos0[i]  = 0.0;
@@ -267,6 +266,7 @@ void SpeedTestSequencer::Update(ExperimentType_T experiment,
             uint8_t* enable, float* spdCmd, float spdFb,
             uint8_t driveReady,
             float* sigFreq, float* sigAmp, float* sigOffset,
+            uint8_t* feedStart,
             const double* afActPosUnits)
 {
     // 外部 Enable 快照 (下面可能改写 *enable)
@@ -446,9 +446,9 @@ void SpeedTestSequencer::Update(ExperimentType_T experiment,
         }
 
         case ExperimentType_FeedCamTest: {
-            // 送纸凸轮: 伺服走 CSP(8); 虚拟主轴 + 4 轴五次曲线 (v1 仅轴0 下发)
+            // 送纸凸轮: 伺服走 CSP(8); 虚拟主轴 + 4 轴五次曲线
             // 启动逻辑整圈对齐 (对齐 FAE 工程02); SigOffset = 线速度 [m/min],
-            // SigAmp = Start 触发 (0→非0 上升沿送一次)
+            // bFeedStart = 送纸启动位 (1=送, 0=停)
             if (!feedSeq.init(&g_cfgFeed)) {
                 // 参数非法: 不启动实验, 检查 g_cfgFeed (nAxisCount / afSyncLen 等)
                 break;
@@ -463,7 +463,6 @@ void SpeedTestSequencer::Update(ExperimentType_T experiment,
                 posCmdOut[i]   = feedActPos0[i];
             }
             posCenter      = (LONG)feedActPos0[0];
-            feedPrevSigAmp = 0.0f;
             SetSpdCmd(spdCmd, 0.0f);
             driveMode      = DRIVE_CSP;
             break;
@@ -973,17 +972,11 @@ void SpeedTestSequencer::Update(ExperimentType_T experiment,
         float lineMMin = (sigOffset != NULL) ? *sigOffset : 0.0f;
         feedMaster.setVelocity((double)lineMMin * 1000.0 / 60.0);
 
-        // Start 触发: SigAmp 0→非0 上升沿启动, 回 0 释放
+        // Start 触发: bFeedStart 一位 (1=送纸/续送, 0=停止), 语义直白
         //   连续模式: 回 0 → 当前这张纸送完即停 (循环间隙回 0 则立即停, 不再续送)
-        //   单次模式: 回 0 只释放启动标志, 不影响已完成的循环 (需新上升沿再触发)
-        float startSig = (sigAmp != NULL) ? *sigAmp : 0.0f;
-        if (startSig > 0.0f && feedPrevSigAmp <= 0.0f) {
-            feedSeq.setStart(true);
-        }
-        if (startSig <= 0.0f) {
-            feedSeq.setStart(false);   // 释放: 连续模式据此停车
-        }
-        feedPrevSigAmp = startSig;
+        //   单次模式: 回 0 只释放启动标志, 不影响已完成的循环 (需重新置 1 再触发)
+        //   (以前借 SigAmp 的 0→非0 上升沿, 数值型变量兼当开关, 容易误碰也难解释)
+        feedSeq.setStart((feedStart != NULL) && (*feedStart != 0));
 
         // 各轴实际位置换算 [mm] (跟随偏差监视); 换算未挂载 (=0) 的轴不换算
         double actMm[SITE_AXIS_MAX] = {0.0};

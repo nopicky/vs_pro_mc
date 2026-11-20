@@ -190,30 +190,46 @@ typedef struct _WASR_TCServos
 #pragma pack(push,1)
 typedef struct _WASR_TCStatus
 {
+	// ---- 操作 ----
 	unsigned char Enable;
-	unsigned char Driver_Servo_number;
+	// bFeedStart: 送纸启动 (1=启动/续送, 0=停止)
+	//   原来借 SigAmp 的上升沿当触发, 语义别扭还容易误碰; 现在独立一位。
+	//   用 USINT 而不是 BOOL: 数据区所有标志都占 1 字节, 保持偏移整字节对齐
+	unsigned char bFeedStart;
+	// ---- 驱动轴0 的监视 ----
+	unsigned char Driver_Servo_number;      // = Axis0Slot (旧名, 保留兼容上位机)
 	char Driver_Modes_of_operation;
 	USHORT Driver_Inertia_ratio;
 	USHORT Driver_Rigidity_level;
 	USHORT Driver_SpdLoop_Kp;
 	USHORT Driver_SpdLoop_Ti;
+	// ---- 实验激励 ----
 	ExperimentType_T ExperimentType;
 	float SigFreq;
 	float SigAmp;
 	float SigOffset;
-	double FeedMasterPhase;
-	double FeedFollowErr0;
-	double FeedFollowErr1;
-	double FeedFollowErr2;
-	double FeedFollowErr3;
-	double FeedFollowErrMm0;
-	double FeedFollowErrMm1;
-	double FeedFollowErrMm2;
-	double FeedFollowErrMm3;
-	double FeedIdealErr0;
-	double FeedIdealErr1;
-	double FeedIdealErr2;
-	double FeedIdealErr3;
+	// ---- 送纸凸轮监视 (按轴号, 轴号≠槽位号, 对应关系看 Axis0Slot..3Slot) ----
+	double FeedMasterPhase;                 // 主轴相位 (解缠后的单调值)
+	unsigned char Axis0Slot;                // 轴0 所在槽位号 (0=Servo0); 现在对拖是 1
+	unsigned char Axis1Slot;
+	unsigned char Axis2Slot;
+	unsigned char Axis3Slot;
+	double Axis0FollowErr;                  // 跟随偏差 [指令单位]
+	double Axis1FollowErr;
+	double Axis2FollowErr;
+	double Axis3FollowErr;
+	double Axis0FollowErrMm;                // 跟随偏差 [mm]
+	double Axis1FollowErrMm;
+	double Axis2FollowErrMm;
+	double Axis3FollowErrMm;
+	double Axis0IdealErr;                   // 相对理论曲线偏差 [mm], 正=实际落后
+	double Axis1IdealErr;
+	double Axis2IdealErr;
+	double Axis3IdealErr;
+	double Axis0MmToUnit;                   // mm→指令单位 换算 (台架 ≈671)
+	double Axis1MmToUnit;
+	double Axis2MmToUnit;
+	double Axis3MmToUnit;
 	// ---- 站点表 (多机台形态) ----
 	// SiteProfile: 选中的站点形态 (SiteConfig.h 的 SITE_PROFILE_xxx),
 	//   只能在 Enable = 0 且所有轴回 IDLE 时改, 改完整套角色/电机/换算一起换
@@ -229,12 +245,6 @@ typedef struct _WASR_TCStatus
 	unsigned char AxisRole5;
 	unsigned char AxisRole6;
 	unsigned char AxisRole7;
-	// FeedMmToUnit0..3: 各驱动轴 mm → 指令单位 换算系数, 只读
-	//   (轴0 台架上应 ≈ 671 = 131072 / 195.349; 4 轴电机不同时各自不同)
-	double FeedMmToUnit0;
-	double FeedMmToUnit1;
-	double FeedMmToUnit2;
-	double FeedMmToUnit3;
 } WASR_TCStatus, *PWASR_TCStatus;
 #pragma pack(pop)
 

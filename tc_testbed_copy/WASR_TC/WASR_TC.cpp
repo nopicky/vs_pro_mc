@@ -499,10 +499,20 @@ void CWASR_TC::InitControl(float dtSec)
 			            a, fMmPerRev);
 		}
 	}
-	m_Status.FeedMmToUnit0 = afMmToUnit[0];
-	m_Status.FeedMmToUnit1 = afMmToUnit[1];
-	m_Status.FeedMmToUnit2 = afMmToUnit[2];
-	m_Status.FeedMmToUnit3 = afMmToUnit[3];
+	// 换算量回读上 ADS: 轴号 -> AxisN MmToUnit / AxisN Slot, 现场核对用
+	double* apMmToUnit[SITE_AXIS_MAX] = {
+		&m_Status.Axis0MmToUnit, &m_Status.Axis1MmToUnit,
+		&m_Status.Axis2MmToUnit, &m_Status.Axis3MmToUnit
+	};
+	unsigned char* apSlot[SITE_AXIS_MAX] = {
+		&m_Status.Axis0Slot, &m_Status.Axis1Slot,
+		&m_Status.Axis2Slot, &m_Status.Axis3Slot
+	};
+	for (int a = 0; a < SITE_AXIS_MAX; a++) {
+		*apMmToUnit[a] = afMmToUnit[a];
+		*apSlot[a] = (m_apDrive[a] != NULL)
+		             ? (unsigned char)SlotOfServo(m_apServo, m_apDrive[a]) : 0;
+	}
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -666,7 +676,8 @@ void CWASR_TC::ApplyExperimentDefaults(ExperimentType_T type)
 
 	case ExperimentType_FeedCamTest:
 		// 送纸凸轮: SigOffset = 主轴线速度 [m/min] (默认 30 慢速首测),
-		// SigAmp = Start 触发线 (0, 0→1 上升沿送一次), SigFreq 回读凸轮相位
+		// 送纸启停用 Status.bFeedStart (1=送, 0=停), SigFreq 回读凸轮相位
+		// SigAmp 在这个实验里不用 (以前借它当 Start 触发, 已废弃)
 		off = 30.0f;
 		break;
 
@@ -814,7 +825,7 @@ HRESULT CWASR_TC::CycleUpdate(ITcTask* ipTask, ITcUnknown* ipCaller, ULONG_PTR c
 	                 &m_Status.Enable, &spdCmd, spdFbServo,
 	                 (uint8_t)(m_bPrevOpDrive ? 1 : 0),
 	                 &m_Status.SigFreq, &m_Status.SigAmp, &m_Status.SigOffset,
-	                 m_afActPosUnits);
+	                 &m_Status.bFeedStart, m_afActPosUnits);
 
 	// 送纸凸轮监视量上 ADS (Scope 直接录): 主轴相位 [mm] +
 	// 跟随偏差双单位 (指令单位=同事对接口径, mm=工艺口径)
@@ -824,23 +835,29 @@ HRESULT CWASR_TC::CycleUpdate(ITcTask* ipTask, ITcUnknown* ipCaller, ULONG_PTR c
 		FEED_MONITOR_T mon;
 		m_testSeq.feedSeq.getMonitor(&mon);
 		m_Status.FeedMasterPhase = mon.fMasterPhase;
+		// 轴号 -> 槽位号: 名字里带 Axis 却查不到是哪台驱动器, 靠这张表对上号
+		// (现在对拖是 Servo1~4, 所以轴0 = 槽位1; 上位机/同事看变量时先看这里)
+		unsigned char* apSlot[SITE_AXIS_MAX] = {
+			&m_Status.Axis0Slot, &m_Status.Axis1Slot,
+			&m_Status.Axis2Slot, &m_Status.Axis3Slot
+		};
 		// 与 AxisRole0..7 同一种写法: 字段地址成表, 循环下发
-		// (原来按轴写 4 个 case, 加轴/改口径得改 4 处, 漏一处就静默错)
 		double* apFollowErr[SITE_AXIS_MAX] = {
-			&m_Status.FeedFollowErr0, &m_Status.FeedFollowErr1,
-			&m_Status.FeedFollowErr2, &m_Status.FeedFollowErr3
+			&m_Status.Axis0FollowErr, &m_Status.Axis1FollowErr,
+			&m_Status.Axis2FollowErr, &m_Status.Axis3FollowErr
 		};
 		double* apFollowErrMm[SITE_AXIS_MAX] = {
-			&m_Status.FeedFollowErrMm0, &m_Status.FeedFollowErrMm1,
-			&m_Status.FeedFollowErrMm2, &m_Status.FeedFollowErrMm3
+			&m_Status.Axis0FollowErrMm, &m_Status.Axis1FollowErrMm,
+			&m_Status.Axis2FollowErrMm, &m_Status.Axis3FollowErrMm
 		};
 		double* apIdealErr[SITE_AXIS_MAX] = {
-			&m_Status.FeedIdealErr0, &m_Status.FeedIdealErr1,
-			&m_Status.FeedIdealErr2, &m_Status.FeedIdealErr3
+			&m_Status.Axis0IdealErr, &m_Status.Axis1IdealErr,
+			&m_Status.Axis2IdealErr, &m_Status.Axis3IdealErr
 		};
 		for (int i = 0; i < SITE_AXIS_MAX; i++) {
 			// 每轴各自的换算 (轴电机不同则不同; 未接的轴为 0 -> 监视量也 0)
 			double fMmToUnit = m_testSeq.feedMmToUnit[i];
+			*apSlot[i]        = (m_apDrive[i] != NULL) ? (unsigned char)SlotOfServo(m_apServo, m_apDrive[i]) : 0;
 			*apFollowErrMm[i] = mon.afFollowErr[i];
 			*apFollowErr[i]   = mon.afFollowErr[i] * fMmToUnit;
 			*apIdealErr[i]    = mon.afIdealErr[i] * fMmToUnit;

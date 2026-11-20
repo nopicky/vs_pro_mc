@@ -487,6 +487,11 @@
             <BaseType GUID="{18071995-0000-0000-0000-000000000002}">USINT</BaseType>
           </Symbol>
           <Symbol>
+            <Name>bFeedStart</Name>
+            <Comment TxtId=""><![CDATA[送纸启动 (1=启动/续送, 0=停止)。原来是借 SigAmp 的上升沿当触发, 语义别扭且容易误碰, 现在独立一位]]></Comment>
+            <BaseType GUID="{18071995-0000-0000-0000-000000000002}">USINT</BaseType>
+          </Symbol>
+          <Symbol>
             <Name>Driver_Servo_number</Name>
             <BaseType GUID="{18071995-0000-0000-0000-000000000002}">USINT</BaseType>
           </Symbol>
@@ -537,76 +542,120 @@
             <Unit><![CDATA[mm]]></Unit>
           </Symbol>
           <Symbol CreateSymbol="true">
-            <Name>FeedFollowErr0</Name>
-            <Comment TxtId=""><![CDATA[轴0 跟随偏差 (指令-实际-启动相位补偿), 指令单位]]></Comment>
+            <Name>Axis0Slot</Name>
+            <Comment TxtId=""><![CDATA[轴0 当前所在槽位号 (0=Servo0)。轴号≠槽位号: 现在对拖是 Servo1, 看这个才知道轴0 是哪台驱动器]]></Comment>
+            <BaseType GUID="{18071995-0000-0000-0000-000000000002}">USINT</BaseType>
+          </Symbol>
+          <Symbol CreateSymbol="true">
+            <Name>Axis1Slot</Name>
+            <Comment TxtId=""><![CDATA[轴1 当前所在槽位号 (0=Servo0)。轴号≠槽位号: 现在对拖是 Servo2, 看这个才知道轴1 是哪台驱动器]]></Comment>
+            <BaseType GUID="{18071995-0000-0000-0000-000000000002}">USINT</BaseType>
+          </Symbol>
+          <Symbol CreateSymbol="true">
+            <Name>Axis2Slot</Name>
+            <Comment TxtId=""><![CDATA[轴2 当前所在槽位号 (0=Servo0)。轴号≠槽位号: 现在对拖是 Servo3, 看这个才知道轴2 是哪台驱动器]]></Comment>
+            <BaseType GUID="{18071995-0000-0000-0000-000000000002}">USINT</BaseType>
+          </Symbol>
+          <Symbol CreateSymbol="true">
+            <Name>Axis3Slot</Name>
+            <Comment TxtId=""><![CDATA[轴3 当前所在槽位号 (0=Servo0)。轴号≠槽位号: 现在对拖是 Servo4, 看这个才知道轴3 是哪台驱动器]]></Comment>
+            <BaseType GUID="{18071995-0000-0000-0000-000000000002}">USINT</BaseType>
+          </Symbol>
+          <Symbol CreateSymbol="true">
+            <Name>Axis0FollowErr</Name>
+            <Comment TxtId=""><![CDATA[轴0 跟随偏差 (指令-实际-启动相位补偿)。评价超前补偿别看这个, 看 Axis0IdealErr]]></Comment>
             <BaseType GUID="{18071995-0000-0000-0000-00000000000e}">LREAL</BaseType>
             <Unit><![CDATA[指令单位]]></Unit>
           </Symbol>
           <Symbol CreateSymbol="true">
-            <Name>FeedFollowErr1</Name>
-            <Comment TxtId=""><![CDATA[轴1 跟随偏差, 指令单位]]></Comment>
+            <Name>Axis1FollowErr</Name>
+            <Comment TxtId=""><![CDATA[轴1 跟随偏差 (指令-实际-启动相位补偿)。评价超前补偿别看这个, 看 Axis1IdealErr]]></Comment>
             <BaseType GUID="{18071995-0000-0000-0000-00000000000e}">LREAL</BaseType>
             <Unit><![CDATA[指令单位]]></Unit>
           </Symbol>
           <Symbol CreateSymbol="true">
-            <Name>FeedFollowErr2</Name>
-            <Comment TxtId=""><![CDATA[轴2 跟随偏差, 指令单位]]></Comment>
+            <Name>Axis2FollowErr</Name>
+            <Comment TxtId=""><![CDATA[轴2 跟随偏差 (指令-实际-启动相位补偿)。评价超前补偿别看这个, 看 Axis2IdealErr]]></Comment>
             <BaseType GUID="{18071995-0000-0000-0000-00000000000e}">LREAL</BaseType>
             <Unit><![CDATA[指令单位]]></Unit>
           </Symbol>
           <Symbol CreateSymbol="true">
-            <Name>FeedFollowErr3</Name>
-            <Comment TxtId=""><![CDATA[轴3 跟随偏差, 指令单位]]></Comment>
+            <Name>Axis3FollowErr</Name>
+            <Comment TxtId=""><![CDATA[轴3 跟随偏差 (指令-实际-启动相位补偿)。评价超前补偿别看这个, 看 Axis3IdealErr]]></Comment>
             <BaseType GUID="{18071995-0000-0000-0000-00000000000e}">LREAL</BaseType>
             <Unit><![CDATA[指令单位]]></Unit>
           </Symbol>
           <Symbol CreateSymbol="true">
-            <Name>FeedFollowErrMm0</Name>
-            <Comment TxtId=""><![CDATA[轴0 跟随偏差, mm (工艺口径)]]></Comment>
+            <Name>Axis0FollowErrMm</Name>
+            <Comment TxtId=""><![CDATA[轴0 跟随偏差 [mm] (同上, 工艺口径)]]></Comment>
             <BaseType GUID="{18071995-0000-0000-0000-00000000000e}">LREAL</BaseType>
             <Unit><![CDATA[mm]]></Unit>
           </Symbol>
           <Symbol CreateSymbol="true">
-            <Name>FeedFollowErrMm1</Name>
-            <Comment TxtId=""><![CDATA[轴1 跟随偏差, mm]]></Comment>
+            <Name>Axis1FollowErrMm</Name>
+            <Comment TxtId=""><![CDATA[轴1 跟随偏差 [mm] (同上, 工艺口径)]]></Comment>
             <BaseType GUID="{18071995-0000-0000-0000-00000000000e}">LREAL</BaseType>
             <Unit><![CDATA[mm]]></Unit>
           </Symbol>
           <Symbol CreateSymbol="true">
-            <Name>FeedFollowErrMm2</Name>
-            <Comment TxtId=""><![CDATA[轴2 跟随偏差, mm]]></Comment>
+            <Name>Axis2FollowErrMm</Name>
+            <Comment TxtId=""><![CDATA[轴2 跟随偏差 [mm] (同上, 工艺口径)]]></Comment>
             <BaseType GUID="{18071995-0000-0000-0000-00000000000e}">LREAL</BaseType>
             <Unit><![CDATA[mm]]></Unit>
           </Symbol>
           <Symbol CreateSymbol="true">
-            <Name>FeedFollowErrMm3</Name>
-            <Comment TxtId=""><![CDATA[轴3 跟随偏差, mm]]></Comment>
+            <Name>Axis3FollowErrMm</Name>
+            <Comment TxtId=""><![CDATA[轴3 跟随偏差 [mm] (同上, 工艺口径)]]></Comment>
             <BaseType GUID="{18071995-0000-0000-0000-00000000000e}">LREAL</BaseType>
             <Unit><![CDATA[mm]]></Unit>
           </Symbol>
           <Symbol CreateSymbol="true">
-            <Name>FeedIdealErr0</Name>
-            <Comment TxtId=""><![CDATA[轴0 相对凸轮理论曲线的偏差 (理想-实际), 指令单位; 正=实际落后]]></Comment>
+            <Name>Axis0IdealErr</Name>
+            <Comment TxtId=""><![CDATA[轴0 相对凸轮理论曲线的偏差 (理想-实际, 正=实际落后) [mm]]]></Comment>
             <BaseType GUID="{18071995-0000-0000-0000-00000000000e}">LREAL</BaseType>
-            <Unit><![CDATA[指令单位]]></Unit>
+            <Unit><![CDATA[mm]]></Unit>
           </Symbol>
           <Symbol CreateSymbol="true">
-            <Name>FeedIdealErr1</Name>
-            <Comment TxtId=""><![CDATA[轴1 相对凸轮理论曲线的偏差, 指令单位]]></Comment>
+            <Name>Axis1IdealErr</Name>
+            <Comment TxtId=""><![CDATA[轴1 相对凸轮理论曲线的偏差 (理想-实际, 正=实际落后) [mm]]]></Comment>
             <BaseType GUID="{18071995-0000-0000-0000-00000000000e}">LREAL</BaseType>
-            <Unit><![CDATA[指令单位]]></Unit>
+            <Unit><![CDATA[mm]]></Unit>
           </Symbol>
           <Symbol CreateSymbol="true">
-            <Name>FeedIdealErr2</Name>
-            <Comment TxtId=""><![CDATA[轴2 相对凸轮理论曲线的偏差, 指令单位]]></Comment>
+            <Name>Axis2IdealErr</Name>
+            <Comment TxtId=""><![CDATA[轴2 相对凸轮理论曲线的偏差 (理想-实际, 正=实际落后) [mm]]]></Comment>
             <BaseType GUID="{18071995-0000-0000-0000-00000000000e}">LREAL</BaseType>
-            <Unit><![CDATA[指令单位]]></Unit>
+            <Unit><![CDATA[mm]]></Unit>
           </Symbol>
           <Symbol CreateSymbol="true">
-            <Name>FeedIdealErr3</Name>
-            <Comment TxtId=""><![CDATA[轴3 相对凸轮理论曲线的偏差, 指令单位]]></Comment>
+            <Name>Axis3IdealErr</Name>
+            <Comment TxtId=""><![CDATA[轴3 相对凸轮理论曲线的偏差 (理想-实际, 正=实际落后) [mm]]]></Comment>
             <BaseType GUID="{18071995-0000-0000-0000-00000000000e}">LREAL</BaseType>
-            <Unit><![CDATA[指令单位]]></Unit>
+            <Unit><![CDATA[mm]]></Unit>
+          </Symbol>
+          <Symbol CreateSymbol="true">
+            <Name>Axis0MmToUnit</Name>
+            <Comment TxtId=""><![CDATA[轴0 mm→指令单位 换算系数 (台架应 ≈671)。只读, 由站点表算出]]></Comment>
+            <BaseType GUID="{18071995-0000-0000-0000-00000000000e}">LREAL</BaseType>
+            <Unit><![CDATA[指令单位/mm]]></Unit>
+          </Symbol>
+          <Symbol CreateSymbol="true">
+            <Name>Axis1MmToUnit</Name>
+            <Comment TxtId=""><![CDATA[轴1 mm→指令单位 换算系数 (台架应 ≈671)。只读, 由站点表算出]]></Comment>
+            <BaseType GUID="{18071995-0000-0000-0000-00000000000e}">LREAL</BaseType>
+            <Unit><![CDATA[指令单位/mm]]></Unit>
+          </Symbol>
+          <Symbol CreateSymbol="true">
+            <Name>Axis2MmToUnit</Name>
+            <Comment TxtId=""><![CDATA[轴2 mm→指令单位 换算系数 (台架应 ≈671)。只读, 由站点表算出]]></Comment>
+            <BaseType GUID="{18071995-0000-0000-0000-00000000000e}">LREAL</BaseType>
+            <Unit><![CDATA[指令单位/mm]]></Unit>
+          </Symbol>
+          <Symbol CreateSymbol="true">
+            <Name>Axis3MmToUnit</Name>
+            <Comment TxtId=""><![CDATA[轴3 mm→指令单位 换算系数 (台架应 ≈671)。只读, 由站点表算出]]></Comment>
+            <BaseType GUID="{18071995-0000-0000-0000-00000000000e}">LREAL</BaseType>
+            <Unit><![CDATA[指令单位/mm]]></Unit>
           </Symbol>
           <Symbol CreateSymbol="true">
             <Name>SiteProfile</Name>
@@ -658,30 +707,6 @@
             <Comment TxtId=""><![CDATA[槽位7 角色, 只读]]></Comment>
             <BaseType GUID="{18071995-0000-0000-0000-000000000002}">USINT</BaseType>
           </Symbol>
-          <Symbol CreateSymbol="true">
-            <Name>FeedMmToUnit0</Name>
-            <Comment TxtId=""><![CDATA[轴0 mm→指令单位 换算 (台架应 ≈ 671), 只读]]></Comment>
-            <BaseType GUID="{18071995-0000-0000-0000-00000000000e}">LREAL</BaseType>
-            <Unit><![CDATA[指令单位/mm]]></Unit>
-          </Symbol>
-          <Symbol CreateSymbol="true">
-            <Name>FeedMmToUnit1</Name>
-            <Comment TxtId=""><![CDATA[轴1 mm→指令单位 换算, 只读]]></Comment>
-            <BaseType GUID="{18071995-0000-0000-0000-00000000000e}">LREAL</BaseType>
-            <Unit><![CDATA[指令单位/mm]]></Unit>
-          </Symbol>
-          <Symbol CreateSymbol="true">
-            <Name>FeedMmToUnit2</Name>
-            <Comment TxtId=""><![CDATA[轴2 mm→指令单位 换算, 只读]]></Comment>
-            <BaseType GUID="{18071995-0000-0000-0000-00000000000e}">LREAL</BaseType>
-            <Unit><![CDATA[指令单位/mm]]></Unit>
-          </Symbol>
-          <Symbol CreateSymbol="true">
-            <Name>FeedMmToUnit3</Name>
-            <Comment TxtId=""><![CDATA[轴3 mm→指令单位 换算, 只读]]></Comment>
-            <BaseType GUID="{18071995-0000-0000-0000-00000000000e}">LREAL</BaseType>
-            <Unit><![CDATA[指令单位/mm]]></Unit>
-          </Symbol>
         </DataArea>
       </DataAreas>
       <InterfacePointers>
@@ -697,6 +722,6 @@
   </Modules>
   <Library>
     <Name>WASR_TC</Name>
-    <Version>0.0.0.4</Version>
+    <Version>0.0.0.5</Version>
   </Library>
 </TcModuleClass>
