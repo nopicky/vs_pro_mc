@@ -3,8 +3,9 @@
 // @brief  站点表: 「哪个槽位 (Servo0..Servo7) 接什么、配什么电机」。
 //
 // 设计意图 (为什么不是 #if 分叉):
-//   本机单轴 / 对拖 4 轴 / 现场机台 三种形态, 差异全在"哪个槽位接什么",
+//   本机单轴 / 对拖 4 轴 两种形态, 差异全在"哪个槽位接什么、接几台",
 //   逻辑完全一样。用一张表描述, 换机台只换 profile, 代码一行不改。
+//   工程里各槽位已固定链接到具体从站, 所以切场景 = 启用/禁用从站 + 选 profile。
 //
 // 运行期选择: Status.SiteProfile (只能在 Enable = 0 且所有轴回到 IDLE 时改),
 //   模块把选中的 profile 应用到 8 个槽位, 并把结果回写到
@@ -56,10 +57,18 @@ typedef struct _SITE_PROFILE_T
 } SITE_PROFILE_T;
 
 /* 站点形态编号 (Status.SiteProfile 填这个) */
-#define SITE_PROFILE_LOCAL_1AX    0   /* 本机: 单轴 VD5L (台架/单轴验证) */
-#define SITE_PROFILE_DRAG_4AX     1   /* 对拖: 4 个 VD3E 驱动轴, 负载槽预留不接 */
-#define SITE_PROFILE_DRAG_8AX     2   /* 对拖: 4 驱动 + 4 负载 (全部接齐) */
-#define SITE_PROFILE_COUNT        3
+#define SITE_PROFILE_LOCAL_1AX    0   /* 本机: 单轴 VD5L (Servo0) */
+#define SITE_PROFILE_DRAG_4AX     1   /* 对拖: 4 个 VD3E 驱动轴 (Servo1..4) */
+#define SITE_PROFILE_COUNT        2
+
+/* 工程里的链接是固定映射（一次接好, 切场景只改从站启停 + SiteProfile）:
+     Servo0 = 维控VD5L   Servo1~4 = 维控VD3E_1~4   Servo5~7 留空(汇川暂不接)
+   所以「同一槽位换一台驱动器」是做不到的 —— TwinCAT 的 PDO 链接是静态 1:1,
+   一个模块变量只能指向一台从站。要让某槽位换机, 必须改链接(tsproj)。
+
+   4 驱动 + 4 负载 (8 台 VD3E) 暂不支持: 8 台 VD3E 已占满 8 槽, 而 Servo0 还要
+   留给 VD5L -> 总共要 9 槽。真要做时先把 IO 结构扩到 9~12 槽 (WASR_TC.tmc
+   升版本), 再在这里加一条 profile。 */
 
 /* 站点形态表 */
 extern const SITE_PROFILE_T g_aSiteProfile[SITE_PROFILE_COUNT];
