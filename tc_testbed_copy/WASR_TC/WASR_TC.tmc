@@ -437,10 +437,10 @@
       </Parameters>
       <DataAreas>
         <DataArea>
-          <AreaNo AreaType="InputDst">0</AreaNo>
+          <AreaNo AreaType="InputDst" CreateSymbols="true">0</AreaNo>
           <Name>Inputs</Name>
           <ContextId>1</ContextId>
-          <Symbol>
+          <Symbol CreateSymbol="true">
             <Name>Servo0</Name>
             <BaseType GUID="{945bce8d-4e9b-4ea2-a1be-727f8500de9b}">ServoInputs</BaseType>
           </Symbol>
@@ -474,14 +474,14 @@
           </Symbol>
         </DataArea>
         <DataArea>
-          <AreaNo AreaType="OutputSrc">1</AreaNo>
+          <AreaNo AreaType="OutputSrc" CreateSymbols="true">1</AreaNo>
           <Name>Outputs</Name>
           <ContextId>1</ContextId>
-          <Symbol>
+          <Symbol CreateSymbol="true">
             <Name>Servo0</Name>
             <BaseType GUID="{b2423a46-ca74-4ceb-90a5-4087fa1a95a1}">ServoOutputs</BaseType>
           </Symbol>
-          <Symbol>
+          <Symbol CreateSymbol="true">
             <Name>Servo1</Name>
             <BaseType GUID="{b2423a46-ca74-4ceb-90a5-4087fa1a95a1}">ServoOutputs</BaseType>
           </Symbol>
@@ -514,11 +514,11 @@
           <AreaNo AreaType="Standard" CreateSymbols="true">2</AreaNo>
           <Name>Servos</Name>
           <ContextId>1</ContextId>
-          <Symbol>
+          <Symbol CreateSymbol="true">
             <Name>Servo0</Name>
             <BaseType GUID="{e8fbc83c-dcba-48a3-8f3c-de0bff168393}">ServoIO</BaseType>
           </Symbol>
-          <Symbol>
+          <Symbol CreateSymbol="true">
             <Name>Servo1</Name>
             <BaseType GUID="{e8fbc83c-dcba-48a3-8f3c-de0bff168393}">ServoIO</BaseType>
           </Symbol>

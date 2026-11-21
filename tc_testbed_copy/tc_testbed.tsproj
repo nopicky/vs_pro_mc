@@ -506,7 +506,7 @@
 								</Symbol>
 							</DataArea>
 							<DataArea>
-								<AreaNo AreaType="OutputSrc">1</AreaNo>
+								<AreaNo AreaType="OutputSrc" CreateSymbols="true">1</AreaNo>
 								<Name>Outputs</Name>
 								<ContextId>1</ContextId>
 								<ByteSize>200</ByteSize>
@@ -560,7 +560,7 @@
 								</Symbol>
 							</DataArea>
 							<DataArea>
-								<AreaNo AreaType="Standard">2</AreaNo>
+								<AreaNo AreaType="Standard" CreateSymbols="true">2</AreaNo>
 								<Name>Servos</Name>
 								<ContextId>1</ContextId>
 								<ByteSize X64="480">416</ByteSize>
@@ -2410,7 +2410,7 @@
 					<EtherCAT EtherCatAddr="1001" SlaveType="2" AdsServerAddress="000000000000e903" PdiType="#x0e80" EtherCatAddrFixed="true" MboxDataLinkLayer="true" StateMBoxPolling="true" CycleMBoxPollingTime="0" CoeType="15" VendorId="#x00000eff" ProductCode="#x0d510001" RevisionNo="#x00000066" InfoDataAddr="true" InfoDataSoeDS401="true" InfoDataDcTimes="true" TimeoutStateChange1="2000" TimeoutStateChange2="9000" TimeoutMailbox2="2000" PortPhys="17" MaxSlotCount="256" MaxSlotGroupCount="1" SlotPdoIncrement="1" SlotIndexIncrement="16" Type="Wecon VD5 EtherCAT Servo V1.02" Desc="Wecon VD5 EtherCAT Servo V1.02" PortABoxInfo="#x00ffffff">
 						<SyncMan>001080002600010001000000240000018000001026010000</SyncMan>
 						<SyncMan>801080002200010002000000240000018000801022010000</SyncMan>
-						<SyncMan>001121006400010003000000000000000900001164010000</SyncMan>
+						<SyncMan>00111b006400010003000000000000000900001164010000</SyncMan>
 						<SyncMan>001419002000010004000000000000000f00001420010000</SyncMan>
 						<Fmmu>0000000000000000001100020100000001000000000000000000000000000000</Fmmu>
 						<Fmmu>0000000000000000001400010100000002000000000000000000000000000000</Fmmu>
@@ -2548,12 +2548,6 @@
 								<Type>UDINT</Type>
 							</Entry>
 							<Entry Name="Velocity offset" Index="#x60b1">
-								<Type>DINT</Type>
-							</Entry>
-							<Entry Name="Torque offset" Index="#x60b2">
-								<Type>INT</Type>
-							</Entry>
-							<Entry Name="Position offset" Index="#x60b0">
 								<Type>DINT</Type>
 							</Entry>
 						</Pdo>
@@ -2927,6 +2921,13 @@
 		<MappingInfo Identifier="{00000000-0010-0304-1000-010110000403}" Id="#x02030010"/>
 		<OwnerA Name="TIID^主站">
 			<OwnerB Name="TIXC^WASR_TC^WASR_TC_Obj1 (WASR_TC)">
+				<Link VarA="维控VD3E_1^RxPDO^ControlWord" VarB="Outputs^Servo1^Controlword"/>
+				<Link VarA="维控VD3E_1^RxPDO^Modes of operation" VarB="Outputs^Servo1^Modes_of_operation"/>
+				<Link VarA="维控VD3E_1^RxPDO^Motor revolutions" VarB="Outputs^Servo1^Motor_revolutions"/>
+				<Link VarA="维控VD3E_1^RxPDO^Shaft revolutions" VarB="Outputs^Servo1^Shaft_revolutions"/>
+				<Link VarA="维控VD3E_1^RxPDO^Target position" VarB="Outputs^Servo1^Target_position"/>
+				<Link VarA="维控VD3E_1^RxPDO^Target torque" VarB="Outputs^Servo1^Target_torque"/>
+				<Link VarA="维控VD3E_1^RxPDO^Target velocity" VarB="Outputs^Servo1^Target_velocity"/>
 				<Link VarA="维控VD3E_1^TxPDO^Error Code" VarB="Inputs^Servo1^Error_code"/>
 				<Link VarA="维控VD3E_1^TxPDO^Following error actual value" VarB="Inputs^Servo1^Following_error_actual_value"/>
 				<Link VarA="维控VD3E_1^TxPDO^Position actual value" VarB="Inputs^Servo1^Position_actual_value"/>
@@ -2934,6 +2935,13 @@
 				<Link VarA="维控VD3E_1^TxPDO^Torque demand " VarB="Inputs^Servo1^Torque_demand"/>
 				<Link VarA="维控VD3E_1^TxPDO^Velocity actual value" VarB="Inputs^Servo1^Velocity_actual_value"/>
 				<Link VarA="维控VD3E_1^TxPDO^statusWord" VarB="Inputs^Servo1^Status_word"/>
+				<Link VarA="维控VD3E_2^RxPDO^ControlWord" VarB="Outputs^Servo2^Controlword"/>
+				<Link VarA="维控VD3E_2^RxPDO^Modes of operation" VarB="Outputs^Servo2^Modes_of_operation"/>
+				<Link VarA="维控VD3E_2^RxPDO^Motor revolutions" VarB="Outputs^Servo2^Motor_revolutions"/>
+				<Link VarA="维控VD3E_2^RxPDO^Shaft revolutions" VarB="Outputs^Servo2^Shaft_revolutions"/>
+				<Link VarA="维控VD3E_2^RxPDO^Target position" VarB="Outputs^Servo2^Target_position"/>
+				<Link VarA="维控VD3E_2^RxPDO^Target torque" VarB="Outputs^Servo2^Target_torque"/>
+				<Link VarA="维控VD3E_2^RxPDO^Target velocity" VarB="Outputs^Servo2^Target_velocity"/>
 				<Link VarA="维控VD3E_2^TxPDO^Error Code" VarB="Inputs^Servo2^Error_code"/>
 				<Link VarA="维控VD3E_2^TxPDO^Following error actual value" VarB="Inputs^Servo2^Following_error_actual_value"/>
 				<Link VarA="维控VD3E_2^TxPDO^Position actual value" VarB="Inputs^Servo2^Position_actual_value"/>
@@ -2941,6 +2949,13 @@
 				<Link VarA="维控VD3E_2^TxPDO^Torque demand " VarB="Inputs^Servo2^Torque_demand"/>
 				<Link VarA="维控VD3E_2^TxPDO^Velocity actual value" VarB="Inputs^Servo2^Velocity_actual_value"/>
 				<Link VarA="维控VD3E_2^TxPDO^statusWord" VarB="Inputs^Servo2^Status_word"/>
+				<Link VarA="维控VD3E_3^RxPDO^ControlWord" VarB="Outputs^Servo3^Controlword"/>
+				<Link VarA="维控VD3E_3^RxPDO^Modes of operation" VarB="Outputs^Servo3^Modes_of_operation"/>
+				<Link VarA="维控VD3E_3^RxPDO^Motor revolutions" VarB="Outputs^Servo3^Motor_revolutions"/>
+				<Link VarA="维控VD3E_3^RxPDO^Shaft revolutions" VarB="Outputs^Servo3^Shaft_revolutions"/>
+				<Link VarA="维控VD3E_3^RxPDO^Target position" VarB="Outputs^Servo3^Target_position"/>
+				<Link VarA="维控VD3E_3^RxPDO^Target torque" VarB="Outputs^Servo3^Target_torque"/>
+				<Link VarA="维控VD3E_3^RxPDO^Target velocity" VarB="Outputs^Servo3^Target_velocity"/>
 				<Link VarA="维控VD3E_3^TxPDO^Error Code" VarB="Inputs^Servo3^Error_code"/>
 				<Link VarA="维控VD3E_3^TxPDO^Following error actual value" VarB="Inputs^Servo3^Following_error_actual_value"/>
 				<Link VarA="维控VD3E_3^TxPDO^Position actual value" VarB="Inputs^Servo3^Position_actual_value"/>
@@ -2948,6 +2963,13 @@
 				<Link VarA="维控VD3E_3^TxPDO^Torque demand " VarB="Inputs^Servo3^Torque_demand"/>
 				<Link VarA="维控VD3E_3^TxPDO^Velocity actual value" VarB="Inputs^Servo3^Velocity_actual_value"/>
 				<Link VarA="维控VD3E_3^TxPDO^statusWord" VarB="Inputs^Servo3^Status_word"/>
+				<Link VarA="维控VD3E_4^RxPDO^ControlWord" VarB="Outputs^Servo4^Controlword"/>
+				<Link VarA="维控VD3E_4^RxPDO^Modes of operation" VarB="Outputs^Servo4^Modes_of_operation"/>
+				<Link VarA="维控VD3E_4^RxPDO^Motor revolutions" VarB="Outputs^Servo4^Motor_revolutions"/>
+				<Link VarA="维控VD3E_4^RxPDO^Shaft revolutions" VarB="Outputs^Servo4^Shaft_revolutions"/>
+				<Link VarA="维控VD3E_4^RxPDO^Target position" VarB="Outputs^Servo4^Target_position"/>
+				<Link VarA="维控VD3E_4^RxPDO^Target torque" VarB="Outputs^Servo4^Target_torque"/>
+				<Link VarA="维控VD3E_4^RxPDO^Target velocity" VarB="Outputs^Servo4^Target_velocity"/>
 				<Link VarA="维控VD3E_4^TxPDO^Error Code" VarB="Inputs^Servo4^Error_code"/>
 				<Link VarA="维控VD3E_4^TxPDO^Following error actual value" VarB="Inputs^Servo4^Following_error_actual_value"/>
 				<Link VarA="维控VD3E_4^TxPDO^Position actual value" VarB="Inputs^Servo4^Position_actual_value"/>
@@ -2955,42 +2977,14 @@
 				<Link VarA="维控VD3E_4^TxPDO^Torque demand " VarB="Inputs^Servo4^Torque_demand"/>
 				<Link VarA="维控VD3E_4^TxPDO^Velocity actual value" VarB="Inputs^Servo4^Velocity_actual_value"/>
 				<Link VarA="维控VD3E_4^TxPDO^statusWord" VarB="Inputs^Servo4^Status_word"/>
-				<Link VarA="维控VD5L^RxPDO^Velocity offset" VarB="Outputs^Servo0^Velocity_offset"/>
 				<Link VarA="维控VD5L^RxPDO^ControlWord" VarB="Outputs^Servo0^Controlword"/>
-				<Link VarA="维控VD5L^RxPDO^Target position" VarB="Outputs^Servo0^Target_position"/>
-				<Link VarA="维控VD5L^RxPDO^Target velocity" VarB="Outputs^Servo0^Target_velocity"/>
-				<Link VarA="维控VD5L^RxPDO^Target torque" VarB="Outputs^Servo0^Target_torque"/>
 				<Link VarA="维控VD5L^RxPDO^Modes of operation" VarB="Outputs^Servo0^Modes_of_operation"/>
 				<Link VarA="维控VD5L^RxPDO^Motor revolutions" VarB="Outputs^Servo0^Motor_revolutions"/>
 				<Link VarA="维控VD5L^RxPDO^Shaft revolutions" VarB="Outputs^Servo0^Shaft_revolutions"/>
-				<Link VarA="维控VD3E_1^RxPDO^ControlWord" VarB="Outputs^Servo1^Controlword"/>
-				<Link VarA="维控VD3E_1^RxPDO^Target position" VarB="Outputs^Servo1^Target_position"/>
-				<Link VarA="维控VD3E_1^RxPDO^Target velocity" VarB="Outputs^Servo1^Target_velocity"/>
-				<Link VarA="维控VD3E_1^RxPDO^Target torque" VarB="Outputs^Servo1^Target_torque"/>
-				<Link VarA="维控VD3E_1^RxPDO^Modes of operation" VarB="Outputs^Servo1^Modes_of_operation"/>
-				<Link VarA="维控VD3E_1^RxPDO^Motor revolutions" VarB="Outputs^Servo1^Motor_revolutions"/>
-				<Link VarA="维控VD3E_1^RxPDO^Shaft revolutions" VarB="Outputs^Servo1^Shaft_revolutions"/>
-				<Link VarA="维控VD3E_2^RxPDO^ControlWord" VarB="Outputs^Servo2^Controlword"/>
-				<Link VarA="维控VD3E_2^RxPDO^Target position" VarB="Outputs^Servo2^Target_position"/>
-				<Link VarA="维控VD3E_2^RxPDO^Target velocity" VarB="Outputs^Servo2^Target_velocity"/>
-				<Link VarA="维控VD3E_2^RxPDO^Target torque" VarB="Outputs^Servo2^Target_torque"/>
-				<Link VarA="维控VD3E_2^RxPDO^Modes of operation" VarB="Outputs^Servo2^Modes_of_operation"/>
-				<Link VarA="维控VD3E_2^RxPDO^Motor revolutions" VarB="Outputs^Servo2^Motor_revolutions"/>
-				<Link VarA="维控VD3E_2^RxPDO^Shaft revolutions" VarB="Outputs^Servo2^Shaft_revolutions"/>
-				<Link VarA="维控VD3E_3^RxPDO^ControlWord" VarB="Outputs^Servo3^Controlword"/>
-				<Link VarA="维控VD3E_3^RxPDO^Target position" VarB="Outputs^Servo3^Target_position"/>
-				<Link VarA="维控VD3E_3^RxPDO^Target velocity" VarB="Outputs^Servo3^Target_velocity"/>
-				<Link VarA="维控VD3E_3^RxPDO^Target torque" VarB="Outputs^Servo3^Target_torque"/>
-				<Link VarA="维控VD3E_3^RxPDO^Modes of operation" VarB="Outputs^Servo3^Modes_of_operation"/>
-				<Link VarA="维控VD3E_3^RxPDO^Motor revolutions" VarB="Outputs^Servo3^Motor_revolutions"/>
-				<Link VarA="维控VD3E_3^RxPDO^Shaft revolutions" VarB="Outputs^Servo3^Shaft_revolutions"/>
-				<Link VarA="维控VD3E_4^RxPDO^ControlWord" VarB="Outputs^Servo4^Controlword"/>
-				<Link VarA="维控VD3E_4^RxPDO^Target position" VarB="Outputs^Servo4^Target_position"/>
-				<Link VarA="维控VD3E_4^RxPDO^Target velocity" VarB="Outputs^Servo4^Target_velocity"/>
-				<Link VarA="维控VD3E_4^RxPDO^Target torque" VarB="Outputs^Servo4^Target_torque"/>
-				<Link VarA="维控VD3E_4^RxPDO^Modes of operation" VarB="Outputs^Servo4^Modes_of_operation"/>
-				<Link VarA="维控VD3E_4^RxPDO^Motor revolutions" VarB="Outputs^Servo4^Motor_revolutions"/>
-				<Link VarA="维控VD3E_4^RxPDO^Shaft revolutions" VarB="Outputs^Servo4^Shaft_revolutions"/>
+				<Link VarA="维控VD5L^RxPDO^Target position" VarB="Outputs^Servo0^Target_position"/>
+				<Link VarA="维控VD5L^RxPDO^Target torque" VarB="Outputs^Servo0^Target_torque"/>
+				<Link VarA="维控VD5L^RxPDO^Target velocity" VarB="Outputs^Servo0^Target_velocity"/>
+				<Link VarA="维控VD5L^RxPDO^Velocity offset" VarB="Outputs^Servo0^Velocity_offset"/>
 				<Link VarA="维控VD5L^TxPDO^Error Code" VarB="Inputs^Servo0^Error_code"/>
 				<Link VarA="维控VD5L^TxPDO^Following error actual value" VarB="Inputs^Servo0^Following_error_actual_value"/>
 				<Link VarA="维控VD5L^TxPDO^Position actual value" VarB="Inputs^Servo0^Position_actual_value"/>
