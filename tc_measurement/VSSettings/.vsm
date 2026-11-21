@@ -5,14 +5,38 @@
   <Children>
     <Node>
       <Title>ScopeWizard</Title>
-      <Expanded>False</Expanded>
+      <Expanded>True</Expanded>
       <FileName>D:\work\w2026\vs_pro_mc\tc_measurement\ScopeWizard.tcscopex</FileName>
       <Children>
         <Node>
           <Title>DataPool</Title>
-          <Expanded>False</Expanded>
+          <Expanded>True</Expanded>
           <FileName></FileName>
           <Children>
+            <Node>
+              <Title>Axis0FollowErr</Title>
+              <Expanded>False</Expanded>
+              <FileName></FileName>
+              <Children />
+            </Node>
+            <Node>
+              <Title>Axis0FollowErrMm</Title>
+              <Expanded>False</Expanded>
+              <FileName></FileName>
+              <Children />
+            </Node>
+            <Node>
+              <Title>Axis0IdealErr</Title>
+              <Expanded>False</Expanded>
+              <FileName></FileName>
+              <Children />
+            </Node>
+            <Node>
+              <Title>bFeedStart</Title>
+              <Expanded>False</Expanded>
+              <FileName></FileName>
+              <Children />
+            </Node>
             <Node>
               <Title>Driver_Inertia_ratio</Title>
               <Expanded>False</Expanded>
@@ -74,31 +98,7 @@
               <Children />
             </Node>
             <Node>
-              <Title>FeedFollowErrMm0</Title>
-              <Expanded>False</Expanded>
-              <FileName></FileName>
-              <Children />
-            </Node>
-            <Node>
               <Title>Following_error_actual_value</Title>
-              <Expanded>False</Expanded>
-              <FileName></FileName>
-              <Children />
-            </Node>
-            <Node>
-              <Title>Torque_actual_value</Title>
-              <Expanded>False</Expanded>
-              <FileName></FileName>
-              <Children />
-            </Node>
-            <Node>
-              <Title>FeedFollowErr0</Title>
-              <Expanded>False</Expanded>
-              <FileName></FileName>
-              <Children />
-            </Node>
-            <Node>
-              <Title>FeedMasterPhase</Title>
               <Expanded>False</Expanded>
               <FileName></FileName>
               <Children />
@@ -110,7 +110,25 @@
               <Children />
             </Node>
             <Node>
-              <Title>Position_actual_value (1)</Title>
+              <Title>Target_position</Title>
+              <Expanded>False</Expanded>
+              <FileName></FileName>
+              <Children />
+            </Node>
+            <Node>
+              <Title>Torque_actual_value</Title>
+              <Expanded>False</Expanded>
+              <FileName></FileName>
+              <Children />
+            </Node>
+            <Node>
+              <Title>Velocity_actual_value</Title>
+              <Expanded>False</Expanded>
+              <FileName></FileName>
+              <Children />
+            </Node>
+            <Node>
+              <Title>FeedMasterPhase</Title>
               <Expanded>False</Expanded>
               <FileName></FileName>
               <Children />
@@ -122,13 +140,7 @@
               <Children />
             </Node>
             <Node>
-              <Title>SigFreq (1)</Title>
-              <Expanded>False</Expanded>
-              <FileName></FileName>
-              <Children />
-            </Node>
-            <Node>
-              <Title>FeedIdealErr0</Title>
+              <Title>SigFreq</Title>
               <Expanded>False</Expanded>
               <FileName></FileName>
               <Children />
@@ -139,48 +151,18 @@
               <FileName></FileName>
               <Children />
             </Node>
-            <Node>
-              <Title>Target_position</Title>
-              <Expanded>False</Expanded>
-              <FileName></FileName>
-              <Children />
-            </Node>
-            <Node>
-              <Title>Velocity_actual_value</Title>
-              <Expanded>False</Expanded>
-              <FileName></FileName>
-              <Children />
-            </Node>
           </Children>
         </Node>
         <Node>
           <Title>驱动侧</Title>
-          <Expanded>False</Expanded>
+          <Expanded>True</Expanded>
           <FileName></FileName>
           <Children>
             <Node>
               <Title>实际位置和目标位置</Title>
-              <Expanded>False</Expanded>
+              <Expanded>True</Expanded>
               <FileName></FileName>
               <Children>
-                <Node>
-                  <Title>DriveSide_TorCmd_PcSend</Title>
-                  <Expanded>False</Expanded>
-                  <FileName></FileName>
-                  <Children />
-                </Node>
-                <Node>
-                  <Title>DriveSide_TorFb</Title>
-                  <Expanded>False</Expanded>
-                  <FileName></FileName>
-                  <Children />
-                </Node>
-                <Node>
-                  <Title>DriveSide_TorCmd_ServoRecv</Title>
-                  <Expanded>False</Expanded>
-                  <FileName></FileName>
-                  <Children />
-                </Node>
                 <Node>
                   <Title>Target_position</Title>
                   <Expanded>False</Expanded>
@@ -197,15 +179,9 @@
             </Node>
             <Node>
               <Title>606c速度</Title>
-              <Expanded>False</Expanded>
+              <Expanded>True</Expanded>
               <FileName></FileName>
               <Children>
-                <Node>
-                  <Title>DriveSide_TorCmd_ServoRecv</Title>
-                  <Expanded>False</Expanded>
-                  <FileName></FileName>
-                  <Children />
-                </Node>
                 <Node>
                   <Title>Velocity_actual_value</Title>
                   <Expanded>False</Expanded>
@@ -216,41 +192,11 @@
             </Node>
             <Node>
               <Title>FeedFollowErr0</Title>
-              <Expanded>False</Expanded>
+              <Expanded>True</Expanded>
               <FileName></FileName>
               <Children>
                 <Node>
-                  <Title>DriveSide_SpdCmd</Title>
-                  <Expanded>False</Expanded>
-                  <FileName></FileName>
-                  <Children />
-                </Node>
-                <Node>
-                  <Title>DriveSide_SpdFb_PcCalc</Title>
-                  <Expanded>False</Expanded>
-                  <FileName></FileName>
-                  <Children />
-                </Node>
-                <Node>
-                  <Title>DriveSide_SpdFb_ServoSend</Title>
-                  <Expanded>False</Expanded>
-                  <FileName></FileName>
-                  <Children />
-                </Node>
-                <Node>
-                  <Title>Target_position</Title>
-                  <Expanded>False</Expanded>
-                  <FileName></FileName>
-                  <Children />
-                </Node>
-                <Node>
-                  <Title>Target_position</Title>
-                  <Expanded>False</Expanded>
-                  <FileName></FileName>
-                  <Children />
-                </Node>
-                <Node>
-                  <Title>FeedFollowErr0</Title>
+                  <Title>Axis0FollowErr</Title>
                   <Expanded>False</Expanded>
                   <FileName></FileName>
                   <Children />
@@ -259,23 +205,11 @@
             </Node>
             <Node>
               <Title>主轴相位</Title>
-              <Expanded>False</Expanded>
+              <Expanded>True</Expanded>
               <FileName></FileName>
               <Children>
                 <Node>
-                  <Title>SigFreq</Title>
-                  <Expanded>False</Expanded>
-                  <FileName></FileName>
-                  <Children />
-                </Node>
-                <Node>
                   <Title>FeedMasterPhase</Title>
-                  <Expanded>False</Expanded>
-                  <FileName></FileName>
-                  <Children />
-                </Node>
-                <Node>
-                  <Title>Following_error_actual_value</Title>
                   <Expanded>False</Expanded>
                   <FileName></FileName>
                   <Children />
@@ -284,11 +218,11 @@
             </Node>
             <Node>
               <Title>FeedFollowErrMm0</Title>
-              <Expanded>False</Expanded>
+              <Expanded>True</Expanded>
               <FileName></FileName>
               <Children>
                 <Node>
-                  <Title>FeedFollowErrMm0</Title>
+                  <Title>Axis0FollowErrMm</Title>
                   <Expanded>False</Expanded>
                   <FileName></FileName>
                   <Children />
@@ -297,7 +231,7 @@
             </Node>
             <Node>
               <Title>6077 实际转矩(0.1%)</Title>
-              <Expanded>False</Expanded>
+              <Expanded>True</Expanded>
               <FileName></FileName>
               <Children>
                 <Node>
@@ -310,11 +244,11 @@
             </Node>
             <Node>
               <Title>跟踪误差(实际 vs 理论曲线 )​</Title>
-              <Expanded>False</Expanded>
+              <Expanded>True</Expanded>
               <FileName></FileName>
               <Children>
                 <Node>
-                  <Title>FeedIdealErr0</Title>
+                  <Title>Axis0IdealErr</Title>
                   <Expanded>False</Expanded>
                   <FileName></FileName>
                   <Children />
@@ -325,12 +259,12 @@
         </Node>
         <Node>
           <Title>Trigger</Title>
-          <Expanded>False</Expanded>
+          <Expanded>True</Expanded>
           <FileName></FileName>
           <Children>
             <Node>
               <Title>TriggerGroup_StartRecord</Title>
-              <Expanded>False</Expanded>
+              <Expanded>True</Expanded>
               <FileName></FileName>
               <Children>
                 <Node>
@@ -343,7 +277,7 @@
             </Node>
             <Node>
               <Title>TriggerGroup_StopRecord</Title>
-              <Expanded>False</Expanded>
+              <Expanded>True</Expanded>
               <FileName></FileName>
               <Children>
                 <Node>
