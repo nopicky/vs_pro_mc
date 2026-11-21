@@ -28,6 +28,8 @@
 #define SITE_SLOT_DRV_M(addr, m)   { SLOT_ROLE_DRIVE, (m), SLOT_MON_WECON, (addr) }
 // 槽位: 送纸驱动轴, 默认配 WE130M 17bit (VD5L / VD3E 现在带的都是它)
 #define SITE_SLOT_DRV(addr)        SITE_SLOT_DRV_M(addr, MOTOR_WE130M_17B)
+// 槽位: 送纸驱动轴, 配 VD5E 23bit 绝对值编码器电机 (换 VD5E 对拖时用)
+#define SITE_SLOT_DRV23(addr)      SITE_SLOT_DRV_M(addr, MOTOR_WE130_23B)
 // 槽位: 对拖负载轴 (CST 恒转矩)。当前没有 8 台 VD3E, 暂无 profile 用到, 保留给 4+4 形态
 #define SITE_SLOT_LD(addr)         { SLOT_ROLE_LOAD,  MOTOR_WE130M_17B, SLOT_MON_WECON, (addr) }
 
@@ -73,6 +75,28 @@ const SITE_PROFILE_T g_aSiteProfile[SITE_PROFILE_COUNT] =
             SITE_SLOT_DRV(1002),
             SITE_SLOT_DRV(1003),
             SITE_SLOT_DRV(1004),
+            SITE_SLOT_OFF(1006),
+            SITE_SLOT_OFF(1007),
+            SITE_SLOT_OFF(1008)
+        }
+    },
+
+    // ---------------------------------------------------------------- 2
+    // 对拖 4 轴: Servo1..4 = 4 个 VD5E 驱动轴 (各带 23bit 绝对值编码器电机),
+    //             Servo0 = VD5L 保持 NONE, Servo5..7 留空
+    // 用法: 启用 4 台 VD5E、禁用 VD5L 和 VD3E
+    // 注意: 23bit → 每转 8388608 单位, 换算 feedMmToUnit = 8388608/195.349 ≈ 42946 单位/mm
+    //       (17bit 是 671), 位置/速度前馈换算由 MotorSpec 表自动跟上, 无需改逻辑
+    {
+        "Drag_4Axis_VD5E_23B",
+        { SITE_MM_PER_REV_ROLLER, SITE_MM_PER_REV_ROLLER,
+          SITE_MM_PER_REV_ROLLER, SITE_MM_PER_REV_ROLLER },
+        {
+            SITE_SLOT_OFF(1001),
+            SITE_SLOT_DRV23(1001),
+            SITE_SLOT_DRV23(1002),
+            SITE_SLOT_DRV23(1003),
+            SITE_SLOT_DRV23(1004),
             SITE_SLOT_OFF(1006),
             SITE_SLOT_OFF(1007),
             SITE_SLOT_OFF(1008)

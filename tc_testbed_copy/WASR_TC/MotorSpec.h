@@ -24,7 +24,8 @@
 #define MOTOR_WE130M_17B     2   /* 维控 WE130M-10025S-A1* 1.0kW 17bit */
 #define MOTOR_SV630N_18B     3   /* 汇川 MS1H2-10C30CB-T33* 1.0kW 18bit */
 #define MOTOR_SV680N_26B     4   /* 汇川 MS1H1-75B30CB-A6/S63*      26bit (6091 = 8:1) */
-#define MOTOR_SPEC_COUNT     5
+#define MOTOR_WE130_23B      5   /* 维控 VD5E 驱动轴 23bit 绝对值 (1转=8388608单位, 6091=1:1) */
+#define MOTOR_SPEC_COUNT     6
 
 /* 电机规格 */
 typedef struct _MOTOR_SPEC_T

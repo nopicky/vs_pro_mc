@@ -59,7 +59,8 @@ typedef struct _SITE_PROFILE_T
 /* 站点形态编号 (Status.SiteProfile 填这个) */
 #define SITE_PROFILE_LOCAL_1AX    0   /* 本机: 单轴 VD5L (Servo0) */
 #define SITE_PROFILE_DRAG_4AX     1   /* 对拖: 4 个 VD3E 驱动轴 (Servo1..4) */
-#define SITE_PROFILE_COUNT        2
+#define SITE_PROFILE_DRAG_VD5E    2   /* 对拖: 4 个 VD5E 驱动轴 23bit (Servo1..4), 3E 保留作负载 */
+#define SITE_PROFILE_COUNT        3
 
 /* 工程里的链接是固定映射（一次接好, 切场景只改从站启停 + SiteProfile）:
      Servo0 = 维控VD5L   Servo1~4 = 维控VD3E_1~4   Servo5~7 留空(汇川暂不接)

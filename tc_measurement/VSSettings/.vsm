@@ -5,12 +5,12 @@
   <Children>
     <Node>
       <Title>ScopeWizard</Title>
-      <Expanded>True</Expanded>
+      <Expanded>False</Expanded>
       <FileName>D:\work\w2026\vs_pro_mc\tc_measurement\ScopeWizard.tcscopex</FileName>
       <Children>
         <Node>
           <Title>DataPool</Title>
-          <Expanded>True</Expanded>
+          <Expanded>False</Expanded>
           <FileName></FileName>
           <Children>
             <Node>
@@ -56,12 +56,6 @@
               <Children />
             </Node>
             <Node>
-              <Title>DriveSide_SpdCmd</Title>
-              <Expanded>False</Expanded>
-              <FileName></FileName>
-              <Children />
-            </Node>
-            <Node>
               <Title>DriveSide_SpdFb_PcCalc</Title>
               <Expanded>False</Expanded>
               <FileName></FileName>
@@ -69,6 +63,12 @@
             </Node>
             <Node>
               <Title>DriveSide_SpdFb_ServoSend</Title>
+              <Expanded>False</Expanded>
+              <FileName></FileName>
+              <Children />
+            </Node>
+            <Node>
+              <Title>DriveSide_SpdCmd</Title>
               <Expanded>False</Expanded>
               <FileName></FileName>
               <Children />
@@ -122,6 +122,12 @@
               <Children />
             </Node>
             <Node>
+              <Title>Velocity_offset</Title>
+              <Expanded>False</Expanded>
+              <FileName></FileName>
+              <Children />
+            </Node>
+            <Node>
               <Title>Velocity_actual_value</Title>
               <Expanded>False</Expanded>
               <FileName></FileName>
@@ -155,12 +161,12 @@
         </Node>
         <Node>
           <Title>驱动侧</Title>
-          <Expanded>True</Expanded>
+          <Expanded>False</Expanded>
           <FileName></FileName>
           <Children>
             <Node>
               <Title>实际位置和目标位置</Title>
-              <Expanded>True</Expanded>
+              <Expanded>False</Expanded>
               <FileName></FileName>
               <Children>
                 <Node>
@@ -179,7 +185,7 @@
             </Node>
             <Node>
               <Title>606c速度</Title>
-              <Expanded>True</Expanded>
+              <Expanded>False</Expanded>
               <FileName></FileName>
               <Children>
                 <Node>
@@ -191,8 +197,21 @@
               </Children>
             </Node>
             <Node>
+              <Title>Velocity_offset</Title>
+              <Expanded>False</Expanded>
+              <FileName></FileName>
+              <Children>
+                <Node>
+                  <Title>Velocity_offset</Title>
+                  <Expanded>False</Expanded>
+                  <FileName></FileName>
+                  <Children />
+                </Node>
+              </Children>
+            </Node>
+            <Node>
               <Title>FeedFollowErr0</Title>
-              <Expanded>True</Expanded>
+              <Expanded>False</Expanded>
               <FileName></FileName>
               <Children>
                 <Node>
@@ -205,7 +224,7 @@
             </Node>
             <Node>
               <Title>主轴相位</Title>
-              <Expanded>True</Expanded>
+              <Expanded>False</Expanded>
               <FileName></FileName>
               <Children>
                 <Node>
@@ -218,7 +237,7 @@
             </Node>
             <Node>
               <Title>FeedFollowErrMm0</Title>
-              <Expanded>True</Expanded>
+              <Expanded>False</Expanded>
               <FileName></FileName>
               <Children>
                 <Node>
@@ -231,7 +250,7 @@
             </Node>
             <Node>
               <Title>6077 实际转矩(0.1%)</Title>
-              <Expanded>True</Expanded>
+              <Expanded>False</Expanded>
               <FileName></FileName>
               <Children>
                 <Node>
@@ -243,8 +262,8 @@
               </Children>
             </Node>
             <Node>
-              <Title>跟踪误差(实际 vs 理论曲线 )​</Title>
-              <Expanded>True</Expanded>
+              <Title>Axis0IdealErr</Title>
+              <Expanded>False</Expanded>
               <FileName></FileName>
               <Children>
                 <Node>
@@ -255,16 +274,29 @@
                 </Node>
               </Children>
             </Node>
+            <Node>
+              <Title>Following_error_actual_value</Title>
+              <Expanded>False</Expanded>
+              <FileName></FileName>
+              <Children>
+                <Node>
+                  <Title>Following_error_actual_value</Title>
+                  <Expanded>False</Expanded>
+                  <FileName></FileName>
+                  <Children />
+                </Node>
+              </Children>
+            </Node>
           </Children>
         </Node>
         <Node>
           <Title>Trigger</Title>
-          <Expanded>True</Expanded>
+          <Expanded>False</Expanded>
           <FileName></FileName>
           <Children>
             <Node>
               <Title>TriggerGroup_StartRecord</Title>
-              <Expanded>True</Expanded>
+              <Expanded>False</Expanded>
               <FileName></FileName>
               <Children>
                 <Node>
@@ -277,7 +309,7 @@
             </Node>
             <Node>
               <Title>TriggerGroup_StopRecord</Title>
-              <Expanded>True</Expanded>
+              <Expanded>False</Expanded>
               <FileName></FileName>
               <Children>
                 <Node>
