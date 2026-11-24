@@ -70,7 +70,7 @@
 		</DataType>
 		<DataType>
 			<Name GUID="{B2423A46-CA74-4CEB-90A5-4087FA1A95A1}" AutoDeleteType="true">ServoOutputs</Name>
-			<BitSize>200</BitSize>
+			<BitSize>216</BitSize>
 			<SubItem>
 				<Name>Controlword</Name>
 				<Type GUID="{18071995-0000-0000-0000-000000000005}">UINT</Type>
@@ -119,6 +119,12 @@
 				<BitSize>32</BitSize>
 				<BitOffs>168</BitOffs>
 			</SubItem>
+                        <SubItem>
+                                <Name>Torque_offset</Name>
+                                <Type GUID="{18071995-0000-0000-0000-000000000006}">INT</Type>
+                                <BitSize>16</BitSize>
+                                <BitOffs>200</BitOffs>
+                        </SubItem>
 			<Hides>
 				<Hide GUID="{B8510173-70AC-4EB4-839D-8EA04478273D}"/>
 				<Hide GUID="{32F10400-8B99-492F-8A6B-ABF894D81ED3}"/>
@@ -533,78 +539,78 @@
 								<AreaNo AreaType="OutputSrc" CreateSymbols="true">1</AreaNo>
 								<Name>Outputs</Name>
 								<ContextId>1</ContextId>
-								<ByteSize>300</ByteSize>
+								<ByteSize>324</ByteSize>
 								<Symbol>
 									<Name>Servo0</Name>
-									<BitSize>200</BitSize>
+									<BitSize>216</BitSize>
 									<BaseType GUID="{B2423A46-CA74-4CEB-90A5-4087FA1A95A1}">ServoOutputs</BaseType>
 									<BitOffs>0</BitOffs>
 								</Symbol>
 								<Symbol>
 									<Name>Servo1</Name>
-									<BitSize>200</BitSize>
+									<BitSize>216</BitSize>
 									<BaseType GUID="{B2423A46-CA74-4CEB-90A5-4087FA1A95A1}">ServoOutputs</BaseType>
-									<BitOffs>200</BitOffs>
+									<BitOffs>216</BitOffs>
 								</Symbol>
 								<Symbol CreateSymbol="true">
 									<Name>Servo2</Name>
-									<BitSize>200</BitSize>
+									<BitSize>216</BitSize>
 									<BaseType GUID="{B2423A46-CA74-4CEB-90A5-4087FA1A95A1}">ServoOutputs</BaseType>
-									<BitOffs>400</BitOffs>
+									<BitOffs>432</BitOffs>
 								</Symbol>
 								<Symbol CreateSymbol="true">
 									<Name>Servo3</Name>
-									<BitSize>200</BitSize>
+									<BitSize>216</BitSize>
 									<BaseType GUID="{B2423A46-CA74-4CEB-90A5-4087FA1A95A1}">ServoOutputs</BaseType>
-									<BitOffs>600</BitOffs>
+									<BitOffs>648</BitOffs>
 								</Symbol>
 								<Symbol CreateSymbol="true">
 									<Name>Servo4</Name>
-									<BitSize>200</BitSize>
+									<BitSize>216</BitSize>
 									<BaseType GUID="{B2423A46-CA74-4CEB-90A5-4087FA1A95A1}">ServoOutputs</BaseType>
-									<BitOffs>800</BitOffs>
+									<BitOffs>864</BitOffs>
 								</Symbol>
 								<Symbol CreateSymbol="true">
 									<Name>Servo5</Name>
-									<BitSize>200</BitSize>
+									<BitSize>216</BitSize>
 									<BaseType GUID="{B2423A46-CA74-4CEB-90A5-4087FA1A95A1}">ServoOutputs</BaseType>
-									<BitOffs>1000</BitOffs>
+									<BitOffs>1080</BitOffs>
 								</Symbol>
 								<Symbol CreateSymbol="true">
 									<Name>Servo6</Name>
-									<BitSize>200</BitSize>
+									<BitSize>216</BitSize>
 									<BaseType GUID="{B2423A46-CA74-4CEB-90A5-4087FA1A95A1}">ServoOutputs</BaseType>
-									<BitOffs>1200</BitOffs>
+									<BitOffs>1296</BitOffs>
 								</Symbol>
 								<Symbol CreateSymbol="true">
 									<Name>Servo7</Name>
-									<BitSize>200</BitSize>
+									<BitSize>216</BitSize>
 									<BaseType GUID="{B2423A46-CA74-4CEB-90A5-4087FA1A95A1}">ServoOutputs</BaseType>
-									<BitOffs>1400</BitOffs>
+									<BitOffs>1512</BitOffs>
 								</Symbol>
 								<Symbol CreateSymbol="true">
 									<Name>Servo8</Name>
-									<BitSize>200</BitSize>
+									<BitSize>216</BitSize>
 									<BaseType GUID="{B2423A46-CA74-4CEB-90A5-4087FA1A95A1}">ServoOutputs</BaseType>
-									<BitOffs>1600</BitOffs>
+									<BitOffs>1728</BitOffs>
 								</Symbol>
 								<Symbol CreateSymbol="true">
 									<Name>Servo9</Name>
-									<BitSize>200</BitSize>
+									<BitSize>216</BitSize>
 									<BaseType GUID="{B2423A46-CA74-4CEB-90A5-4087FA1A95A1}">ServoOutputs</BaseType>
-									<BitOffs>1800</BitOffs>
+									<BitOffs>1944</BitOffs>
 								</Symbol>
 								<Symbol CreateSymbol="true">
 									<Name>Servo10</Name>
-									<BitSize>200</BitSize>
+									<BitSize>216</BitSize>
 									<BaseType GUID="{B2423A46-CA74-4CEB-90A5-4087FA1A95A1}">ServoOutputs</BaseType>
-									<BitOffs>2000</BitOffs>
+									<BitOffs>2160</BitOffs>
 								</Symbol>
 								<Symbol CreateSymbol="true">
 									<Name>Servo11</Name>
-									<BitSize>200</BitSize>
+									<BitSize>216</BitSize>
 									<BaseType GUID="{B2423A46-CA74-4CEB-90A5-4087FA1A95A1}">ServoOutputs</BaseType>
-									<BitOffs>2200</BitOffs>
+									<BitOffs>2376</BitOffs>
 								</Symbol>
 							</DataArea>
 							<DataArea>
@@ -730,12 +736,14 @@
 								</Symbol>
 								<Symbol>
 									<Name>Driver_SpdLoop_Kp</Name>
+									<Comment TxtId=""><![CDATA[绝对位置清零命令 (P10-06 AbsEncRst, 0x200A:06): 写 1 = 请求一次清零, 模块取走后自动清 0。只在 Enable=0 且所有驱动轴都不在 OP 时执行; 运行中写只挂起等待停机。]]></Comment>
 									<BitSize>16</BitSize>
 									<BaseType GUID="{18071995-0000-0000-0000-000000000005}">UINT</BaseType>
 									<BitOffs>64</BitOffs>
 								</Symbol>
 								<Symbol>
 									<Name>Driver_SpdLoop_Ti</Name>
+									<Comment TxtId=""><![CDATA[位置清零状态回显: 0=空闲 1=执行中 2=成功 3=失败 4=已判定待停机]]></Comment>
 									<BitSize>16</BitSize>
 									<BaseType GUID="{18071995-0000-0000-0000-000000000005}">UINT</BaseType>
 									<BitOffs>80</BitOffs>
@@ -1107,6 +1115,11 @@
 									<BaseType GUID="{18071995-0000-0000-0000-00000000000D}">REAL</BaseType>
 									<BitOffs>1712</BitOffs>
 								</Symbol>
+<Symbol CreateSymbol="true"><Name>TorFfGain</Name><Comment TxtId=""><![CDATA[方案C 转矩前馈总增益(60B2), 0=关 1.0=满量]]></Comment><BitSize>32</BitSize><BaseType GUID="{18071995-0000-0000-0000-00000000000D}">REAL</BaseType><BitOffs>1744</BitOffs></Symbol>
+<Symbol CreateSymbol="true"><Name>InertiaRatio0</Name><Comment TxtId=""><![CDATA[轴0 负载惯量比R(=2003-01/100), <=0沿用初值]]></Comment><BitSize>32</BitSize><BaseType GUID="{18071995-0000-0000-0000-00000000000D}">REAL</BaseType><BitOffs>1776</BitOffs></Symbol>
+<Symbol CreateSymbol="true"><Name>InertiaRatio1</Name><Comment TxtId=""><![CDATA[轴1 负载惯量比R, <=0沿用初值]]></Comment><BitSize>32</BitSize><BaseType GUID="{18071995-0000-0000-0000-00000000000D}">REAL</BaseType><BitOffs>1808</BitOffs></Symbol>
+<Symbol CreateSymbol="true"><Name>InertiaRatio2</Name><Comment TxtId=""><![CDATA[轴2 负载惯量比R, <=0沿用初值]]></Comment><BitSize>32</BitSize><BaseType GUID="{18071995-0000-0000-0000-00000000000D}">REAL</BaseType><BitOffs>1840</BitOffs></Symbol>
+<Symbol CreateSymbol="true"><Name>InertiaRatio3</Name><Comment TxtId=""><![CDATA[轴3 负载惯量比R, <=0沿用初值]]></Comment><BitSize>32</BitSize><BaseType GUID="{18071995-0000-0000-0000-00000000000D}">REAL</BaseType><BitOffs>1872</BitOffs></Symbol>
 							</DataArea>
 						</DataAreas>
 						<InterfacePointers>

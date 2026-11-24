@@ -29,7 +29,14 @@ FEED_CONFIG_T g_cfgFeed = {
     0.0,                           /* fLeadAccMs2：加速度前馈默认关（扫参起点 0.05~0.2） */
     1.0,                           /* fVelFfGain：速度前馈满量（0=关闭） */
     0.0,                           /* fVelFfAccGainMs：加速度前馈项默认关（方案B，扫参 3~15） */
-    200.0                           /* fMaxFollowErrMm：跟随偏差跳闸阈值（≈1/4 辊周长），0=关闭 */
+    200.0,                         /* fMaxFollowErrMm：跟随偏差跳闸阈值（≈1/4 辊周长），0=关闭 */
+    /* ---- 方案 C：转矩前馈 ---- */
+    0.0,                           /* fTorFfGain：转矩前馈默认关。
+                                      先用 bLiveTuning=1 + Status.TorFfGain 在线扫，
+                                      定了再把这里改成最终值当上电默认——
+                                      别一上电就带转矩前馈，惯量标错会直接冲击机械 */
+    {2.72, 2.73, 2.65, 2.74}       /* fInertiaRatio：4 台 VD5E 实测 2003-01 / 100
+                                      (2026-11-24, 对拖机械连好、3E 不使能状态测) */
 };
 
 /* 走完凸轮后保持终值的周期数（125us×8000 ≈ 1s），之后回 IDLE 等下一次 Start */
@@ -237,6 +244,7 @@ void CFeedSequencer::tick(double fMasterPhase, double fDtSec, const double* afAc
     double fLeadSec = m_cfg.fLeadTimeMs * 0.001;    /* ms → s */
     double afIdealMm[4] = {0.0, 0.0, 0.0, 0.0};
     double afVelFf[4]   = {0.0, 0.0, 0.0, 0.0};
+    double afAccMm[4]   = {0.0, 0.0, 0.0, 0.0};
     for (int i = 0; i < 4; i++) {
         if (i < m_nAxisCount) {
             /* 速比一次求值, 位置前馈(指令超前)与速度前馈共用, 避免两处口径漂移 */
@@ -253,12 +261,11 @@ void CFeedSequencer::tick(double fMasterPhase, double fDtSec, const double* afAc
                故加速(a>0)要多给超前、减速(a<0)要少给，符号为 **加**。
                同步段曲率为 0 → 该项不影响稳态段，只修加减速过渡。
                k 的量纲是 ms²，起点建议 30~60（k=50 时在 350 档约补 9mm） */
-           /* 从轴加速度 [mm/s²]：位置超前二阶项和速度前馈加速度项共用，
-              只在需要时求值（evalAcc 内部要做二阶差分，不必每拍都算） */
-            double fAccAxis = 0.0;
-            if ((m_cfg.fLeadAccMs2 > 0.0) || (m_cfg.fVelFfAccGainMs != 0.0)) {
-                fAccAxis = m_aFeeder[i].evalAcc(fCamXEff) * fMasterVel * fMasterVel;
-            }
+            /* 从轴加速度 [mm/s²]：位置超前二阶项、速度前馈加速度项(方案B)、
+               转矩前馈(方案C) 三者共用 —— 既然都在这条链上，就只求一次。
+               evalAcc 是凸轮查表二阶导，开销小；无条件算比"按需判断"更好维护：
+               以后再加一个用加速度的补偿，不会因为忘了改这个 if 而静默算出 0。 */
+            double fAccAxis = m_aFeeder[i].evalAcc(fCamXEff) * fMasterVel * fMasterVel;
             if (m_cfg.fLeadAccMs2 > 0.0) {
                 fLead += fAccAxis * (m_cfg.fLeadAccMs2 * 1.0e-6);
             }
@@ -272,6 +279,9 @@ void CFeedSequencer::tick(double fMasterPhase, double fDtSec, const double* afAc
             afVelFf[i] = (m_eState == FEED_CAM_RUN)
                         ? (fRatio * fMasterVel + m_cfg.fVelFfAccGainMs * 1.0e-3 * fAccAxis)
                         : 0.0;
+            /* 加速度只上报运动学值，不做电机折算 —— 停/非 RUN 一律 0，
+               否则挂载层会在起停段按凸轮起点曲率算出一份假转矩前馈 */
+            afAccMm[i] = (m_eState == FEED_CAM_RUN) ? fAccAxis : 0.0;
         } else {
             afCmdPosMm[i] = 0.0;
         }
@@ -284,6 +294,7 @@ void CFeedSequencer::tick(double fMasterPhase, double fDtSec, const double* afAc
     for (int i = 0; i < 4; i++) {
         m_mon.afCmdPosMm[i] = afCmdPosMm[i];
         m_mon.afVelFfMm[i]  = afVelFf[i];
+        m_mon.afAccAxisMm[i]= afAccMm[i];
         if (afActPosMm != 0 && i < m_nAxisCount) {
             /* 对齐 FAE 显示习惯：跟随偏差 = 指令 - 实际 - 启动相位补偿 */
             m_mon.afFollowErr[i] = afCmdPosMm[i] - afActPosMm[i] - m_cfg.fStartPhaseComp;

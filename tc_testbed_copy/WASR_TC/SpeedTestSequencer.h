@@ -224,6 +224,26 @@ struct SpeedTestSequencer
     //   = 凸轮轴速度(mm/s) × mm→指令单位 × g_cfgFeed.fVelFfGain
     //   每拍在 Update 开头清零, 只有送纸凸轮 CAM_RUN 期间才填 —— 残留的前馈 = 电机自己转
     double feedVelFf[SITE_AXIS_MAX];
+
+    // ---- 方案 C：转矩前馈（写驱动器 60B2h Torque offset）----
+    // 物理：T_ff = J_total × α，α = a[mm/s²] × 2π / 每转mm[turn]
+    // 为什么单开一块数据而不塞进 feedVelFf：两者量纲、来源、更新频率都不同。
+    //   下面三个是"机械/电机属性"，只在 InitControl 里按轴填一次；
+    //   feedTorFf 是"每拍结果"，在 Update 里算。
+    // 分开存的好处：换电机/换辊只动前三个，算转矩的公式一个字不用改。
+    double feedMmPerRev[SITE_AXIS_MAX]; // 该轴电机每转的工艺行程 [mm]（站点表 afMmPerMotorRev）
+    double feedJmotor[SITE_AXIS_MAX];   // 该轴电机转子惯量 [kg·m²]（电机规格表 InertiaBase）
+    double feedTrated[SITE_AXIS_MAX];   // 该轴额定转矩 [N·m]（电机规格表）
+    // ↑ 只存"电机自身"的参数；负载惯量比 R 不存这里，
+    //   每拍从 g_cfgFeed.fInertiaRatio[i] 现取 —— 这样现场在线改 R 立即生效，
+    //   不用重新 InitControl（标定时就是这么用的：边跑边改 R 看 T_ff 变化）
+    double feedTorFf[SITE_AXIS_MAX];    // 本拍转矩前馈 [0.1% 额定]（挂载层原样写 60B2）
+    // ↑ 上面三组基准量任一为 0/负 → 该轴转矩前馈恒 0。
+    //   宁可不出力，也不能拿错的惯量去出力（那是直接往机械上加错误的力）。
+    // 转矩前馈限幅 [0.1% 额定]，由挂载层给（模块级安全参数，不写死在本层）
+    //   <=0 表示不限幅。独立于 Init() 的 torLim：那个是 CST 转矩指令的限幅，
+    //   语义不同，混用会让"改一个影响另一个"。
+    double feedTorFfLim;
     // 1 = 上一拍驱动未全部 Operation Enabled, 凸轮被冻结
     //   冻结期间指令始终贴在 6064h 上, 并使 feedActPos0 每拍重取 (等于持续重新标原点);
     //   解除冻结的那一拍整体 init 一次 (posBase 归零 / 状态机回 IDLE / 相位重新起算)
@@ -268,6 +288,25 @@ struct SpeedTestSequencer
      * @param lim         转矩限幅 [0.1% 额定转矩]
      */
     void Init(float dt, float inertia, float ratedTorque, float lim);
+
+    /**
+     * 配置某轴的转矩前馈基准参数（方案 C，60B2h）
+     *
+     * 只存基准量、不算结果 —— 结果在 Update 里按凸轮加速度每拍算。
+     * 由挂载层在 InitControl 里按站点表 + 电机规格表调用一次；换机型/换辊重调一次即可。
+     *
+     * @param nAxis    轴号 0..3
+     * @param mmPerRev 该轴电机每转的工艺行程 [mm]（站点表 afMmPerMotorRev）
+     * @param jMotor   该轴电机转子惯量 [kg·m²]（电机规格表，不含负载）
+     * @param trated   该轴电机额定转矩 [N·m]（电机规格表）
+     * @param lim      转矩前馈限幅 [0.1% 额定转矩]，<=0 表示不限幅
+     *
+     * 注意这里传的是「电机自身」的惯量，负载惯量比 R 不在这里定 ——
+     * R 在 Update 里每拍从 g_cfgFeed.fInertiaRatio[] 现取，所以在线改 R 立即生效。
+     *
+     * 三个量任一非正 → 该轴转矩前馈恒 0（安全侧：宁可不出力，也不能按错惯量出力）
+     */
+    void SetTorFfAxis(int nAxis, double mmPerRev, double jMotor, double trated, double lim);
 
     /**
      * 写速度指令并记录 (停机斜坡从当前指令开始)

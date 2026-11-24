@@ -60,6 +60,13 @@ typedef struct _ServoOutputs
 	// 所以位置环只修残差 → 稳态滞后不需要再靠指令超前补偿。
 	// 只在 CSP 使用；CSV/CST 与停机时必须写 0（残留 = 电机自己转）。
 	LONG Velocity_offset;
+	// 60B2h 转矩偏置（Torque offset）[0.1% 额定转矩]，符号遵循 6071h 的约定。
+	// 与 60B1 互补：60B1 补「该跑多快」（速度），60B2 补「加速要多少力」（转矩）。
+	// 驱动器把它加在速度环输出之后、转矩限幅之前，所以：
+	//   · 加速段给正、减速段给负，同步段（a=0）自然为 0 → 不影响稳态精度
+	//   · 不走位置环，不会被 Kv 稀释；代价是没有位置环那种「算错了会自己收敛」的兜底
+	// 只在 CSP + 送纸凸轮 CAM_RUN 期间非零；其余模式/状态必须写 0（残留 = 电机自己出力）。
+	SHORT Torque_offset;
 } ServoOutputs, *PServoOutputs;
 #pragma pack(pop)
 const GUID GUID_ServoOutputs = {0xB2423A46, 0xCA74, 0x4CEB, {0x90, 0xA5, 0x40, 0x87, 0xFA, 0x1A, 0x95, 0xA1}};
@@ -284,7 +291,7 @@ typedef struct _WASR_TCStatus
 	// ---- 在线调参（2026-11-24）----
 	// 目的: 调补偿参数不用再改代码重编译激活, 改 ADS 变量下一拍就生效。
 	// bLiveTuning = 0 (默认) -> 全部用 FeedSequencer.cpp 里的编译期初值, 行为不变;
-	// bLiveTuning = 1        -> 下面 5 项每拍覆盖 g_cfgFeed / 序列器快照。
+	// bLiveTuning = 1        -> 下面各项每拍覆盖 g_cfgFeed / 序列器快照。
 	//   ★ 下载/重启后该位会归 0, 想在线调要先把它置 1 —— 这是故意的安全默认:
 	//     参数区初值全是 0, 若默认可覆盖, 忘记写就会把前馈悄悄关掉。
 	// 各项含义与量纲见 FeedConfig.h 同名字段;
@@ -295,6 +302,18 @@ typedef struct _WASR_TCStatus
 	float LeadAccMs2;
 	float MaxFollowErrMm;
 	float LeadTimeMs;
+
+	// ---- 方案 C：转矩前馈（60B2h）在线调参 ----
+	// 与上面同受 bLiveTuning 控制：置 1 才生效，置 0 全部回到编译期初值。
+	// 为什么惯量比要 4 个而不是 1 个：对拖 4 台机械装配不可能完全一致
+	// （实测 2.72 / 2.73 / 2.65 / 2.74），共用同一个值会让某台偏 3% 以上。
+	// TorFfGain   : 转矩前馈总增益（0~1.5，0=关闭；1.0 = 按 J_total×α 满量给）
+	// InertiaRatioN: 第 N 轴负载惯量比 R（= 驱动器 2003-01 显示值 / 100）
+	float TorFfGain;
+	float InertiaRatio0;
+	float InertiaRatio1;
+	float InertiaRatio2;
+	float InertiaRatio3;
 } WASR_TCStatus, *PWASR_TCStatus;
 #pragma pack(pop)
 

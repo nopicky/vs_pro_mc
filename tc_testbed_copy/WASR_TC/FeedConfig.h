@@ -53,6 +53,24 @@ typedef struct tagFEED_CONFIG_T {
                                    只在 CAM_RUN 判，避免停机保持段误跳。
                                    粗调建议：先按 1/4 辊周长（195.349/4 ≈ 49）起步，
                                    正常带前馈跑稳态偏差应在个位数 mm，按实测收紧到 5~20 */
+
+    /* ================= 方案 C：转矩前馈（60B2h Torque offset） ================= */
+    double fTorFfGain;          /* 转矩前馈总增益 0~1.5（60B2h，单位 0.1% 额定转矩）
+                                   0.0 = 关闭（默认）
+                                   1.0 = 满量：T_ff = J_total × α 原样下发
+                                   为什么需要它：纯速度前馈(60B1)只告诉驱动器「该跑多快」，
+                                   但加速段真正缺的是「力」。位置环要攒到 ~10mm 误差才出力
+                                   追得上，于是进同步段冲过头（实测 +415mm/s）。
+                                   转矩前馈直接从转矩环补这份力，位置环不用攒误差。
+                                   同步段曲率=0 → 该项自然为 0，不影响稳态精度。
+                                   标定：0.3 验方向 → 0.7 / 1.0 看过冲是否压平
+                                   ★ 与 MFC 大概率二选一（MFC 本质也是惯量前馈），开 MFC 时先归 0 */
+    double fInertiaRatio[4];    /* 各轴负载惯量比 R = J_load / J_motor（0~10，无量纲）
+                                   与驱动器 2003-01 显示值对应：显示 272 → 这里填 2.72
+                                   J_total = J_motor(电机规格表) × (1 + R)
+                                   实测 4 台：2.72 / 2.73 / 2.65 / 2.74（±2%，机械对称性良好）
+                                   ★ 必须在对拖机械连好的状态下测（VD3E 可不使能，但要连着轴）
+                                   ★ 换辊/改负载后重测；与初值差超过 15% 就重新标 J_total */
 } FEED_CONFIG_T;
 
 /* 目标位置(607Ah)可表示的上下限 [指令单位]
@@ -82,6 +100,7 @@ typedef struct tagFEED_CONFIG_T {
    调补偿参数不必再改代码重编译。Status 里开 bLiveTuning=1 后，下面这几项
    每拍从 Status 覆盖进来，立即生效（不需要重新 Enable）：
        fVelFfGain / fVelFfAccGainMs / fLeadAccMs2 / fMaxFollowErrMm / fLeadTimeMs
+       fTorFfGain / fInertiaRatio[0..3]        ← 方案C（2026-11-24 加）
    bLiveTuning=0 时（默认）全部用本文件里的编译期初值，行为与原来完全一致。
    ★ fLeadTimeMs 在线改时做了每拍 0.05ms 的限速（见 CFeedSequencer::setLiveTuning），
      防止手滑输大值让位置指令阶跃（5833mm/s 下 1ms 就是 5.8mm 跳变）。

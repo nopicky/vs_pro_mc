@@ -24,6 +24,10 @@ typedef struct tagFEED_MONITOR_T {
                                —— 评价超前补偿/前馈效果看这个，不是 afFollowErr */
     double afVelFfMm[4];    /* 4 轴速度前馈 mm/s（凸轮速比 × 主轴速度；非 CAM_RUN 恒 0）
                                —— 挂载层乘 mm→指令单位换算后写 60B1h */
+    double afAccAxisMm[4];  /* 4 轴从轴加速度 mm/s²（凸轮曲率 × 主轴速度²；非 CAM_RUN 恒 0）
+                               —— 纯运动学量，挂载层再乘电机惯量折算成转矩前馈写 60B2h。
+                                  这一层不碰 J / T_rated：换电机不用懂这条链。
+                                  （T_ff = J_total × a × 2π / 每转mm，见 SpeedTestSequencer） */
 } FEED_MONITOR_T;
 
 /* 送纸工艺状态机：只依赖主轴相位输入（虚拟主轴 / 现场编码器均可）与 CCamFeeder，

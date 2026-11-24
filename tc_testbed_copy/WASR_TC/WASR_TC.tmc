@@ -73,7 +73,7 @@
     </DataType>
     <DataType>
       <Name GUID="{B2423A46-CA74-4CEB-90A5-4087FA1A95A1}" AutoDeleteType="true">ServoOutputs</Name>
-      <BitSize>200</BitSize>
+      <BitSize>216</BitSize>
       <SubItem>
         <Name>Controlword</Name>
         <Type GUID="{18071995-0000-0000-0000-000000000005}">UINT</Type>
@@ -121,6 +121,12 @@
         <Type GUID="{18071995-0000-0000-0000-000000000009}">DINT</Type>
         <BitSize>32</BitSize>
         <BitOffs>168</BitOffs>
+      </SubItem>
+      <SubItem>
+        <Name>Torque_offset</Name>
+        <Type GUID="{18071995-0000-0000-0000-000000000006}">INT</Type>
+        <BitSize>16</BitSize>
+        <BitOffs>200</BitOffs>
       </SubItem>
       <Hides>
         <Hide GUID="{B8510173-70AC-4EB4-839D-8EA04478273D}" />
@@ -900,6 +906,31 @@
           <Symbol CreateSymbol="true">
             <Name>LeadTimeMs</Name>
             <Comment TxtId=""><![CDATA[位置超前 τ [ms], 每拍限速0.05ms; 用60B1时保持0]]></Comment>
+            <BaseType GUID="{18071995-0000-0000-0000-00000000000d}">REAL</BaseType>
+          </Symbol>
+          <Symbol CreateSymbol="true">
+            <Name>TorFfGain</Name>
+            <Comment TxtId=""><![CDATA[方案C 转矩前馈总增益(60B2), 0=关 1.0=满量]]></Comment>
+            <BaseType GUID="{18071995-0000-0000-0000-00000000000d}">REAL</BaseType>
+          </Symbol>
+          <Symbol CreateSymbol="true">
+            <Name>InertiaRatio0</Name>
+            <Comment TxtId=""><![CDATA[轴0 负载惯量比 R(=2003-01/100), <=0 沿用初值]]></Comment>
+            <BaseType GUID="{18071995-0000-0000-0000-00000000000d}">REAL</BaseType>
+          </Symbol>
+          <Symbol CreateSymbol="true">
+            <Name>InertiaRatio1</Name>
+            <Comment TxtId=""><![CDATA[轴1 负载惯量比 R, <=0 沿用初值]]></Comment>
+            <BaseType GUID="{18071995-0000-0000-0000-00000000000d}">REAL</BaseType>
+          </Symbol>
+          <Symbol CreateSymbol="true">
+            <Name>InertiaRatio2</Name>
+            <Comment TxtId=""><![CDATA[轴2 负载惯量比 R, <=0 沿用初值]]></Comment>
+            <BaseType GUID="{18071995-0000-0000-0000-00000000000d}">REAL</BaseType>
+          </Symbol>
+          <Symbol CreateSymbol="true">
+            <Name>InertiaRatio3</Name>
+            <Comment TxtId=""><![CDATA[轴3 负载惯量比 R, <=0 沿用初值]]></Comment>
             <BaseType GUID="{18071995-0000-0000-0000-00000000000d}">REAL</BaseType>
           </Symbol>
         </DataArea>

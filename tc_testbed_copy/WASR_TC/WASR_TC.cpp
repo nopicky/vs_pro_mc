@@ -530,6 +530,9 @@ void CWASR_TC::InitControl(float dtSec)
 		ServoIO* pServo = m_apDrive[a];
 		if (pServo == NULL) {
 			m_testSeq.feedMmToUnit[a] = 0.0;   // 未接的轴: 0 = 该轴不下发位置
+			// 转矩前馈基准也清掉：换形态后这个轴可能原本挂着电机，
+			// 留着旧惯量会让 feedTorFf 算出一个没人用的非零值（不致命，但会误导波形）
+			m_testSeq.SetTorFfAxis(a, 0.0, 0.0, 0.0, (double)WASR_TC_TORFF_LIM);
 			continue;
 		}
 		int nSlot = SlotOfServo(m_apServo, pServo);
@@ -538,6 +541,15 @@ void CWASR_TC::InitControl(float dtSec)
 		double fMmToUnit = (fMmPerRev > 0.0) ? (fUnitsPerRev / fMmPerRev) : 0.0;
 		m_testSeq.feedMmToUnit[a] = fMmToUnit;
 		afMmToUnit[a]             = fMmToUnit;
+
+		// ---- 方案 C：转矩前馈基准（只给电机自身参数，R 由 Update 每拍现取）----
+		// 这里只做"机械属性 → 序列器"的搬运，公式在 SpeedTestSequencer::Update 里，
+		// 保持单一实现点：改转矩前馈算法不用来这里找第二处。
+		m_testSeq.SetTorFfAxis(a, fMmPerRev,
+		                       (double)pServo->Params.InertiaBase,
+		                       (double)pServo->Params.RatedTorque,
+		                       (double)WASR_TC_TORFF_LIM);
+
 		if (fMmToUnit <= 0.0) {
 			// 站点表 afMmPerMotorRev 填了 0/负值: 该轴不会动, 得报出来
 			m_Trace.Log(tlAlways, "WASR_TC: axis %d mmPerRev=%g invalid, mm->unit disabled",
@@ -1159,6 +1171,16 @@ HRESULT CWASR_TC::CycleUpdate(ITcTask* ipTask, ITcUnknown* ipCaller, ULONG_PTR c
 		g_cfgFeed.fLeadAccMs2     = (double)m_Status.LeadAccMs2;
 		g_cfgFeed.fMaxFollowErrMm = (double)m_Status.MaxFollowErrMm;
 		g_cfgFeed.fLeadTimeMs     = (double)m_Status.LeadTimeMs;
+		// ---- 方案 C：转矩前馈 ----
+		g_cfgFeed.fTorFfGain      = (double)m_Status.TorFfGain;
+		// 惯量比用「<=0 视为未设置」而不是「0 就采用」：
+		//   数据区下载后初值就是 0，若直接采用会把 4 台全变成"纯电机惯量"，
+		//   T_ff 少掉 73% 却不报任何错，现场只会觉得"转矩前馈没效果"。
+		//   而 0 倍负载惯量比在真实送纸机构上不成立，所以 0 / 负值当作"没填"是安全的。
+		if (m_Status.InertiaRatio0 > 0.0f) { g_cfgFeed.fInertiaRatio[0] = (double)m_Status.InertiaRatio0; }
+		if (m_Status.InertiaRatio1 > 0.0f) { g_cfgFeed.fInertiaRatio[1] = (double)m_Status.InertiaRatio1; }
+		if (m_Status.InertiaRatio2 > 0.0f) { g_cfgFeed.fInertiaRatio[2] = (double)m_Status.InertiaRatio2; }
+		if (m_Status.InertiaRatio3 > 0.0f) { g_cfgFeed.fInertiaRatio[3] = (double)m_Status.InertiaRatio3; }
 	}
 
 	// 送纸凸轮换算 (feedMmToUnit[]) 只由 InitControl 写: 构造/换形态/首拍/
@@ -1258,6 +1280,10 @@ HRESULT CWASR_TC::CycleUpdate(ITcTask* ipTask, ITcUnknown* ipCaller, ULONG_PTR c
 			SHORT torOut = m_abOpLoad[a] ? (SHORT)torLoad : 0;
 			pServo->Outputs->Target_velocity = 0;
 			pServo->Outputs->Target_torque   = torOut;
+			// 负载轴走 CST，不用 60B1/60B2 前馈通道；这里明确清零，
+			// 防止同一槽位在别的形态下当过驱动轴、留下残差（残留 = 负载轴自己出力）
+			pServo->Outputs->Velocity_offset = 0;
+			pServo->Outputs->Torque_offset   = 0;
 			// 计算机发出的转矩指令 (实际写进 6071h 的 SHORT)
 			pServo->Status.TorCmd_PcSend     = (float)torOut;
 			// 伺服收到的转矩指令 (6077h) / 转矩反馈 / 速度指令 (CST 恒 0)
@@ -1308,6 +1334,14 @@ void CWASR_TC::DriveOutput_Run(ServoIO* pServo, int nAxis, float fSpdCmd, bool b
 		// 序列器只在 CAM_RUN 期间给非零值, 其余状态每拍清零 —— 残留 = 电机自己转。
 		pServo->Outputs->Velocity_offset =
 			PosToLong(((nAxis >= 0) && (nAxis < SITE_AXIS_MAX)) ? m_testSeq.feedVelFf[nAxis] : 0.0);
+		// 60B2h 转矩前馈 [0.1% 额定]: 同样与 607Ah 同拍下发。
+		// 序列器按「总惯量 × 凸轮加速度」算好 —— 加速段给正、减速段给负、同步段为 0，
+		// 所以它只修加减速过渡，不参与稳态精度。非本文实验/非 CAM_RUN 时序列器已是 0。
+		// 外面再夹一次 SHORT 范围：序列器已按 fTorFfGain 缩放过，这里只防溢出。
+		double fTorFf = ((nAxis >= 0) && (nAxis < SITE_AXIS_MAX)) ? m_testSeq.feedTorFf[nAxis] : 0.0;
+		if (fTorFf >  32767.0) { fTorFf =  32767.0; }
+		if (fTorFf < -32768.0) { fTorFf = -32768.0; }
+		pServo->Outputs->Torque_offset = (SHORT)fTorFf;
 		pServo->Status.TorCmd_PcSend     = 0.0f;
 	} else if (m_testSeq.driveMode == SpeedTestSequencer::DRIVE_CST) {
 		// CST: 速度指令清 0, 转矩来自上位机速度环 (转矩扫频是单轴实验, 只轴0给)
@@ -1319,6 +1353,7 @@ void CWASR_TC::DriveOutput_Run(ServoIO* pServo, int nAxis, float fSpdCmd, bool b
 		pServo->Outputs->Target_velocity = 0;
 		pServo->Outputs->Target_torque   = torOut;
 		pServo->Outputs->Velocity_offset = 0;   // 前馈只在 CSP 用, 换模式必须清掉
+		pServo->Outputs->Torque_offset   = 0;   // 同上: 60B2 残留会一直往转矩环加偏置
 		pServo->Status.TorCmd_PcSend     = (float)torOut;
 	} else {
 		// CSV: 伺服自带速度环, 转矩指令清 0; 只有轴0 跟速度曲线, 其余轴给 0
@@ -1326,6 +1361,7 @@ void CWASR_TC::DriveOutput_Run(ServoIO* pServo, int nAxis, float fSpdCmd, bool b
 		pServo->Outputs->Target_velocity = (LONG)(fCmd / m_speedScaleServo[nSlot]);
 		pServo->Outputs->Target_torque   = 0;
 		pServo->Outputs->Velocity_offset = 0;   // 前馈只在 CSP 用, 换模式必须清掉
+		pServo->Outputs->Torque_offset   = 0;   // 同上
 		pServo->Status.TorCmd_PcSend     = 0.0f;
 	}
 

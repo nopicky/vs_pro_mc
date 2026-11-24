@@ -178,12 +178,16 @@ void SpeedTestSequencer::Init(float dt, float inertia, float ratedTorque, float 
     }
 
     // 送纸凸轮: 换算未挂载 (=0) 时位置指令保持指令原点, 电机不动 (安全)
+    //   基准量 (feedMmPerRev/feedJmotor/feedTrated) 不在这里清:
+    //   它们由 SetTorFfAxis 管, InitControl 每次都会重填; 清结果就够。
     for (int i = 0; i < SITE_AXIS_MAX; i++) {
         feedMmToUnit[i] = 0.0;
         feedActPos0[i]  = 0.0;
         feedCmdMm[i]    = 0.0;
         feedVelFf[i]    = 0.0;
+        feedTorFf[i]    = 0.0;
     }
+    feedTorFfLim = 0.0;
     feedStalled = false;
 
     torSweepSub             = TOR_SWEEP_STANDBY;
@@ -231,6 +235,35 @@ void SpeedTestSequencer::Init(float dt, float inertia, float ratedTorque, float 
 
     // 转矩扫频速度环 (参数见 MiniSpdLoop.h)
     spdLoop.Init(dt, inertia, ratedTorque, torLim);
+}
+
+///////////////////////////////////////////////////////////////////////////////
+// 方案 C：转矩前馈基准参数（每轴一份）
+//
+// 只存基准量，不算结果 —— 真正的转矩前馈在 Update 里按凸轮加速度每拍算。
+// 这样分层的好处：换电机/换辊/重新标惯量，只改这几个数，算法一个字不动。
+//
+// 三个量任一非正 → 把该轴整组基准清零，转矩前馈恒 0。
+// 安全侧考虑：惯量填错时"不出力"最多是效果差，而"按错惯量出力"是直接
+// 往机械上加一份错误的力，可能激起共振或过载。
+///////////////////////////////////////////////////////////////////////////////
+void SpeedTestSequencer::SetTorFfAxis(int nAxis, double mmPerRev, double jMotor, double trated,
+                                      double lim)
+{
+    if ((nAxis < 0) || (nAxis >= SITE_AXIS_MAX)) {
+        return;
+    }
+    feedTorFfLim = lim;     // 模块级安全参数，每轴都能覆盖成同一个值（重入无害）
+    if ((mmPerRev > 0.0) && (jMotor > 0.0) && (trated > 0.0)) {
+        feedMmPerRev[nAxis] = mmPerRev;
+        feedJmotor[nAxis]   = jMotor;
+        feedTrated[nAxis]   = trated;
+    } else {
+        feedMmPerRev[nAxis] = 0.0;
+        feedJmotor[nAxis]   = 0.0;
+        feedTrated[nAxis]   = 0.0;
+        feedTorFf[nAxis]    = 0.0;
+    }
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -1104,6 +1137,43 @@ void SpeedTestSequencer::Update(ExperimentType_T experiment,
             feedSeq.getMonitor(&mon);
             for (int i = 0; i < SITE_AXIS_MAX; i++) {
                 feedVelFf[i] = mon.afVelFfMm[i] * feedMmToUnit[i] * g_cfgFeed.fVelFfGain;
+
+                // ---- 方案 C：转矩前馈 [0.1% 额定] → 60B2h ----
+                //   物理: T_ff = J_total × α
+                //         J_total = J_motor × (1 + R)     R = 负载惯量比
+                //         α[rad/s²] = a[mm/s²] × 2π / 每转mm
+                //   下发: 60B2 = T_ff / T_rated × 1000 × 增益
+                //
+                //   为什么这个比"速度前馈加速度项(方案B)"更彻底:
+                //     B 从速度环入口补，仍要经过速度环动态；C 直接在转矩环上把
+                //     "加速需要的力"给掉，位置环连误差都不用攒。
+                //   为什么同步段不受影响:
+                //     匀速段凸轮曲率=0 → a=0 → T_ff=0，该项自己消失，不掺和稳态精度。
+                //   为什么 R 在每拍现取而不是存起来:
+                //     标定时就是边跑边改 R 看 T_ff 变化，存快照的话改完要重新 Enable。
+                //   为什么基准非法就归 0:
+                //     惯量/额定转矩填错时，宁可不出力（效果差但安全），
+                //     也不能按错的惯量往机械上加一份错误的力。
+                double fRev = feedMmPerRev[i];
+                double fJm  = feedJmotor[i];
+                double fTr  = feedTrated[i];
+                if ((fRev > 0.0) && (fJm > 0.0) && (fTr > 0.0) &&
+                    (g_cfgFeed.fTorFfGain != 0.0)) {
+                    double fR = g_cfgFeed.fInertiaRatio[i];
+                    if (fR < 0.0) { fR = 0.0; }
+                    double fJTotal = fJm * (1.0 + fR);
+                    double fAlpha  = mon.afAccAxisMm[i] * 6.283185307179586 / fRev;
+                    double fTor    = fJTotal * fAlpha / fTr * 1000.0 * g_cfgFeed.fTorFfGain;
+                    // 60B2 是 INT16，实际可用范围由驱动器决定；这里按模块给的限幅夹一次，
+                    // 避免标定时手滑把 fTorFfGain 拉大直接顶满输出
+                    if (feedTorFfLim > 0.0) {
+                        if (fTor >  feedTorFfLim) { fTor =  feedTorFfLim; }
+                        if (fTor < -feedTorFfLim) { fTor = -feedTorFfLim; }
+                    }
+                    feedTorFf[i] = fTor;
+                } else {
+                    feedTorFf[i] = 0.0;
+                }
             }
             // SigFreq 回读凸轮相位 camX [mm] (Scope 观测; 未触发时保持 0)
             if (sigFreq != NULL) {
