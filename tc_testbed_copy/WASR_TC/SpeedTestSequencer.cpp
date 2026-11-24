@@ -471,8 +471,21 @@ void SpeedTestSequencer::Update(ExperimentType_T experiment,
                 feedActPos0[i] = (afActPosUnits != NULL) ? afActPosUnits[i] : 0.0;
                 posCmdOut[i]   = feedActPos0[i];
             }
-            posCenter      = (LONG)feedActPos0[0];
+            // (double)→LONG 在超出 int32 时是未定义行为 (MSVC 常给 INT_MIN),
+            // 一旦发生 posCmdOut 会跳到 -2.1e9 —— 比"钉住不动"危险得多, 必须先夹住
+            {
+                double f0 = feedActPos0[0];
+                if (f0 >  FEED_POS_LIMIT_UNIT) f0 =  FEED_POS_LIMIT_UNIT;
+                if (f0 < -FEED_POS_LIMIT_UNIT) f0 = -FEED_POS_LIMIT_UNIT;
+                posCenter = (LONG)f0;
+            }
             feedStalled    = false;
+            // 新实验起点: 清掉上一轮的跳闸锁存 (Enable 上升沿 / 切实验类型都会走到这里)
+            feedTrip       = 0;
+            feedTripCode   = 0;
+            feedTripErrMm  = 0.0;
+            feedTripAxis   = 0;
+            feedSpdClamped = 0;
             SetSpdCmd(spdCmd, 0.0f);
             driveMode      = DRIVE_CSP;
             break;
@@ -980,6 +993,26 @@ void SpeedTestSequencer::Update(ExperimentType_T experiment,
     case FEED_CAM_TEST: {
         // 虚拟主轴线速度 [m/min] → [mm/s]: 每周期取 SigOffset, 运行中可改
         float lineMMin = (sigOffset != NULL) ? *sigOffset : 0.0f;
+
+        // ---- 主轴限速: 夹住并回写 ----
+        // 虚拟主轴是纯积分器, 给它多少速度就跑多少, 没有任何物理约束;
+        // 超 fMaxLineSpeedMMin 是静默的 (只有相位差分求速度估计那条路 clamp,
+        // 只影响前馈, 不影响主轴本身)。这里把输入直接夹到设计上限并回写,
+        // 让界面上 SigOffset 立刻变小 —— 一眼看出被限了, 不用翻代码
+        feedSpdClamped = 0;
+        if (lineMMin < 0.0f) {
+            lineMMin = 0.0f;                                  // 单向送纸, 反向不支持
+            feedSpdClamped = 1;
+        }
+        if ((g_cfgFeed.fMaxLineSpeedMMin > 0.0) &&
+            (lineMMin > (float)g_cfgFeed.fMaxLineSpeedMMin)) {
+            lineMMin = (float)g_cfgFeed.fMaxLineSpeedMMin;
+            feedSpdClamped = 1;
+        }
+        if (feedSpdClamped && (sigOffset != NULL)) {
+            *sigOffset = lineMMin;                            // 回写实际生效值
+        }
+
         feedMaster.setVelocity((double)lineMMin * 1000.0 / 60.0);
 
         // ---- 驱动未全部 Operation Enabled: 冻结凸轮, 指令贴住实际位置 ----
@@ -999,7 +1032,12 @@ void SpeedTestSequencer::Update(ExperimentType_T experiment,
                 }
                 posCmdOut[i] = feedActPos0[i];
             }
-            posCenter   = (LONG)feedActPos0[0];
+            {
+                double f0 = feedActPos0[0];
+                if (f0 >  FEED_POS_LIMIT_UNIT) f0 =  FEED_POS_LIMIT_UNIT;
+                if (f0 < -FEED_POS_LIMIT_UNIT) f0 = -FEED_POS_LIMIT_UNIT;
+                posCenter = (LONG)f0;
+            }
             feedStalled = true;
             SetSpdCmd(spdCmd, 0.0f);
             return;
@@ -1015,6 +1053,11 @@ void SpeedTestSequencer::Update(ExperimentType_T experiment,
                 return;
             }
             feedStalled = false;
+            // 解除冻结 = 一次新的起点: 清跳闸锁存并确保主轴在跑
+            // (跳闸时主轴被 stop 过; 这里不 restart 的话, 保护触发后再使能就永远不动)
+            feedTrip = 0;
+            feedTripCode = 0;
+            feedMaster.start();
         }
 
         // Start 触发: bFeedStart 一位 (1=送纸/续送, 0=停止), 语义直白
@@ -1056,6 +1099,87 @@ void SpeedTestSequencer::Update(ExperimentType_T experiment,
             // SigFreq 回读凸轮相位 camX [mm] (Scope 观测; 未触发时保持 0)
             if (sigFreq != NULL) {
                 *sigFreq = (float)mon.fCamX;
+            }
+            // SigAmp 在送纸凸轮实验里不用 (见 ApplyExperimentDefaults 注释),
+            // 借它当跳闸回显, 每拍写: 0 = 未跳闸 / 正的小值 = 偏差 mm /
+            // FEED_TRIP_FLAG_POSLIMIT = 绝对位置顶 int32 上限(要清驱动器多圈)。
+            // ★ 必须每拍写: 只在跳闸时写的话, 重新跑一轮后旧值会残留在界面上,
+            //   看起来像"又跳了"; 该实验不读 SigAmp, 覆盖它没有副作用
+            if (sigAmp != NULL) {
+                if (!feedTrip) {
+                    *sigAmp = 0.0f;
+                } else if (feedTripCode == 2) {
+                    *sigAmp = FEED_TRIP_FLAG_POSLIMIT;
+                } else {
+                    *sigAmp = (float)feedTripErrMm;
+                }
+            }
+
+            // ---- 跟随偏差跳闸 (最后一道防线) ----
+            // 背景: 虚拟主轴只做 phase += v*dt, 不看电机跟不跟得上。电机被拖住/卡住时,
+            //   指令照样按线速度往前, 偏差无界发散 (实测 572km), 而驱动器可能一直是
+            //   Operation Enabled、面板不报错 —— 光看 statusWord 完全看不出来。
+            // 动作: 撤 bFeedStart(回 0) + 停主轴(相位冻住)。指令不再推进, 电机追上被
+            //   冻住的指令后偏差自然收敛, 不会一使能就以最大加速度去追几公里。
+            // 只在 CAM_RUN 判: 其余状态指令本来不推进, 判了只会误跳;
+            //   冻结期间监视量是陈旧的, 也要跳过。
+            // 复位: 用户把 bFeedStart 重新置 1, 但要求此刻偏差已回到阈值内 ——
+            //   否则一秒内又跳, 会变成"按一下抖一下"的假动作。
+            if (!feedStalled) {
+                if (!feedTrip) {
+                    for (int i = 0; i < SITE_AXIS_MAX; i++) {
+                        if (feedMmToUnit[i] <= 0.0) {
+                            continue;                        // 未挂载轴不判
+                        }
+                        // 条件 1: 绝对位置(607Ah)顶到 int32 可表示上限
+                        //   607A = feedActPos0 + 凸轮位移。绝对位置是累积值,
+                        //   越过上限后 PosToLong 会把目标钉死 → 电机不动但程序侧偏差疯长
+                        //   (2026-11-23 实机: 6064=2000050025 已超原 2e9 钳位 1.165mm)
+                        //   这条必须独立判, 因为此时跟随偏差可能还没超阈值 (电机"听话地"不动)
+                        double fPosCmd = feedActPos0[i] + feedCmdMm[i] * feedMmToUnit[i];
+                        bool bPosOver = (fabs(fPosCmd) >= FEED_POS_LIMIT_UNIT);
+
+                        // 条件 2: 跟随偏差超阈值 (只在 CAM_RUN 判, 其余状态指令不推进)
+                        bool bErrOver =
+                            (g_cfgFeed.fMaxFollowErrMm > 0.0) &&
+                            (mon.nState == FEED_CAM_RUN) &&
+                            (fabs(mon.afFollowErr[i]) > g_cfgFeed.fMaxFollowErrMm);
+
+                        if (bPosOver || bErrOver) {
+                            feedTrip      = 1;
+                            feedTripAxis  = (uint8_t)i;
+                            feedTripCode  = bPosOver ? 2 : 1;
+                            // 位置超限时记目标位置(量级 2.1e9, 一眼能区分),
+                            // 偏差超限时记偏差 mm —— 两者都回显到 SigAmp 便于区分
+                            feedTripErrMm = bErrOver ? mon.afFollowErr[i] : fPosCmd;
+                            if (feedStart != NULL) {
+                                *feedStart = 0;              // 撤销启动位
+                            }
+                            feedMaster.stop();               // 主轴停止积分
+                            break;
+                        }
+                    }
+                } else if ((feedStart != NULL) && (*feedStart != 0)) {
+                    // 用户想重试: 先确认偏差已收回, 收不回就继续保持停机并清掉启动位
+                    // 位置超限(feedTripCode==2)不能靠"再按一次启动"清掉 —— 那是绝对位置
+                    // 顶了 int32 上限, 只能去驱动器侧清零, 否则按一次跳一次
+                    bool bErrOk = (feedTripCode != 2);
+                    if (bErrOk) {
+                        for (int i = 0; i < SITE_AXIS_MAX; i++) {
+                            if (fabs(mon.afFollowErr[i]) > g_cfgFeed.fMaxFollowErrMm) {
+                                bErrOk = false;
+                                break;
+                            }
+                        }
+                    }
+                    if (bErrOk) {
+                        feedTrip     = 0;
+                        feedTripCode = 0;
+                        feedMaster.start();
+                    } else {
+                        *feedStart = 0;
+                    }
+                }
             }
         }
         SetSpdCmd(spdCmd, 0.0f);   // CSP 下速度指令不用

@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////////////
 // SiteConfig.h
-// @brief  站点表: 「哪个槽位 (Servo0..Servo7) 接什么、配什么电机」。
+// @brief  站点表: 「哪个槽位 (Servo0..Servo11) 接什么、配什么电机」。
 //
 // 设计意图 (为什么不是 #if 分叉):
 //   本机单轴 / 对拖 4 轴 两种形态, 差异全在"哪个槽位接什么、接几台",
@@ -8,7 +8,7 @@
 //   工程里各槽位已固定链接到具体从站, 所以切场景 = 启用/禁用从站 + 选 profile。
 //
 // 运行期选择: Status.SiteProfile (只能在 Enable = 0 且所有轴回到 IDLE 时改),
-//   模块把选中的 profile 应用到 8 个槽位, 并把结果回写到
+//   模块把选中的 profile 应用到 12 个槽位, 并把结果回写到
 //   Status.AxisRole0..7 / Status.AxisCount 供现场核对。
 //
 // 槽位角色:
@@ -25,8 +25,9 @@
 
 #include "MotorSpec.h"
 
-/* 槽位总数 (Servo0..Servo7, 对应 IO 结构的 8 个槽) */
-#define SITE_SLOT_MAX   8
+/* 槽位总数 (Servo0..Servo11, 对应 IO 结构的 12 个槽)
+   Servo0=VD5L, Servo1~4=VD3E(对拖负载), Servo5~8=VD5E(23bit 驱动), Servo9~11 预留 */
+#define SITE_SLOT_MAX   12
 /* 送纸驱动轴上限 (凸轮最多 4 个轴) */
 #define SITE_AXIS_MAX   4
 
@@ -53,23 +54,23 @@ typedef struct _SITE_PROFILE_T
 {
     const char* pcName;                       /* 形态名 (日志/调试用) */
     double      afMmPerMotorRev[SITE_AXIS_MAX]; /* 各驱动轴: 电机每转的工艺 mm */
-    SITE_SLOT_T aSlot[SITE_SLOT_MAX];         /* 8 个槽位的角色/电机/监视口径 */
+    SITE_SLOT_T aSlot[SITE_SLOT_MAX];         /* 12 个槽位的角色/电机/监视口径 */
 } SITE_PROFILE_T;
 
 /* 站点形态编号 (Status.SiteProfile 填这个) */
 #define SITE_PROFILE_LOCAL_1AX    0   /* 本机: 单轴 VD5L (Servo0) */
 #define SITE_PROFILE_DRAG_4AX     1   /* 对拖: 4 个 VD3E 驱动轴 (Servo1..4) */
-#define SITE_PROFILE_DRAG_VD5E    2   /* 对拖: 4 个 VD5E 驱动轴 23bit (Servo1..4), 3E 保留作负载 */
-#define SITE_PROFILE_COUNT        3
+#define SITE_PROFILE_DRAG_VD5E    2   /* 对拖: 4 个 VD5E 驱动轴 23bit (Servo5..8), 3E 保留作负载 */
+#define SITE_PROFILE_VD5E_ONLY    3   /* 机台: 仅 4 个 VD5E 驱动轴 (Servo5..8), 3E 不接 */
+#define SITE_PROFILE_COUNT        4
 
 /* 工程里的链接是固定映射（一次接好, 切场景只改从站启停 + SiteProfile）:
-     Servo0 = 维控VD5L   Servo1~4 = 维控VD3E_1~4   Servo5~7 留空(汇川暂不接)
+     Servo0 = 维控VD5L   Servo1~4 = 维控VD3E_1~4   Servo5~8 = 维控VD5E_1~4
+     Servo9~11 留空(预留)
    所以「同一槽位换一台驱动器」是做不到的 —— TwinCAT 的 PDO 链接是静态 1:1,
    一个模块变量只能指向一台从站。要让某槽位换机, 必须改链接(tsproj)。
 
-   4 驱动 + 4 负载 (8 台 VD3E) 暂不支持: 8 台 VD3E 已占满 8 槽, 而 Servo0 还要
-   留给 VD5L -> 总共要 9 槽。真要做时先把 IO 结构扩到 9~12 槽 (WASR_TC.tmc
-   升版本), 再在这里加一条 profile。 */
+   2026-11-21 已扩到 12 槽 (SITE_SLOT_MAX=12): 支撑 VD5L + 4×VD3E(负载) + 4×VD5E(驱动) 的 9 从站形态。 */
 
 /* 站点形态表 */
 extern const SITE_PROFILE_T g_aSiteProfile[SITE_PROFILE_COUNT];

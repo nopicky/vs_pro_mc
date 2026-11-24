@@ -1,13 +1,13 @@
 ///////////////////////////////////////////////////////////////////////////////
 // WASR_TC.h
-// @brief  TwinCAT 伺服测试模块: 最多 8 个伺服槽位 (Servo0..Servo7) 的 CiA402
+// @brief  TwinCAT 伺服测试模块: 最多 12 个伺服槽位 (Servo0..Servo11) 的 CiA402
 //         控制、实验序列器输出与状态监视。
 //
 // 哪个槽位接什么 = 站点表 (SiteConfig.h) 决定, 运行期用 Status.SiteProfile 选:
 //   0 = 本机单轴 (Servo0 = VD5L, 单轴送纸凸轮验证)
-//   1 = 对拖 4 驱动轴 (Servo0..3 = VD3E, 负载槽预留不接)
-//   2 = 对拖 4 驱动 + 4 负载 (Servo4..7 接上后选这个)
-// 站点表把角色/电机/换算一次性应用到 8 个槽位, 逻辑代码里没有任何机型分支。
+//   1 = 对拖 4 驱动轴 (Servo1..4 = VD3E, 负载槽预留不接)
+//   2 = 对拖 4 驱动 VD5E 23bit (Servo5..8), Servo1..4 = VD3E 作负载
+// 站点表把角色/电机/换算一次性应用到 12 个槽位, 逻辑代码里没有任何机型分支。
 //
 // 驱动轴 (SLOT_ROLE_DRIVE): 默认用伺服自带速度环 (CSV, 60FFh 速度指令);
 //   转矩扫频实验用 CST(10) + 上位机速度环 (MiniSpdLoop.h), 输出 6071h 转矩;
@@ -103,7 +103,7 @@ protected:
 	void DriveOutput_Run(ServoIO* pServo, int nAxis, float fSpdCmd, bool bOpEnabled);
 
 	/**
-	 * 应用站点形态: 8 个槽位的角色/电机参数/换算/测速滤波全部按表重设
+	 * 应用站点形态: 12 个槽位的角色/电机参数/换算/测速滤波全部按表重设
 	 * 只能在 Enable = 0 且所有轴回 IDLE 时调用 (换算变了还在跑 = 飞车)
 	 * @param ucProfile SITE_PROFILE_xxx
 	 */
@@ -151,7 +151,7 @@ protected:
 	float m_speedScale;
 	// 每台伺服各自的 [rpm] ← (指令单位/s) 换算系数
 	float m_speedScaleServo[SITE_SLOT_MAX];
-	// 槽位指针 (指向 m_Servos.Servo0..Servo7)
+	// 槽位指针 (指向 m_Servos.Servo0..Servo11)
 	ServoIO* m_apServo[SITE_SLOT_MAX];
 	// 站点表快照: 角色 / 电机编号 / 监视口径 / 从站地址
 	uint8_t m_aucRole[SITE_SLOT_MAX];

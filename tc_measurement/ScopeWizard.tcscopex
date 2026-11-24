@@ -120,12 +120,12 @@
           <SubMember>
             <ChannelTriggerSet AssemblyName="TwinCAT.Measurement.Scope.API.Model">
               <AcquisitionInterpreterGuid>4c94df54-916a-41a6-af75-d2454a72e512</AcquisitionInterpreterGuid>
-              <ClientTriggerHandle>5</ClientTriggerHandle>
+              <ClientTriggerHandle>3</ClientTriggerHandle>
               <CombineOption>AND</CombineOption>
               <Comment />
               <DisplayColor>Black</DisplayColor>
               <Enabled>true</Enabled>
-              <GroupHandle>5</GroupHandle>
+              <GroupHandle>3</GroupHandle>
               <Guid>0327e14b-a59e-4524-953d-09120a989f60</Guid>
               <Name>Enable_RisingEdge</Name>
               <ReleaseOption>RisingEdge</ReleaseOption>
@@ -278,12 +278,12 @@
           <SubMember>
             <ChannelTriggerSet AssemblyName="TwinCAT.Measurement.Scope.API.Model">
               <AcquisitionInterpreterGuid>05d39070-536f-42f6-8a71-37bd0999c025</AcquisitionInterpreterGuid>
-              <ClientTriggerHandle>6</ClientTriggerHandle>
+              <ClientTriggerHandle>4</ClientTriggerHandle>
               <CombineOption>AND</CombineOption>
               <Comment />
               <DisplayColor>Black</DisplayColor>
               <Enabled>true</Enabled>
-              <GroupHandle>6</GroupHandle>
+              <GroupHandle>4</GroupHandle>
               <Guid>928ca8a7-6040-424d-892c-4bbd99c5e0cc</Guid>
               <Name>Enable_FallingEdge</Name>
               <ReleaseOption>FallingEdge</ReleaseOption>

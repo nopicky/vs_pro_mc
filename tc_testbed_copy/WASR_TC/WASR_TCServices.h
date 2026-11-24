@@ -133,8 +133,8 @@ typedef struct _ServoIO
 const GUID GUID_ServoIO = {0xE8FBC83C, 0xDCBA, 0x48A3, {0x8F, 0x3C, 0xDE, 0x0B, 0xFF, 0x16, 0x83, 0x93}};
 #endif // !defined(_TC_TYPE_E8FBC83C_DCBA_48A3_8F3C_DE0BFF168393_INCLUDED_)
 
-// 8 个伺服槽位 (Servo0..Servo7): XAE 里每个槽位链接一个物理从站的 PDO。
-// 一次开够 8 个槽, 以后加设备再也不用改接口 (改接口就要重链 100 多条 PDO)。
+// 12 个伺服槽位 (Servo0..Servo11): XAE 里每个槽位链接一个物理从站的 PDO。
+// 一次开够 12 个槽, 以后加设备再也不用改接口 (改接口就要重链 PDO)。
 // 哪个槽位"接什么"由站点表 (SiteConfig.h) 决定, 与结构无关。
 #pragma pack(push,1)
 typedef struct _WASR_TCInputs
@@ -147,6 +147,10 @@ typedef struct _WASR_TCInputs
 	ServoInputs Servo5;
 	ServoInputs Servo6;
 	ServoInputs Servo7;
+	ServoInputs Servo8;
+	ServoInputs Servo9;
+	ServoInputs Servo10;
+	ServoInputs Servo11;
 } WASR_TCInputs, *PWASR_TCInputs;
 #pragma pack(pop)
 
@@ -161,6 +165,10 @@ typedef struct _WASR_TCOutputs
 	ServoOutputs Servo5;
 	ServoOutputs Servo6;
 	ServoOutputs Servo7;
+	ServoOutputs Servo8;
+	ServoOutputs Servo9;
+	ServoOutputs Servo10;
+	ServoOutputs Servo11;
 } WASR_TCOutputs, *PWASR_TCOutputs;
 #pragma pack(pop)
 
@@ -175,6 +183,10 @@ typedef struct _WASR_TCServos
 	ServoIO Servo5;
 	ServoIO Servo6;
 	ServoIO Servo7;
+	ServoIO Servo8;
+	ServoIO Servo9;
+	ServoIO Servo10;
+	ServoIO Servo11;
 } WASR_TCServos, *PWASR_TCServos;
 #elif defined(_X64_) || defined(_64BIT_)
 #pragma pack(push,1)
@@ -188,6 +200,10 @@ typedef struct _WASR_TCServos
 	ServoIO Servo5;
 	ServoIO Servo6;
 	ServoIO Servo7;
+	ServoIO Servo8;
+	ServoIO Servo9;
+	ServoIO Servo10;
+	ServoIO Servo11;
 } WASR_TCServos, *PWASR_TCServos;
 #pragma pack(pop)
 #endif
@@ -241,7 +257,7 @@ typedef struct _WASR_TCStatus
 	unsigned char SiteProfile;
 	// AxisCount: 实际生效的驱动轴数 (1..4), 由站点表回写, 只读
 	unsigned char AxisCount;
-	// AxisRole0..7: 各槽位角色 (0=未用, 1=驱动, 2=负载), 由站点表回写, 只读
+	// AxisRole0..11: 各槽位角色 (0=未用, 1=驱动, 2=负载), 由站点表回写, 只读
 	unsigned char AxisRole0;
 	unsigned char AxisRole1;
 	unsigned char AxisRole2;
@@ -250,6 +266,21 @@ typedef struct _WASR_TCStatus
 	unsigned char AxisRole5;
 	unsigned char AxisRole6;
 	unsigned char AxisRole7;
+	unsigned char AxisRole8;
+	unsigned char AxisRole9;
+	unsigned char AxisRole10;
+	unsigned char AxisRole11;
+	// ---- 负载侧 (对拖 CST) 控制 ----
+	// bLoadSideEnable: 负载轴使能开关 (0=不接负载/不使能, 1=使能)。
+	//   之前硬编码在 g_cfgFeed 里, 调一次改一次代码; 现在每拍从 Status 同步过去。
+	// LoadTorquePct0..3: 各负载轴目标转矩 [0.1% 额定], 1000.0 = 100% 额定 (6071h 口径)。
+	//   只有 FEED_CAM_TEST(送纸凸轮) 用它; 负载扫描实验仍走 Sequencer 内部注入。
+	//   按轴独立, 支持 4 台 3E 给不同负载 (不对称对拖)。
+	unsigned char bLoadSideEnable;
+	float LoadTorquePct0;
+	float LoadTorquePct1;
+	float LoadTorquePct2;
+	float LoadTorquePct3;
 } WASR_TCStatus, *PWASR_TCStatus;
 #pragma pack(pop)
 

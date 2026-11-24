@@ -230,6 +230,24 @@ struct SpeedTestSequencer
     //   这里给默认值: Init 之前若被调用, 宁可按"冻结"处理 (安全侧)
     bool   feedStalled = false;
 
+    // ---- 送纸凸轮保护 (2026-11-23: 跟随偏差跳闸 + 主轴限速) ----
+    // 为什么要有: 虚拟主轴是纯积分器 (VirtualMaster::tick 只做 phase += v*dt),
+    //   完全不看电机跟不跟得上。对拖负载拖不动 / 机械卡住时, 主轴照样按线速度往前冲,
+    //   偏差无界发散 (实测 572km = 2929 圈), 而驱动器可能只是"使能着不跟随", 面板不报错。
+    // feedTrip: 1 = 已跳闸 —— bFeedStart 被自动清 0、主轴已停 (相位冻结)。
+    //   复位: 用户把 bFeedStart 重新置 1, 且此刻各轴偏差已回落到阈值内 (防一按就又飞)。
+    //   ★ 不在 ADS Status 里开新字段 (动 tmc 要改接口版本), 现场靠三点确认跳闸:
+    //     bFeedStart 自己掉了 / FeedMasterPhase 不再增长 / AxisNFollowErr 停住
+    uint8_t feedTrip = 0;
+    // 跳闸原因: 0 = 未跳闸, 1 = 跟随偏差超限, 2 = 绝对位置顶 int32 上限
+    //   (2 的处理办法完全不同: 必须去驱动器侧把绝对位置清零, 不是调参数能解决的)
+    uint8_t feedTripCode = 0;
+    // 跳闸瞬间的偏差 [mm] 与轴号 (留作后续上 ADS / 日志, 现在只能断点看)
+    double  feedTripErrMm = 0.0;
+    uint8_t feedTripAxis = 0;
+    // 1 = 本拍 SigOffset 超 fMaxLineSpeedMMin 被夹紧 (已回写, 界面直接看到变小)
+    uint8_t feedSpdClamped = 0;
+
     // 停机
     float    lastSpdCmd;            // 上一拍速度指令 [rpm]
     uint8_t  stopClearFreq;         // 1 = 停机完成时把 SigFreq 清 0

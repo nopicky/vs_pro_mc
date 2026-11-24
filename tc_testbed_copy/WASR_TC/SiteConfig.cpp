@@ -30,13 +30,13 @@
 #define SITE_SLOT_DRV(addr)        SITE_SLOT_DRV_M(addr, MOTOR_WE130M_17B)
 // 槽位: 送纸驱动轴, 配 VD5E 23bit 绝对值编码器电机 (换 VD5E 对拖时用)
 #define SITE_SLOT_DRV23(addr)      SITE_SLOT_DRV_M(addr, MOTOR_WE130_23B)
-// 槽位: 对拖负载轴 (CST 恒转矩)。当前没有 8 台 VD3E, 暂无 profile 用到, 保留给 4+4 形态
+// 槽位: 对拖负载轴 (CST 恒转矩), 配 WE130M 17bit (VD3E)。VD5E 对拖时 Servo1~4 用它
 #define SITE_SLOT_LD(addr)         { SLOT_ROLE_LOAD,  MOTOR_WE130M_17B, SLOT_MON_WECON, (addr) }
 
 // 站点形态表
-//   槽位顺序 = IO 结构里 Servo0..Servo7, 与 XAE 里 PDO 链接顺序对应
+//   槽位顺序 = IO 结构里 Servo0..Servo11, 与 XAE 里 PDO 链接顺序对应
 //   工程里已按固定映射把链接一次接好（tsproj, 每槽 14 条）:
-//     Servo0 = 维控VD5L   Servo1~4 = 维控VD3E_1~4   Servo5~7 留空
+//     Servo0 = 维控VD5L   Servo1~4 = 维控VD3E_1~4   Servo5~8 = 维控VD5E_1~4   Servo9~11 留空
 //   所以切场景只有两步: 启用对应从站/禁用其余的 -> 改 Status.SiteProfile, 不用再改链接
 const SITE_PROFILE_T g_aSiteProfile[SITE_PROFILE_COUNT] =
 {
@@ -55,7 +55,11 @@ const SITE_PROFILE_T g_aSiteProfile[SITE_PROFILE_COUNT] =
             SITE_SLOT_OFF(1005),
             SITE_SLOT_OFF(1006),
             SITE_SLOT_OFF(1007),
-            SITE_SLOT_OFF(1008)
+            SITE_SLOT_OFF(1008),
+            SITE_SLOT_OFF(1009),
+            SITE_SLOT_OFF(1010),
+            SITE_SLOT_OFF(1011),
+            SITE_SLOT_OFF(1012)
         }
     },
 
@@ -77,14 +81,18 @@ const SITE_PROFILE_T g_aSiteProfile[SITE_PROFILE_COUNT] =
             SITE_SLOT_DRV(1004),
             SITE_SLOT_OFF(1006),
             SITE_SLOT_OFF(1007),
-            SITE_SLOT_OFF(1008)
+            SITE_SLOT_OFF(1008),
+            SITE_SLOT_OFF(1009),
+            SITE_SLOT_OFF(1010),
+            SITE_SLOT_OFF(1011),
+            SITE_SLOT_OFF(1012)
         }
     },
 
     // ---------------------------------------------------------------- 2
-    // 对拖 4 轴: Servo1..4 = 4 个 VD5E 驱动轴 (各带 23bit 绝对值编码器电机),
-    //             Servo0 = VD5L 保持 NONE, Servo5..7 留空
-    // 用法: 启用 4 台 VD5E、禁用 VD5L 和 VD3E
+    // 对拖 4 轴 VD5E: Servo5..8 = 4 个 VD5E 驱动轴 (各带 23bit 绝对值编码器电机),
+    //                  Servo1..4 = VD3E 保留作对拖负载(LOAD), Servo0 = VD5L 保持 NONE
+    // 用法: 启用 4 台 VD5E + 4 台 VD3E、禁用 VD5L
     // 注意: 23bit → 每转 8388608 单位, 换算 feedMmToUnit = 8388608/195.349 ≈ 42946 单位/mm
     //       (17bit 是 671), 位置/速度前馈换算由 MotorSpec 表自动跟上, 无需改逻辑
     {
@@ -92,14 +100,44 @@ const SITE_PROFILE_T g_aSiteProfile[SITE_PROFILE_COUNT] =
         { SITE_MM_PER_REV_ROLLER, SITE_MM_PER_REV_ROLLER,
           SITE_MM_PER_REV_ROLLER, SITE_MM_PER_REV_ROLLER },
         {
-            SITE_SLOT_OFF(1001),
-            SITE_SLOT_DRV23(1001),
-            SITE_SLOT_DRV23(1002),
-            SITE_SLOT_DRV23(1003),
-            SITE_SLOT_DRV23(1004),
-            SITE_SLOT_OFF(1006),
-            SITE_SLOT_OFF(1007),
-            SITE_SLOT_OFF(1008)
+            SITE_SLOT_OFF(1001),     // Servo0 = VD5L 不接
+            SITE_SLOT_LD(1001),      // Servo1 = VD3E_1 作负载
+            SITE_SLOT_LD(1002),      // Servo2 = VD3E_2 作负载
+            SITE_SLOT_LD(1003),      // Servo3 = VD3E_3 作负载
+            SITE_SLOT_LD(1004),      // Servo4 = VD3E_4 作负载
+            SITE_SLOT_DRV23(1005),   // Servo5 = VD5E_1 驱动轴0
+            SITE_SLOT_DRV23(1006),   // Servo6 = VD5E_2 驱动轴1
+            SITE_SLOT_DRV23(1007),   // Servo7 = VD5E_3 驱动轴2
+            SITE_SLOT_DRV23(1008),   // Servo8 = VD5E_4 驱动轴3
+            SITE_SLOT_OFF(1009),     // Servo9 预留
+            SITE_SLOT_OFF(1010),     // Servo10 预留
+            SITE_SLOT_OFF(1011)      // Servo11 预留
+        }
+    },
+
+    // ---------------------------------------------------------------- 3
+    // 机台纯驱动 4 轴 VD5E: Servo5..8 = 4 个 VD5E 驱动轴 (各带 23bit 绝对值编码器),
+    //                        Servo1..4 = NONE (不接 3E, 机台上没有对拖负载)
+    // 用法: 只启用 4 台 VD5E、禁用 VD5L 和 VD3E
+    // 与 profile 2 的区别: Servo1..4 从 LOAD 改成 NONE, 避免禁用 3E 后
+    //   负载轴 CiA402 状态机空转重试 (没接设备的槽位必须显式 NONE)
+    {
+        "VD5E_4Axis_Only_23B",
+        { SITE_MM_PER_REV_ROLLER, SITE_MM_PER_REV_ROLLER,
+          SITE_MM_PER_REV_ROLLER, SITE_MM_PER_REV_ROLLER },
+        {
+            SITE_SLOT_OFF(1001),     // Servo0 = VD5L 不接
+            SITE_SLOT_OFF(1002),     // Servo1 = 不接 (无 3E)
+            SITE_SLOT_OFF(1003),     // Servo2 = 不接
+            SITE_SLOT_OFF(1004),     // Servo3 = 不接
+            SITE_SLOT_OFF(1005),     // Servo4 = 不接
+            SITE_SLOT_DRV23(1005),   // Servo5 = VD5E_1 驱动轴0
+            SITE_SLOT_DRV23(1006),   // Servo6 = VD5E_2 驱动轴1
+            SITE_SLOT_DRV23(1007),   // Servo7 = VD5E_3 驱动轴2
+            SITE_SLOT_DRV23(1008),   // Servo8 = VD5E_4 驱动轴3
+            SITE_SLOT_OFF(1009),     // Servo9 预留
+            SITE_SLOT_OFF(1010),     // Servo10 预留
+            SITE_SLOT_OFF(1011)      // Servo11 预留
         }
     }
 };

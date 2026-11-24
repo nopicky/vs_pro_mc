@@ -27,7 +27,8 @@ FEED_CONFIG_T g_cfgFeed = {
     0.0,                           /* fLeadTimeMs：已改用驱动器 60B1h 前馈，指令超前归 0
                                       (要回到老方案: 这里填 20.3, fVelFfGain 填 0) */
     0.0,                           /* fLeadAccMs2：加速度前馈默认关（扫参起点 0.05~0.2） */
-    0.0                            /* fVelFfGain：速度前馈满量（0=关闭） */
+    1.0,                           /* fVelFfGain：速度前馈满量（0=关闭） */
+    200.0                           /* fMaxFollowErrMm：跟随偏差跳闸阈值（≈1/4 辊周长），0=关闭 */
 };
 
 /* 走完凸轮后保持终值的周期数（125us×8000 ≈ 1s），之后回 IDLE 等下一次 Start */
