@@ -281,6 +281,20 @@ typedef struct _WASR_TCStatus
 	float LoadTorquePct1;
 	float LoadTorquePct2;
 	float LoadTorquePct3;
+	// ---- 在线调参（2026-11-24）----
+	// 目的: 调补偿参数不用再改代码重编译激活, 改 ADS 变量下一拍就生效。
+	// bLiveTuning = 0 (默认) -> 全部用 FeedSequencer.cpp 里的编译期初值, 行为不变;
+	// bLiveTuning = 1        -> 下面 5 项每拍覆盖 g_cfgFeed / 序列器快照。
+	//   ★ 下载/重启后该位会归 0, 想在线调要先把它置 1 —— 这是故意的安全默认:
+	//     参数区初值全是 0, 若默认可覆盖, 忘记写就会把前馈悄悄关掉。
+	// 各项含义与量纲见 FeedConfig.h 同名字段;
+	// VelFfAccGainMs 是方案 B 的加速度项 Ka [ms], 0 = 只有纯速度前馈(原行为)。
+	unsigned char bLiveTuning;
+	float VelFfGain;
+	float VelFfAccGainMs;
+	float LeadAccMs2;
+	float MaxFollowErrMm;
+	float LeadTimeMs;
 } WASR_TCStatus, *PWASR_TCStatus;
 #pragma pack(pop)
 

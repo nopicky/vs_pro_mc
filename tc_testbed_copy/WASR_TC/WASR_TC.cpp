@@ -851,6 +851,21 @@ HRESULT CWASR_TC::CycleUpdate(ITcTask* ipTask, ITcUnknown* ipCaller, ULONG_PTR c
 	// 挂到 Status 后可运行中开关 (仍在 Enable=0 时改更稳妥)。
 	g_cfgFeed.bLoadSideEnable = (m_Status.bLoadSideEnable != 0);
 
+	// ---- 在线调参: Status -> g_cfgFeed (2026-11-24) ----
+	// 目的: 调补偿参数不必再改代码重编译, 写 ADS 变量下一拍就生效。
+	// bLiveTuning=0 (默认) 时整段跳过, 保持 FeedSequencer.cpp 里的编译期初值。
+	//   为什么用总开关而不是"直接覆盖": 下载后数据区初值全是 0, 若默认可覆盖,
+	//   忘记写 VelFfGain 就把前馈悄悄关成 0 了, 现场极难查。
+	// 序列器侧的 LeadTimeMs/LeadAccMs2/MaxFollowErrMm 由 SpeedTestSequencer::Update
+	// 每拍从 g_cfgFeed 刷进快照 (FeedSequencer 用的是 init 时的拷贝, 不读全局)。
+	if (m_Status.bLiveTuning != 0) {
+		g_cfgFeed.fVelFfGain      = (double)m_Status.VelFfGain;
+		g_cfgFeed.fVelFfAccGainMs = (double)m_Status.VelFfAccGainMs;
+		g_cfgFeed.fLeadAccMs2     = (double)m_Status.LeadAccMs2;
+		g_cfgFeed.fMaxFollowErrMm = (double)m_Status.MaxFollowErrMm;
+		g_cfgFeed.fLeadTimeMs     = (double)m_Status.LeadTimeMs;
+	}
+
 	// 送纸凸轮换算 (feedMmToUnit[]) 只由 InitControl 写: 构造/换形态/首拍/
 	// Enable 上升沿各一次。这里不再每拍重算一遍 —— 同一公式写两处,
 	// 改一处忘另一处就会算错, 且算错了没有任何报错

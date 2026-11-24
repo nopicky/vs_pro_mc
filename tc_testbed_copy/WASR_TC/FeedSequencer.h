@@ -39,6 +39,16 @@ public:
     /* 上位机启动信号（ADS/全局变量轮询写入） */
     void setStart(bool bStart);
 
+    /* 在线调参：把可运行期修改的补偿参数刷进 m_cfg 快照（不必重新 init）
+       每拍调用一次即可；传负值 = 该项保持不变。
+       ★ 只收这三项，是因为序列器内部是从 m_cfg 快照读它们的：
+           fLeadTimeMs       —— 位置超前（带 0.05ms/拍限速，防止指令阶跃）
+           fLeadAccMs2       —— 位置二阶超前
+           fVelFfAccGainMs   —— 速度前馈加速度项 Ka（方案 B）
+         fVelFfGain / fMaxFollowErrMm 由挂载层直接读 g_cfgFeed，不进快照，不用刷。
+       ★ 凸轮几何参数与 fStartPhaseComp 只能走 init，这里不碰。 */
+    void setLiveTuning(double fLeadTimeMs, double fLeadAccMs2, double fVelFfAccGainMs);
+
     /* 每周期（125us）：推进状态机，输出 4 轴位置指令 mm
        fMasterPhase：主轴相位 mm。**无界累加值或 [0,周长) 的编码器值都可以**，
                      内部按差分解缠成单调相位（跨圈/反向都不影响对齐与凸轮）

@@ -37,6 +37,15 @@ typedef struct tagFEED_CONFIG_T {
                                    0.0 = 关闭（此时靠 fLeadTimeMs 指令超前，老方案）
                                    调参：0.2 验方向 → 0.5/0.8/1.0 找 Axis*IdealErr 过零点
                                    ★ 与 fLeadTimeMs 二选一，不能同时满量 */
+    double fVelFfAccGainMs;     /* 速度前馈的加速度项系数 ms（方案 B，0=关闭）
+                                   前馈量 = 速比·v_master + Ka·a  [mm/s]
+                                   纯速度前馈(Ka=0)在加速段只补速度不补加速度，误差累积到
+                                   约 10mm 后由位置环出力去追 → 进同步段冲过头。
+                                   加这一项提前把「加速需要的额外速度」给出去，位置环就不用
+                                   攒误差，过冲自然消失。
+                                   量纲: a[mm/s²] × Ka[ms] × 1e-3 = mm/s
+                                   理论起点 Ka ≈ Kv×Δerr/a ≈ 524/48400×1000 ≈ 10.8ms
+                                   扫参: 0 → 3 → 5 → 8 → 12 → 15，看过冲与稳态误差的平衡 */
     double fMaxFollowErrMm;     /* 跟随偏差跳闸阈值 mm：|指令-实际| 超过它 → 自动撤 bFeedStart
                                    并停主轴（冻结相位），0 = 关闭保护。
                                    为什么必须有：虚拟主轴是纯积分器，电机跟不上时它照样
@@ -68,7 +77,16 @@ typedef struct tagFEED_CONFIG_T {
 /* 全局工艺参数实例
    取值范围：见各字段注释
    存取者：CFeedSequencer::init 读取并做快照；调试期可经 ADS 在线修改
-   注意：在线修改后需重新进入实验（Enable 上升沿重新 init）才生效 */
+
+   ---- 在线调参（2026-11-24）----
+   调补偿参数不必再改代码重编译。Status 里开 bLiveTuning=1 后，下面这几项
+   每拍从 Status 覆盖进来，立即生效（不需要重新 Enable）：
+       fVelFfGain / fVelFfAccGainMs / fLeadAccMs2 / fMaxFollowErrMm / fLeadTimeMs
+   bLiveTuning=0 时（默认）全部用本文件里的编译期初值，行为与原来完全一致。
+   ★ fLeadTimeMs 在线改时做了每拍 0.05ms 的限速（见 CFeedSequencer::setLiveTuning），
+     防止手滑输大值让位置指令阶跃（5833mm/s 下 1ms 就是 5.8mm 跳变）。
+   ★ 凸轮参数（同步段长/超程/加减速段）和 fStartPhaseComp 不支持在线改：
+     前者要重建凸轮对象，后者改的是相位原点，运动中改会直接错相位。 */
 extern FEED_CONFIG_T g_cfgFeed;
 
 #endif /* FEED_CONFIG_H__20261117 */

@@ -1077,6 +1077,15 @@ void SpeedTestSequencer::Update(ExperimentType_T experiment,
         }
         const double* pAct = bAnyAct ? actMm : NULL;   // 一轴都没挂上就不监视
 
+        // 在线调参: 把 g_cfgFeed 的补偿参数刷进序列器快照 (每拍一次)
+        //   FeedSequencer 用的是 init 时的 m_cfg 拷贝, 不读全局 —— 这三项必须显式刷。
+        //   LeadTimeMs 在 setLiveTuning 内部限速 0.05ms/拍, 传目标值即可自动斜坡。
+        //   fVelFfGain / fMaxFollowErrMm 本文件直接读 g_cfgFeed, 不用刷;
+        //   凸轮几何参数要重建凸轮对象, 只能 Enable 上升沿重新 init。
+        feedSeq.setLiveTuning(g_cfgFeed.fLeadTimeMs,
+                              g_cfgFeed.fLeadAccMs2,
+                              g_cfgFeed.fVelFfAccGainMs);
+
         // 虚拟主轴积分 + 状态机推进 (4 轴指令 [mm])
         feedMaster.tick(dtSec);
         feedSeq.tick(feedMaster.getPhase(), dtSec, pAct, feedCmdMm);

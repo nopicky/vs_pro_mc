@@ -3062,6 +3062,48 @@ External Setpoint Generation:
 									<BaseType GUID="{18071995-0000-0000-0000-00000000000D}">REAL</BaseType>
 									<BitOffs>1544</BitOffs>
 								</Symbol>
+								<Symbol CreateSymbol="true">
+									<Name>bLiveTuning</Name>
+									<Comment TxtId=""><![CDATA[在线调参总开关: 0=用编译期默认(安全), 1=用下面5项]]></Comment>
+									<BitSize>8</BitSize>
+									<BaseType GUID="{18071995-0000-0000-0000-000000000002}">USINT</BaseType>
+									<BitOffs>1576</BitOffs>
+								</Symbol>
+								<Symbol CreateSymbol="true">
+									<Name>VelFfGain</Name>
+									<Comment TxtId=""><![CDATA[速度前馈增益 0~1.2 (60B1h), 1.0=满量]]></Comment>
+									<BitSize>32</BitSize>
+									<BaseType GUID="{18071995-0000-0000-0000-00000000000D}">REAL</BaseType>
+									<BitOffs>1584</BitOffs>
+								</Symbol>
+								<Symbol CreateSymbol="true">
+									<Name>VelFfAccGainMs</Name>
+									<Comment TxtId=""><![CDATA[速度前馈加速度项 Ka [ms], 方案B, 0=关闭(扫参3~15)]]></Comment>
+									<BitSize>32</BitSize>
+									<BaseType GUID="{18071995-0000-0000-0000-00000000000D}">REAL</BaseType>
+									<BitOffs>1616</BitOffs>
+								</Symbol>
+								<Symbol CreateSymbol="true">
+									<Name>LeadAccMs2</Name>
+									<Comment TxtId=""><![CDATA[位置二阶超前 K [ms²], 0=关闭(扫参30~60)]]></Comment>
+									<BitSize>32</BitSize>
+									<BaseType GUID="{18071995-0000-0000-0000-00000000000D}">REAL</BaseType>
+									<BitOffs>1648</BitOffs>
+								</Symbol>
+								<Symbol CreateSymbol="true">
+									<Name>MaxFollowErrMm</Name>
+									<Comment TxtId=""><![CDATA[跟随偏差跳闸阈值 [mm], 0=关闭保护]]></Comment>
+									<BitSize>32</BitSize>
+									<BaseType GUID="{18071995-0000-0000-0000-00000000000D}">REAL</BaseType>
+									<BitOffs>1680</BitOffs>
+								</Symbol>
+								<Symbol CreateSymbol="true">
+									<Name>LeadTimeMs</Name>
+									<Comment TxtId=""><![CDATA[位置超前 tau [ms], 每拍限速0.05ms; 用60B1时保持0]]></Comment>
+									<BitSize>32</BitSize>
+									<BaseType GUID="{18071995-0000-0000-0000-00000000000D}">REAL</BaseType>
+									<BitOffs>1712</BitOffs>
+								</Symbol>
 							</DataArea>
 						</DataAreas>
 						<InterfacePointers>

@@ -28,6 +28,7 @@ FEED_CONFIG_T g_cfgFeed = {
                                       (要回到老方案: 这里填 20.3, fVelFfGain 填 0) */
     0.0,                           /* fLeadAccMs2：加速度前馈默认关（扫参起点 0.05~0.2） */
     1.0,                           /* fVelFfGain：速度前馈满量（0=关闭） */
+    0.0,                           /* fVelFfAccGainMs：加速度前馈项默认关（方案B，扫参 3~15） */
     200.0                           /* fMaxFollowErrMm：跟随偏差跳闸阈值（≈1/4 辊周长），0=关闭 */
 };
 
@@ -104,6 +105,27 @@ bool CFeedSequencer::init(const FEED_CONFIG_T* pCfg) {
 void CFeedSequencer::setStart(bool bStart) {
 
     m_bStart = bStart;
+}
+
+/* 在线调参：刷 m_cfg 快照里的补偿参数（不必重新 init / 重编译）
+   传负值表示"这一项不动"：上位机只改一个旋钮时不用把其它项也背一遍
+   fLeadTimeMs 限速 0.05ms/拍：位置指令每拍最多跳 v×0.05ms（5840mm/s 时约 0.29mm），
+   即使手滑输个大值也是斜坡过去，不会一步跳过去打死机械 */
+void CFeedSequencer::setLiveTuning(double fLeadTimeMs, double fLeadAccMs2,
+                                   double fVelFfAccGainMs) {
+
+    if (fLeadTimeMs >= 0.0) {
+        double fStep = fLeadTimeMs - m_cfg.fLeadTimeMs;
+        if (fStep >  0.05) { fStep =  0.05; }
+        if (fStep < -0.05) { fStep = -0.05; }
+        m_cfg.fLeadTimeMs += fStep;
+    }
+    if (fLeadAccMs2 >= 0.0) {
+        m_cfg.fLeadAccMs2 = fLeadAccMs2;
+    }
+    if (fVelFfAccGainMs >= 0.0) {
+        m_cfg.fVelFfAccGainMs = fVelFfAccGainMs;
+    }
 }
 
 void CFeedSequencer::tick(double fMasterPhase, double fDtSec, const double* afActPosMm,
@@ -225,21 +247,31 @@ void CFeedSequencer::tick(double fMasterPhase, double fDtSec, const double* afAc
                轴速度 = 速比×主轴速度，故前移量 = evalVel(x)·v_master·T（一阶泰勒，等价相位提前）
                凸轮两端速比为 0 → 起停无跳变；T=0 时与原实现完全一致 */
             double fLead = fRatio * fMasterVel * fLeadSec;
-            /* 二阶项：前馈量 = T·v + k·a（a 为从轴加速度 = 曲率 × 主轴速度²）
+            /* 二阶项：前移量 = T·v + k·a（a = 凸轮曲率 × 主轴速度²）
                实测（350m/min, T=20.3ms）加速段残余 +9.2mm（实际落后）、
                减速段残余 -6.8mm（实际超前）——两者都说明「轴跟不上速度变化」，
                故加速(a>0)要多给超前、减速(a<0)要少给，符号为 **加**。
                同步段曲率为 0 → 该项不影响稳态段，只修加减速过渡。
                k 的量纲是 ms²，起点建议 30~60（k=50 时在 350 档约补 9mm） */
+           /* 从轴加速度 [mm/s²]：位置超前二阶项和速度前馈加速度项共用，
+              只在需要时求值（evalAcc 内部要做二阶差分，不必每拍都算） */
+            double fAccAxis = 0.0;
+            if ((m_cfg.fLeadAccMs2 > 0.0) || (m_cfg.fVelFfAccGainMs != 0.0)) {
+                fAccAxis = m_aFeeder[i].evalAcc(fCamXEff) * fMasterVel * fMasterVel;
+            }
             if (m_cfg.fLeadAccMs2 > 0.0) {
-                double fAccAxis = m_aFeeder[i].evalAcc(fCamXEff) * fMasterVel * fMasterVel;
                 fLead += fAccAxis * (m_cfg.fLeadAccMs2 * 1.0e-6);
             }
             afIdealMm[i] = fIdeal;
             afCmdPosMm[i] = fIdeal + fLead + compensationHook(i);
             /* 速度前馈 = 轴速度 [mm/s]，只表示"这一刻该跑多快"，与 T 无关；
-               非 CAM_RUN 强制 0 (残留的速度偏置会让电机自己跑) */
-            afVelFf[i] = (m_eState == FEED_CAM_RUN) ? (fRatio * fMasterVel) : 0.0;
+               非 CAM_RUN 强制 0 (残留的速度偏置会让电机自己跑)
+               加速度项(方案B)：+ Ka·a，把加速段"该多跑的那点速度"提前给出，
+               位置环不用攒误差去追 → 消掉进同步段的过冲。
+               量纲: a[mm/s²] × Ka[ms] × 1e-3 = mm/s */
+            afVelFf[i] = (m_eState == FEED_CAM_RUN)
+                        ? (fRatio * fMasterVel + m_cfg.fVelFfAccGainMs * 1.0e-3 * fAccAxis)
+                        : 0.0;
         } else {
             afCmdPosMm[i] = 0.0;
         }
