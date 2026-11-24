@@ -268,6 +268,19 @@ CWASR_TC::CWASR_TC()
 	// 驱动器监视: 计时清零
 	m_drvMonTick = 0;
 
+	// 绝对位置清零: 状态机回 IDLE, 无待办, 无在飞请求
+	m_zeroState     = 0;
+	m_zeroPending   = 0;
+	m_zeroSafeCnt   = 0;
+	m_zeroTimer     = 0;
+	m_zeroRetryWait = 0;
+	m_zeroAxisOk    = 0;
+	m_zeroCount     = 0;
+	for (int i = 0; i < SITE_AXIS_MAX; i++) {
+		m_zeroWriteReq[i] = 0;
+		m_zeroReadReq[i]  = 0;
+	}
+
 	// 模块级默认值: 站点形态 + 实验类型
 	m_Status.SiteProfile    = SITE_PROFILE_LOCAL_1AX;
 	ApplySiteProfile(m_Status.SiteProfile);
@@ -313,6 +326,22 @@ HRESULT CWASR_TC::SetObjStatePS(PTComInitDataHdr pInitData)
 		m_drvMonRatioGot[i] = FALSE;
 		m_drvMonRigGot[i]   = FALSE;
 	}
+	// 绝对位置清零: 重新进 OP 时把状态机与在飞请求全部丢掉
+	// (SP 里 CoeSdo::Shutdown 已经把请求表清了, 这里的请求号全是失效的)
+	m_zeroState     = 0;
+	m_zeroPending   = 0;
+	m_zeroSafeCnt   = 0;
+	m_zeroTimer     = 0;
+	m_zeroRetryWait = 0;
+	m_zeroAxisOk    = 0;
+	for (int i = 0; i < SITE_AXIS_MAX; i++) {
+		m_zeroWriteReq[i] = 0;
+		m_zeroReadReq[i]  = 0;
+	}
+	// 命令位/回显清干净: 避免上一轮残留的 1 在重进 OP 后立刻触发一次清零,
+	// 也避免界面上还挂着上一轮的"成功/失败"(m_zeroCount 是累计值, 保留)
+	m_Status.Driver_SpdLoop_Kp = 0;
+	m_Status.Driver_SpdLoop_Ti = 0;
 	// 重新进入 OP 时按当前 ExperimentType 再写一次 Sig* 初值
 	m_lastExperimentType = -1;
 
@@ -622,12 +651,274 @@ void CWASR_TC::DriverMonitorRun()
 		}
 
 		// 3) 没有在飞请求就发下一次读 (地址来自站点表, 与本槽位对应)
-		if (m_drvMonRatioReq[i] == 0) {
-			m_drvMonRatioReq[i] = m_coeSdo.ReadAddr(m_aulSlaveAddr[i], iIdx, iSub, 2);
+		//    清零进行中不再叠加新请求: SDO 请求槽一共 8 个, 清零每轴占一条 (最多 4 条),
+		//    监视每轮也是最多 8 条, 同时发会把表挤满 (AllocSlotLocked 会回收 DONE 槽)。
+		//    已在飞的结果照常收 (上面 1) / 2) 不受影响), 只是暂停发新的。
+		if (m_zeroState == 0) {
+			if (m_drvMonRatioReq[i] == 0) {
+				m_drvMonRatioReq[i] = m_coeSdo.ReadAddr(m_aulSlaveAddr[i], iIdx, iSub, 2);
+			}
+			if (m_drvMonRigReq[i] == 0) {
+				m_drvMonRigReq[i] = m_coeSdo.ReadAddr(m_aulSlaveAddr[i], rIdx, rSub, 2);
+			}
 		}
-		if (m_drvMonRigReq[i] == 0) {
-			m_drvMonRigReq[i] = m_coeSdo.ReadAddr(m_aulSlaveAddr[i], rIdx, rSub, 2);
+	}
+#endif
+}
+
+///////////////////////////////////////////////////////////////////////////////
+// 绝对位置自动清零 (维控 VD5E P10-06 AbsEncRst, 0x200A:06)
+//
+// 为什么要有 (2026-11-23/24 实机踩坑的根治手段):
+//   607Ah / 6064h 都是 int32, 23bit 编码器一圈 8388608 counts, 位置空间 =
+//   2^31 / 8388608 = 正好 256 转 = 50009 mm 送纸。30 m/min 连续跑约 100 s 用完,
+//   越界后 PosToLong 会把目标位置钳住 → 电机一步不动 / 转矩只有 1% / 驱动器不报错。
+//   抬上限只是拖延 (最多多跑 1.1 m), 根治只能把驱动器的多圈计数清掉。
+//
+// 为什么必须"未使能"才做:
+//   写 1 是"立即生效", 6064 瞬间从 2e9 跳到 0。若驱动器还在 Operation Enabled,
+//   607A 仍是旧的大位置, 它看到目标领先 2e9 counts(≈47 km) 就会以最大加速度去追,
+//   等同飞车。未使能时 607A 根本不执行; 而且送纸凸轮的冻结分支每拍把 posCmdOut
+//   贴回 6064 (SpeedTestSequencer 里那段), 位置跳变被自动吸收, 使能后无残余偏差。
+//
+// 触发:
+//   自动 = 任一驱动轴 |6064| >= ABS_ZERO_POS_UNIT → 挂 pending, 等停机窗口执行
+//          (运行中只记标志不动作, 那时驱动器使能着)
+//   手动 = ADS 把 Status.Driver_SpdLoop_Kp 写 1 (取走后清 0, 不受冷却限制)
+// 回显:
+//   Status.Driver_SpdLoop_Ti = 0 空闲 / 1 执行中 / 2 成功 / 3 失败 / 4 已判定待停机
+//
+// ⚠ P10-06 不存储、写完自动回 0 → 不磨损 EEPROM, 可以反复清;
+//   但清零会抹掉编码器多圈计数, 装到机台上必须重新做机械原点回归。
+///////////////////////////////////////////////////////////////////////////////
+void CWASR_TC::AbsPosZeroRun()
+{
+#if ABS_ZERO_ENABLE
+	int  a;
+	bool bSafe;
+
+	// 失败冷却计时 (只有自动触发受它限制)
+	if (m_zeroRetryWait > 0) {
+		m_zeroRetryWait--;
+	}
+
+	// ---- 手动命令: Kp 写 1 请求一次 ----
+	// 取走后清 0, 现场看 Ti 就知道结果; 手动命令不受冷却限制 (调试要用)
+	if (m_Status.Driver_SpdLoop_Kp == 1) {
+		m_zeroPending   = 1;
+		m_zeroRetryWait = 0;
+		m_Status.Driver_SpdLoop_Kp = 0;
+		m_Trace.Log(tlAlways, "WASR_TC: abs pos zero requested by user");
+	}
+
+	// ---- 安全条件: Enable=0 且所有已挂载驱动轴都不在 Operation Enabled ----
+	// 必须连续满足 ABS_ZERO_SAFE_CYCLES 拍: Enable 刚清的那几十毫秒里
+	// CiA402 还要从 0F 走到 06, m_abOpDrive 仍为真, 不去抖就会清在使能态。
+	bSafe = (m_Status.Enable == 0);
+	if (bSafe) {
+		for (a = 0; a < SITE_AXIS_MAX; a++) {
+			if (m_apDrive[a] != NULL && m_abOpDrive[a]) {
+				bSafe = false;
+				break;
+			}
 		}
+	}
+	if (!bSafe) {
+		m_zeroSafeCnt = 0;
+	} else if (m_zeroSafeCnt < ABS_ZERO_SAFE_CYCLES) {
+		m_zeroSafeCnt++;
+	}
+
+	// ---- 自动触发: 位置接近 int32 上限就挂 pending, 等停机窗口 ----
+	// 注意这里只记标志, 不清零: 此刻驱动器多半还使能着, 清了就是飞车。
+	if ((m_zeroState == 0) && (m_zeroPending == 0) && (m_zeroRetryWait == 0)) {
+		for (a = 0; a < SITE_AXIS_MAX; a++) {
+			double v;
+			if (m_apDrive[a] == NULL) {
+				continue;
+			}
+			// 不引 math.h: 位置只可能正负两种, 直接翻符号
+			v = m_afActPosUnits[a];
+			if (v < 0.0) {
+				v = -v;
+			}
+			if (v >= ABS_ZERO_POS_UNIT) {
+				m_zeroPending = 1;
+				m_Trace.Log(tlAlways,
+					"WASR_TC: axis %d abs pos %.0f near int32 limit -> zero pending (wait Enable=0)",
+					a, m_afActPosUnits[a]);
+				break;
+			}
+		}
+	}
+
+	switch (m_zeroState) {
+
+	// ---------------------------------------------------------------- IDLE
+	case 0:
+		if (m_zeroPending == 0) {
+			break;
+		}
+		if (m_zeroSafeCnt < ABS_ZERO_SAFE_CYCLES) {
+			m_Status.Driver_SpdLoop_Ti = 4;      // 已判定要清, 还在等停机
+			break;
+		}
+		{
+			int nSent = 0;
+			m_zeroAxisOk = 0;
+			for (a = 0; a < SITE_AXIS_MAX; a++) {
+				m_zeroWriteReq[a] = 0;
+				m_zeroReadReq[a]  = 0;
+				if (m_apDrive[a] == NULL) {
+					continue;
+				}
+				// 地址走站点表, 与 DriverMonitorRun 同一套 (profile 3 = 1001~1004)
+				m_zeroWriteReq[a] = m_coeSdo.WriteAddr(
+					m_aulSlaveAddr[SlotOfServo(m_apServo, m_apDrive[a])],
+					ABS_ZERO_INDEX, ABS_ZERO_SUBINDEX, ABS_ZERO_CMD_CLEAR, 2);
+				if (m_zeroWriteReq[a] != 0) {
+					nSent++;
+				}
+			}
+			if (nSent == 0) {
+				// 一条都没发出去 (请求表满 / 地址非法): 保持 pending, 下一拍再试
+				m_Status.Driver_SpdLoop_Ti = 1;
+				break;
+			}
+			m_zeroTimer = 0;
+			m_zeroState = 1;
+			m_Status.Driver_SpdLoop_Ti = 1;
+			m_Trace.Log(tlAlways,
+				"WASR_TC: abs pos zero start, %d/%d axis write sent (P10-06=1)",
+				nSent, (int)m_nDriveAxisCount);
+		}
+		break;
+
+	// ---------------------------------------------------------------- SEND
+	case 1:
+		{
+			bool bAllDone = true;
+			bool bAnyFail = false;
+			for (a = 0; a < SITE_AXIS_MAX; a++) {
+				CoeSdoResult r;
+				if (m_zeroWriteReq[a] == 0) {
+					continue;
+				}
+				if (!m_coeSdo.GetResult(m_zeroWriteReq[a], &r)) {
+					bAllDone = false;             // 还在等 (CoeSdo 内部 3 s 超时兜底)
+					continue;
+				}
+				m_zeroWriteReq[a] = 0;
+				if (r.Status == COE_SDO_OK) {
+					m_zeroAxisOk |= (uint8_t)(1u << a);
+				} else {
+					bAnyFail = true;
+					m_Trace.Log(tlAlways,
+						"WASR_TC: abs pos zero axis %d write FAILED, status=%d ads=0x%08X",
+						a, (int)r.Status, (unsigned)r.AdsResult);
+				}
+			}
+			if (!bAllDone) {
+				break;
+			}
+			if (bAnyFail) {
+				m_zeroState = 6;
+				break;
+			}
+			m_zeroTimer = 0;
+			m_zeroState = 2;
+		}
+		break;
+
+	// ---------------------------------------------------------------- SETTLE
+	// 写完不立刻读: 驱动器内部改编码器计数有延迟, 读早了会误判失败
+	case 2:
+		if (m_zeroTimer < ABS_ZERO_SETTLE_CYCLES) {
+			m_zeroTimer++;
+			break;
+		}
+		{
+			int nSent = 0;
+			for (a = 0; a < SITE_AXIS_MAX; a++) {
+				m_zeroReadReq[a] = 0;
+				if ((m_zeroAxisOk & (uint8_t)(1u << a)) == 0) {
+					continue;
+				}
+				m_zeroReadReq[a] = m_coeSdo.ReadAddr(
+					m_aulSlaveAddr[SlotOfServo(m_apServo, m_apDrive[a])],
+					ABS_ZERO_POS_INDEX, 0x00, 4);
+				if (m_zeroReadReq[a] != 0) {
+					nSent++;
+				}
+			}
+			if (nSent > 0) {
+				m_zeroTimer = 0;
+				m_zeroState = 3;
+			}
+			// nSent == 0: 留在 SETTLE, 下一拍再试
+		}
+		break;
+
+	// ---------------------------------------------------------------- VERIFY
+	// "写成功"不等于"清成功", 必须读 6064 确认真的回到 0 附近
+	case 3:
+		{
+			bool bAllDone = true;
+			bool bBad     = false;
+			for (a = 0; a < SITE_AXIS_MAX; a++) {
+				CoeSdoResult r;
+				if (m_zeroReadReq[a] == 0) {
+					continue;
+				}
+				if (!m_coeSdo.GetResult(m_zeroReadReq[a], &r)) {
+					bAllDone = false;
+					continue;
+				}
+				m_zeroReadReq[a] = 0;
+				if (r.Status != COE_SDO_OK) {
+					bBad = true;
+					m_Trace.Log(tlAlways,
+						"WASR_TC: abs pos zero axis %d verify read FAILED, status=%d",
+						a, (int)r.Status);
+				} else {
+					// 6064 是 int32: 按 long 解释位模式 (回绕成负值也认得出来)
+					long v = (long)r.Value;
+					if ((v > ABS_ZERO_VERIFY_TOL) || (v < -ABS_ZERO_VERIFY_TOL)) {
+						bBad = true;
+						m_Trace.Log(tlAlways,
+							"WASR_TC: abs pos zero axis %d verify FAILED, 6064 = %ld (tol %ld)",
+							a, v, (long)ABS_ZERO_VERIFY_TOL);
+					}
+				}
+			}
+			if (!bAllDone) {
+				break;
+			}
+			m_zeroState = bBad ? 6 : 5;
+		}
+		break;
+
+	// ---------------------------------------------------------------- DONE
+	case 5:
+		m_zeroCount++;
+		m_Status.Driver_SpdLoop_Ti = 2;
+		m_zeroPending = 0;
+		m_zeroSafeCnt = 0;
+		m_zeroState   = 0;
+		m_Trace.Log(tlAlways,
+			"WASR_TC: abs pos zero OK (total %u). NOTE: mechanical homing may be required on machine.",
+			(unsigned)m_zeroCount);
+		break;
+
+	// ---------------------------------------------------------------- FAIL
+	default:
+		m_Status.Driver_SpdLoop_Ti = 3;
+		m_zeroPending   = 0;
+		m_zeroSafeCnt   = 0;
+		m_zeroState     = 0;
+		m_zeroRetryWait = ABS_ZERO_RETRY_COOL;    // 冷却期内不再自动重试
+		m_Trace.Log(tlAlways, "WASR_TC: abs pos zero FAILED, auto retry on cool-down");
+		break;
 	}
 #endif
 }
@@ -804,6 +1095,10 @@ HRESULT CWASR_TC::CycleUpdate(ITcTask* ipTask, ITcUnknown* ipCaller, ULONG_PTR c
 		                     ? (double)m_apDrive[a]->Inputs->Position_actual_value
 		                     : 0.0;
 	}
+
+	// 绝对位置清零 (P10-06): 放在监视之前, 让它先占 SDO 请求槽 ——
+	// 本轮一旦进清零流程, 下面的 DriverMonitorRun 会自动停发新请求 (见那里 gate)
+	AbsPosZeroRun();
 
 	// 驱动器监视: 周期读各槽位的惯量比/刚性等级 (SDO)
 	DriverMonitorRun();

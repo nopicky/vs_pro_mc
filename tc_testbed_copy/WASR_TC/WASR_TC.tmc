@@ -625,12 +625,14 @@
             <Name>Driver_Rigidity_level</Name>
             <BaseType GUID="{18071995-0000-0000-0000-000000000005}">UINT</BaseType>
           </Symbol>
-          <Symbol>
+          <Symbol CreateSymbol="true">
             <Name>Driver_SpdLoop_Kp</Name>
+            <Comment TxtId=""><![CDATA[绝对位置清零命令 (P10-06 AbsEncRst, 0x200A:06): 写 1 = 请求一次清零, 模块取走后自动清 0。只在 Enable=0 且所有驱动轴都不在 OP 时执行; 运行中写只挂起等待停机。]]></Comment>
             <BaseType GUID="{18071995-0000-0000-0000-000000000005}">UINT</BaseType>
           </Symbol>
-          <Symbol>
+          <Symbol CreateSymbol="true">
             <Name>Driver_SpdLoop_Ti</Name>
+            <Comment TxtId=""><![CDATA[位置清零状态回显: 0=空闲 1=执行中 2=成功 3=失败 4=已判定待停机]]></Comment>
             <BaseType GUID="{18071995-0000-0000-0000-000000000005}">UINT</BaseType>
           </Symbol>
           <Symbol CreateSymbol="true">

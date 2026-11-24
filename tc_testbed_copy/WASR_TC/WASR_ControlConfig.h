@@ -43,4 +43,48 @@
 #define IR_MON_S1_RIG_VAL_MIN         0
 #define IR_MON_S1_RIG_VAL_MAX         41
 
+// ---------------- 绝对位置自动清零 (维控 P10-06 / 0x200A:06 AbsEncRst) ----------------
+// 为什么要有: 607Ah / 6064h 都是 int32, VD5E 的 23bit 编码器一圈 8388608 counts,
+//   于是位置空间 = 2^31 / 8388608 = 正好 256 转 = 256 x 195.349 = 50009 mm 送纸。
+//   30 m/min 连续送纸约 100 s 就用完, 越过之后 PosToLong 会把目标位置钳住,
+//   表现为"电机一步不动 / 转矩 1% / 驱动器不报错"(2026-11-23 实机踩过)。
+//   根治只能把驱动器的多圈计数清掉, 让 6064 回到 0 附近。
+//
+// 对象: P10-06 AbsEncRst, UINT16, 设定值 1 = 清多圈圈数 + 清当前位置 + 清编码器告警
+//       (面板 / 上位机 / SDO 三种方式效果相同, 写完驱动器自动回 0, 且该值不存储,
+//        所以不磨损 EEPROM, 可以按需反复清)
+//
+// ★ 只能在"未使能"时执行: 写 1 是"立即生效", 6064 瞬间从 2e9 跳到 0。
+//   若驱动器还在 Operation Enabled, 607A 仍是旧的大位置, 它看到目标领先
+//   2e9 counts(≈47km) 就会以最大加速度去追 —— 等于飞车。
+//   未使能时送纸凸轮的冻结分支每拍把 posCmdOut 贴回 6064, 位置跳变被自动吸收,
+//   使能后不存在残余偏差, 所以这个窗口是零冲击的。
+#define ABS_ZERO_ENABLE               1
+
+// 自动触发阈值 [指令单位]: 任一驱动轴 |6064| 超过它 → 挂"待清零"标志, 等停机窗口
+// 1.6e9 ≈ 190 转 ≈ 37.1 m 送纸; 到跳闸线 2.1e9 还留 5e8 (≈11.6 m, 30m/min 下 23 s)
+#define ABS_ZERO_POS_UNIT             1.6e9
+
+// 安全条件需要连续满足的拍数 (Enable=0 且所有已挂载驱动轴都不在 OP)
+// 125us 周期下 2000 拍 = 250 ms: 足够等 CiA402 从 0F 走到 06
+// (Enable 刚清的那几十毫秒里 m_abOpDrive 仍为真, 不去抖就会清在使能态)
+#define ABS_ZERO_SAFE_CYCLES          2000UL
+
+// 写成功后再等多少拍才读 6064 验证 (125us x 2000 = 250 ms)
+#define ABS_ZERO_SETTLE_CYCLES        2000UL
+
+// 验证容差 [指令单位]: 清完 |6064| 应远小于它 (10000 counts ≈ 0.23 mm)
+#define ABS_ZERO_VERIFY_TOL           10000L
+
+// 失败后自动重试的冷却拍数 (125us x 240000 = 30 s), 防止位置仍超阈值时无限重发
+#define ABS_ZERO_RETRY_COOL           240000UL
+
+// P10-06 对象与命令值
+#define ABS_ZERO_INDEX                0x200A
+#define ABS_ZERO_SUBINDEX             0x06
+#define ABS_ZERO_CMD_CLEAR            1
+
+// 6064h 位置实际值 (验证清零是否真的生效)
+#define ABS_ZERO_POS_INDEX            0x6064
+
 #endif // WASR_CONTROLCONFIG_H_

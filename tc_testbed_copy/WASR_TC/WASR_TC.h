@@ -125,6 +125,23 @@ protected:
 	void DriverMonitorRun();
 
 	/**
+	 * 绝对位置自动清零 (维控 VD5E P10-06 AbsEncRst, 0x200A:06)
+	 *
+	 * 607Ah/6064h 是 int32, 23bit 编码器下位置空间只有 256 转 (≈50 m 送纸),
+	 * 连续送纸约 100 s 就用完, 越界后目标位置会被钳住(电机不动/转矩1%)。
+	 * 这里在"驱动未使能"的窗口里通过 SDO 写 P10-06=1, 把 6064 拉回 0。
+	 *
+	 * 触发: 自动 = 任一驱动轴 |6064| >= ABS_ZERO_POS_UNIT (挂 pending, 停机后执行)
+	 *       手动 = ADS 把 Status.Driver_SpdLoop_Kp 写 1 (执行后自动清 0)
+	 * 回显: Status.Driver_SpdLoop_Ti  0空闲 / 1执行中 / 2成功 / 3失败 / 4等待停机
+	 *
+	 * 安全: 必须 Enable=0 且所有驱动轴都不在 OP, 并连续保持 ABS_ZERO_SAFE_CYCLES 拍。
+	 *       使能态清零 → 607A 仍是大位置 → 驱动器按最大加速度追 → 飞车。
+	 * 验证: 写成功后等一段, 再读 6064 确认回到 0 附近, 不信"写成功"就当清好了。
+	 */
+	void AbsPosZeroRun();
+
+	/**
 	 * 按实验类型写入 Status.SigFreq / SigAmp / SigOffset 初值
 	 * (程序启动与用户切换 ExperimentType 时调用; 之后用户可以随意调整)
 	 * @param type 当前实验类型
@@ -196,6 +213,25 @@ protected:
 	// 驱动器监视: 每槽位每个对象是否已经读到过值 (只打一次日志)
 	BOOL m_drvMonRatioGot[SITE_SLOT_MAX];
 	BOOL m_drvMonRigGot[SITE_SLOT_MAX];
+	// ---- 绝对位置清零 (P10-06) ----
+	// 状态机: 0=IDLE 1=SEND(收写结果) 2=SETTLE(等生效) 3=VERIFY(读6064) 5=DONE 6=FAIL
+	// (4 未用: 等待停机只是 IDLE 里的一个回显值, 不是真的状态)
+	uint8_t m_zeroState;
+	// 待清零标志 (自动触发或手动命令置位, 执行完/失败后清)
+	uint8_t m_zeroPending;
+	// 安全条件已连续满足的拍数
+	ULONG   m_zeroSafeCnt;
+	// 状态内计时拍数 (SETTLE 用)
+	ULONG   m_zeroTimer;
+	// 失败后的自动重试冷却拍数 (0 = 可以触发)
+	ULONG   m_zeroRetryWait;
+	// 每轴的在飞请求号 (0 = 没有): 写 P10-06 / 读 6064 验证
+	ULONG   m_zeroWriteReq[SITE_AXIS_MAX];
+	ULONG   m_zeroReadReq[SITE_AXIS_MAX];
+	// 本轮写成功的轴掩码 (bit a = 轴 a), 验证只查这些轴
+	uint8_t m_zeroAxisOk;
+	// 累计成功次数 (回显到 Driver_SpdLoop_Ti 之外的 trace)
+	ULONG   m_zeroCount;
 	// 上一次的 ExperimentType (-1 = 还没初始化过)
 	int m_lastExperimentType;
 };

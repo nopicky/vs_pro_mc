@@ -131,10 +131,14 @@ const SITE_PROFILE_T g_aSiteProfile[SITE_PROFILE_COUNT] =
             SITE_SLOT_OFF(1003),     // Servo2 = 不接
             SITE_SLOT_OFF(1004),     // Servo3 = 不接
             SITE_SLOT_OFF(1005),     // Servo4 = 不接
-            SITE_SLOT_DRV23(1005),   // Servo5 = VD5E_1 驱动轴0
-            SITE_SLOT_DRV23(1006),   // Servo6 = VD5E_2 驱动轴1
-            SITE_SLOT_DRV23(1007),   // Servo7 = VD5E_3 驱动轴2
-            SITE_SLOT_DRV23(1008),   // Servo8 = VD5E_4 驱动轴3
+            // ★ 本 profile 只启用 4 台 VD5E, 自动地址从 1001 起顺排
+            //   (2026-11-24 同事在对拖现场逐个核对确认: 1001~1004)
+            //   不要和 profile 2 的 1005~1008 搞混 —— 那个是 VD3E(1001~1004)
+            //   与 VD5E 同时启用时的排布
+            SITE_SLOT_DRV23(1001),   // Servo5 = VD5E_1 驱动轴0
+            SITE_SLOT_DRV23(1002),   // Servo6 = VD5E_2 驱动轴1
+            SITE_SLOT_DRV23(1003),   // Servo7 = VD5E_3 驱动轴2
+            SITE_SLOT_DRV23(1004),   // Servo8 = VD5E_4 驱动轴3
             SITE_SLOT_OFF(1009),     // Servo9 预留
             SITE_SLOT_OFF(1010),     // Servo10 预留
             SITE_SLOT_OFF(1011)      // Servo11 预留
