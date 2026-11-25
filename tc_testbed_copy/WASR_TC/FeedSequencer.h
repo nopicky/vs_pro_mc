@@ -62,6 +62,18 @@ public:
 
     void getMonitor(FEED_MONITOR_T* pOut) const;
 
+    /* 本次启动已跑完的完整凸轮循环数（只增，IDLE 重新启动时清 0）
+       为什么由这一层数：只有这里知道"一圈走完"（fCamX >= m_fMaxCamLen）。
+       上层（SpeedTestSequencer）拿它跟 g_cfgFeed.nAutoStopCycles 比，
+       达到就写回 Status.bFeedStart=0 —— 状态机在**下一个圈末**自然走 STOPPING，
+       所以一定是整圈停，不会停在半路。 */
+    int getDoneCycles() const { return m_nDoneCycles; }
+
+    /* 自动停圈数（0 = 不限）。每拍刷一次即可，在线改立即生效。
+       放在这里而不是 setLiveTuning 里：那两个是"补偿量"，这个是"流程控制"，
+       混在一起以后加参数容易把语义搞乱。 */
+    void setAutoStopCycles(int n) { m_cfg.nAutoStopCycles = n; }
+
 private:
     /* 补偿钩子：v1 恒 0；后续 DOB/AI 补偿在此叠加到位置指令，不动状态机 */
     double compensationHook(int nAxisIdx) const;
@@ -80,6 +92,7 @@ private:
     double        m_fPrevPhase;     /* 上一拍外部主轴相位 mm（差分求速度 + 回绕修正） */
     bool          m_bPrevValid;     /* 上一拍相位有效标志（init 后首拍不差分） */
     double        m_fPhaseUnwrapped;/* 解缠后的内部主轴相位 mm（单调累加，下游统一用它） */
+    int           m_nDoneCycles;    /* 本次启动已完成的完整凸轮圈数（自动停用，见 getDoneCycles） */
 };
 
 #endif /* FEED_SEQUENCER_H__20261117 */

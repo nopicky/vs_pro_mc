@@ -1118,10 +1118,25 @@ void SpeedTestSequencer::Update(ExperimentType_T experiment,
         feedSeq.setLiveTuning(g_cfgFeed.fLeadTimeMs,
                               g_cfgFeed.fLeadAccMs2,
                               g_cfgFeed.fVelFfAccGainMs);
+        // 自动停圈数：同补偿量一样每拍刷，在线改立即生效（0 = 不限，与原来一致）
+        feedSeq.setAutoStopCycles(g_cfgFeed.nAutoStopCycles);
 
         // 虚拟主轴积分 + 状态机推进 (4 轴指令 [mm])
         feedMaster.tick(dtSec);
         feedSeq.tick(feedMaster.getPhase(), dtSec, pAct, feedCmdMm);
+
+        // ---- 自动停：跑够 N 个完整凸轮循环就撤销启动位 ----
+        // FeedSequencer 内部已经据圈数走了 STOPPING（第 N 圈走完当场停），
+        // 这里补最后一刀：外部 Status.bFeedStart 还是 1，下一拍 setStart 又会把
+        //   m_bStart 置回来，STOPPING 结束回 IDLE 后会被重新拉起 —— 所以必须写回外部变量。
+        // 跳闸那段（下面 feedTrip 处理）是同样的写法，这是本模块的既有约定。
+        // 圈数在 IDLE 重新启动时由内部清 0，所以"停后再置 1"就是重新跑 N 圈。
+        if ((g_cfgFeed.nAutoStopCycles > 0) && (feedStart != NULL) &&
+            (feedSeq.getDoneCycles() >= g_cfgFeed.nAutoStopCycles)) {
+            if (*feedStart != 0) {
+                *feedStart = 0;
+            }
+        }
 
         // 各轴指令: 指令原点 + 凸轮位置 × 换算 (double 累加, 同 POS_WAVE 精度处理)
         for (int i = 0; i < SITE_AXIS_MAX; i++) {

@@ -1183,6 +1183,41 @@ HRESULT CWASR_TC::CycleUpdate(ITcTask* ipTask, ITcUnknown* ipCaller, ULONG_PTR c
 		if (m_Status.InertiaRatio3 > 0.0f) { g_cfgFeed.fInertiaRatio[3] = (double)m_Status.InertiaRatio3; }
 	}
 
+	// ---- 自动停圈数（2026-11-25，**不挂在 bLiveTuning 下**）----
+	// 为什么不需要总开关：0 就是"不限"= 原来连续跑的行为，这本身就是安全默认；
+	//   而 bLiveTuning 管的那几项 0 是"把前馈关掉"的危险值，必须显式开。
+	// 想恢复不限：写回 0 即可，下一拍立刻生效。
+	g_cfgFeed.nAutoStopCycles = (int)m_Status.AutoStopCycles;
+
+	// ---- 自动惯量比：SDO 读回 0x2003:01（2026-11-25）----
+	// m_drvMonRatio[slot] 由 DriverMonitorRun 每 IR_MON_PERIOD_MS 读一次（单位 0.01，
+	//   已在 100..10000 范围校验过），这里只做"槽位 -> 轴号"的映射与单位换算。
+	// 为什么读 2003:01 而不是 201E:14(实时惯量比)：
+	//   2003:01 是驱动器自己调增益/前馈用的那一份，稳定且同源；201E:14 是在线估算，
+	//   随工况波动，每拍拿它算转矩前馈等于往转矩环注噪声。
+	// 安全回退：没读到（m_drvMonRatioGot=0）、值 < 100、或该轴没挂 ->
+	//   一律保持手填的 fInertiaRatio[]（上一个 bLiveTuning 块刚写进去的），
+	//   绝不用 0 或错的惯量去出力。
+	if (m_Status.bAutoInertia != 0) {
+		for (int a = 0; a < SITE_AXIS_MAX; a++) {
+			if (m_apDrive[a] == NULL) {
+				continue;
+			}
+			int nSlot = SlotOfServo(m_apServo, m_apDrive[a]);
+			if ((nSlot >= 0) && (nSlot < SITE_SLOT_MAX) &&
+			    m_drvMonRatioGot[nSlot] && (m_drvMonRatio[nSlot] >= 100)) {
+				g_cfgFeed.fInertiaRatio[a] = (double)m_drvMonRatio[nSlot] / 100.0;
+			}
+		}
+	}
+
+	// 实际生效的惯量比回显（只读）：与 InertiaRatioN(填的) 分开，
+	// 现场一眼能看出"自动读到的"和"我填的"差多少、有没有退回手填值
+	m_Status.AutoInertiaApplied0 = (float)g_cfgFeed.fInertiaRatio[0];
+	m_Status.AutoInertiaApplied1 = (float)g_cfgFeed.fInertiaRatio[1];
+	m_Status.AutoInertiaApplied2 = (float)g_cfgFeed.fInertiaRatio[2];
+	m_Status.AutoInertiaApplied3 = (float)g_cfgFeed.fInertiaRatio[3];
+
 	// 送纸凸轮换算 (feedMmToUnit[]) 只由 InitControl 写: 构造/换形态/首拍/
 	// Enable 上升沿各一次。这里不再每拍重算一遍 —— 同一公式写两处,
 	// 改一处忘另一处就会算错, 且算错了没有任何报错
@@ -1227,6 +1262,10 @@ HRESULT CWASR_TC::CycleUpdate(ITcTask* ipTask, ITcUnknown* ipCaller, ULONG_PTR c
 			*apFollowErr[i]   = mon.afFollowErr[i] * fMmToUnit;
 			*apIdealErr[i]    = mon.afIdealErr[i] * fMmToUnit;
 		}
+		// 自动停圈数回显（只读）：本次启动已完成几个完整凸轮循环。
+		// 现场核对采集长度用：AutoStopCycles=10，这里跳到 10 就说明该停了。
+		// 重新启动（IDLE 里 bFeedStart 0→1）时内部清 0，所以是"本次启动"的计数。
+		m_Status.FeedCycleDone = (unsigned short)m_testSeq.feedSeq.getDoneCycles();
 	}
 
 	// 驱动侧运行模式 (输出): 8 = CSP, 9 = CSV, 10 = CST

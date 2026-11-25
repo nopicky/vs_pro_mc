@@ -933,6 +933,41 @@
             <Comment TxtId=""><![CDATA[轴3 负载惯量比 R, <=0 沿用初值]]></Comment>
             <BaseType GUID="{18071995-0000-0000-0000-00000000000d}">REAL</BaseType>
           </Symbol>
+          <Symbol CreateSymbol="true">
+            <Name>bAutoInertia</Name>
+            <Comment TxtId=""><![CDATA[1=SDO读2003:01自动填R(读不到退回手填), 0=用手填值]]></Comment>
+            <BaseType GUID="{18071995-0000-0000-0000-000000000002}">USINT</BaseType>
+          </Symbol>
+          <Symbol CreateSymbol="true">
+            <Name>AutoStopCycles</Name>
+            <Comment TxtId=""><![CDATA[跑够N个完整凸轮周期自动停, 0=不限(默认)]]></Comment>
+            <BaseType GUID="{18071995-0000-0000-0000-000000000002}">USINT</BaseType>
+          </Symbol>
+          <Symbol CreateSymbol="true">
+            <Name>FeedCycleDone</Name>
+            <Comment TxtId=""><![CDATA[本次启动已完成凸轮圈数, 只读, IDLE重启动时清0]]></Comment>
+            <BaseType GUID="{18071995-0000-0000-0000-000000000005}">UINT</BaseType>
+          </Symbol>
+          <Symbol CreateSymbol="true">
+            <Name>AutoInertiaApplied0</Name>
+            <Comment TxtId=""><![CDATA[轴0 实际生效的R(自动或手填), 只读]]></Comment>
+            <BaseType GUID="{18071995-0000-0000-0000-00000000000d}">REAL</BaseType>
+          </Symbol>
+          <Symbol CreateSymbol="true">
+            <Name>AutoInertiaApplied1</Name>
+            <Comment TxtId=""><![CDATA[轴1 实际生效的R(自动或手填), 只读]]></Comment>
+            <BaseType GUID="{18071995-0000-0000-0000-00000000000d}">REAL</BaseType>
+          </Symbol>
+          <Symbol CreateSymbol="true">
+            <Name>AutoInertiaApplied2</Name>
+            <Comment TxtId=""><![CDATA[轴2 实际生效的R(自动或手填), 只读]]></Comment>
+            <BaseType GUID="{18071995-0000-0000-0000-00000000000d}">REAL</BaseType>
+          </Symbol>
+          <Symbol CreateSymbol="true">
+            <Name>AutoInertiaApplied3</Name>
+            <Comment TxtId=""><![CDATA[轴3 实际生效的R(自动或手填), 只读]]></Comment>
+            <BaseType GUID="{18071995-0000-0000-0000-00000000000d}">REAL</BaseType>
+          </Symbol>
         </DataArea>
       </DataAreas>
       <InterfacePointers>

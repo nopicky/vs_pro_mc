@@ -314,6 +314,37 @@ typedef struct _WASR_TCStatus
 	float InertiaRatio1;
 	float InertiaRatio2;
 	float InertiaRatio3;
+
+	// ---- 自动惯量比：SDO 读驱动器 0x2003:01（2026-11-25）----
+	// 背景: 手填 R 要现场一台台对面板抄数, 换电机/换平台就得重填一遍, 很容易抄错。
+	//   而 IR_MON 每 100ms 已经在读这个对象了（m_drvMonRatio[slot]）, 只是没接线。
+	// bAutoInertia = 0 (默认): 用上面 InertiaRatioN 手填值, 行为与原来完全一致
+	// bAutoInertia = 1       : 每拍把读回的 0x2003:01/100 刷进 g_cfgFeed.fInertiaRatio[],
+	//                          优先于手填值
+	//   ★ 读不到（SDO 超时 / 站点表 ulSlaveAddr 与实际 EtherCAT Addr 不符）时自动退回
+	//     手填值 —— 不会静默用错数（Driver_Inertia_ratio 为 0 就说明没读到）。
+	//   ★ 为什么不用 201E:14(实时惯量比): 那是在线估算值, 随工况波动; 转矩前馈每拍用它
+	//     等于往转矩环注噪声, 容易激励振动。2003:01 是驱动器自己调增益用的那份, 稳定且同源。
+	// AutoInertiaAppliedN: 各轴**实际生效**的 R（只读回显）。与 InertiaRatioN 分开,
+	//   是因为"填的"和"实际用的"可能不同（读失败 → 退回手填）, 现场要能区分。
+	unsigned char bAutoInertia;
+
+	// ---- 自动停：跑够 N 个凸轮周期自动停（2026-11-25）----
+	// AutoStopCycles = 0 (默认): 不限, 与原来完全一致（连续跑, 靠 bFeedStart 手动停）
+	//                > 0       : 跑够 N 个**完整**凸轮循环后自动撤 bFeedStart, 停在圈末
+	// 为什么按"圈"而不是按"时间":
+	//   1) 手动停常常停在半圈, 采集长度每次都不一样, 后期对比很麻烦;
+	//   2) 按圈停保证整数圈, 采集长度 = N × 周期, Scope 窗口可以提前定死;
+	//   3) 位置行程被限在 N × 一圈位移内, 顺带避开 23bit 位置空间（约 68 圈会顶满）。
+	unsigned char AutoStopCycles;
+	// FeedCycleDone: 本次启动已完成的凸轮圈数（只读回显, 0..65535）。
+	//   清零时机 = IDLE 里 bFeedStart 由 0→1（真正的新一次启动）,
+	//   连续模式的圈末续送**不清零**（否则永远跑不到 N）。
+	unsigned short FeedCycleDone;
+	float AutoInertiaApplied0;
+	float AutoInertiaApplied1;
+	float AutoInertiaApplied2;
+	float AutoInertiaApplied3;
 } WASR_TCStatus, *PWASR_TCStatus;
 #pragma pack(pop)
 

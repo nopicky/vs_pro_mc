@@ -35,8 +35,11 @@ FEED_CONFIG_T g_cfgFeed = {
                                       先用 bLiveTuning=1 + Status.TorFfGain 在线扫，
                                       定了再把这里改成最终值当上电默认——
                                       别一上电就带转矩前馈，惯量标错会直接冲击机械 */
-    {2.72, 2.73, 2.65, 2.74}       /* fInertiaRatio：4 台 VD5E 实测 2003-01 / 100
-                                      (2026-11-24, 对拖机械连好、3E 不使能状态测) */
+    {2.72, 2.73, 2.65, 2.74},      /* fInertiaRatio：4 台 VD5E 实测 2003-01 / 100
+                                      (2026-11-24, 对拖机械连好、3E 不使能状态测)
+                                      Status.bAutoInertia=1 时会被 SDO 读回值覆盖 */
+    0                              /* nAutoStopCycles：0 = 不限（靠 bFeedStart 手动停）
+                                      与原来行为完全一致；>0 时跑够 N 整圈自动停 */
 };
 
 /* 走完凸轮后保持终值的周期数（125us×8000 ≈ 1s），之后回 IDLE 等下一次 Start */
@@ -54,6 +57,7 @@ CFeedSequencer::CFeedSequencer() {
     m_fPrevPhase = 0.0;
     m_bPrevValid = false;
     m_fPhaseUnwrapped = 0.0;
+    m_nDoneCycles = 0;      /* init 之前被 getDoneCycles 读到也必须是 0，不能是栈垃圾 */
     for (int i = 0; i < 4; i++) {
         m_afPosBase[i] = 0.0;
     }
@@ -106,6 +110,7 @@ bool CFeedSequencer::init(const FEED_CONFIG_T* pCfg) {
         m_afPosBase[i] = 0.0;
     }
     m_eState = FEED_IDLE;
+    m_nDoneCycles = 0;
     return true;
 }
 
@@ -182,6 +187,10 @@ void CFeedSequencer::tick(double fMasterPhase, double fDtSec, const double* afAc
     switch (m_eState) {
         case FEED_IDLE: {
             if (m_bStart) {
+                /* 新一次启动才清圈数。
+                   连续模式下圈末是在 CAM_RUN 里直接回 ARMED，不进 IDLE，
+                   所以不会把刚数好的圈数清掉（否则永远跑不到 nAutoStopCycles）。 */
+                m_nDoneCycles = 0;
                 m_eState = FEED_ARMED;
             }
         } break;
@@ -211,7 +220,21 @@ void CFeedSequencer::tick(double fMasterPhase, double fDtSec, const double* afAc
                 for (int i = 0; i < m_nAxisCount; i++) {
                     m_afPosBase[i] += m_aFeeder[i].evalPos(m_aFeeder[i].getLength());
                 }
-                if (m_cfg.bContinuous && m_bStart) {
+                /* 记一圈完成。这里是全模块唯一知道"整整走完一个凸轮循环"的地方，
+                   所以圈数只能在这里数（按时间估算会因加减速/速度变化而漂）。
+                   判上限不在这里：撤启动位要写回 Status.bFeedStart，那是挂载层的事，
+                   而且外部值每拍都会覆盖 m_bStart，必须由上层写回才停得住。 */
+                m_nDoneCycles++;
+                /* 到达自动停圈数：直接进 STOPPING，不再回 ARMED。
+                   为什么不放在上层判：如果这里回 ARMED 再由上层撤启动位，
+                   状态机会多绕一次 ARMED→WAIT_PHASE→IDLE（虽然不推进位置，
+                   但 FeedCycleDone 已经跳到 N+1 会让现场误以为多跑了一圈）。
+                   在这里判 = 第 N 圈走完当场停，圈数、采集长度都干净。
+                   ★ 上层仍必须写回 Status.bFeedStart=0：外部值每拍覆盖 m_bStart，
+                     只置内部标志的话，STOPPING 结束回 IDLE 后会被重新拉起来。 */
+                bool bAutoStop =
+                    (m_cfg.nAutoStopCycles > 0) && (m_nDoneCycles >= m_cfg.nAutoStopCycles);
+                if (m_cfg.bContinuous && m_bStart && !bAutoStop) {
                     /* 连续模式：不停车，立即等主轴下一整圈自动续送（真实送纸节拍） */
                     m_eState = FEED_ARMED;
                 } else {
