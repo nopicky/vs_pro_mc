@@ -68,6 +68,12 @@
               <Children />
             </Node>
             <Node>
+              <Title>Torque_offset</Title>
+              <Expanded>False</Expanded>
+              <FileName></FileName>
+              <Children />
+            </Node>
+            <Node>
               <Title>DriveSide_SpdCmd</Title>
               <Expanded>False</Expanded>
               <FileName></FileName>
@@ -190,6 +196,19 @@
               <Children>
                 <Node>
                   <Title>Velocity_actual_value</Title>
+                  <Expanded>False</Expanded>
+                  <FileName></FileName>
+                  <Children />
+                </Node>
+              </Children>
+            </Node>
+            <Node>
+              <Title>Torque_offset</Title>
+              <Expanded>False</Expanded>
+              <FileName></FileName>
+              <Children>
+                <Node>
+                  <Title>Torque_offset</Title>
                   <Expanded>False</Expanded>
                   <FileName></FileName>
                   <Children />
