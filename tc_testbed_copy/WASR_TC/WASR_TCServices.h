@@ -296,6 +296,10 @@ typedef struct _WASR_TCStatus
 	//     参数区初值全是 0, 若默认可覆盖, 忘记写就会把前馈悄悄关掉。
 	// 各项含义与量纲见 FeedConfig.h 同名字段;
 	// VelFfAccGainMs 是方案 B 的加速度项 Ka [ms], 0 = 只有纯速度前馈(原行为)。
+	// VelFfGain 双重角色（2026-11-26）：
+	//   bAutoVelFfGain=1（LMS 学习）时是"种子+回显"——使能瞬间作为学习初值被读一次，
+	//   之后每拍被 LMS 当前增益回写（半只读，要换种子先关 bAutoVelFfGain 再改）；
+	//   LMS 关着且 bLiveTuning=1 时是手调输入。
 	unsigned char bLiveTuning;
 	float VelFfGain;
 	float VelFfAccGainMs;
@@ -304,7 +308,9 @@ typedef struct _WASR_TCStatus
 	float LeadTimeMs;
 
 	// ---- 方案 C：转矩前馈（60B2h）在线调参 ----
-	// 与上面同受 bLiveTuning 控制：置 1 才生效，置 0 全部回到编译期初值。
+	// TorFfGain 受 bLiveTuning 控制：置 1 才生效，置 0 用编译期初值。
+	// InertiaRatioN 已改语义（2026-11-26）：不再挂 bLiveTuning，
+	//   >0 = 强制覆盖自动读回值，<=0 = 用 SDO 自动读的（见下方注释块）。
 	// 为什么惯量比要 4 个而不是 1 个：对拖 4 台机械装配不可能完全一致
 	// （实测 2.72 / 2.73 / 2.65 / 2.74），共用同一个值会让某台偏 3% 以上。
 	// TorFfGain   : 转矩前馈总增益（0~1.5，0=关闭；1.0 = 按 J_total×α 满量给）
@@ -315,18 +321,18 @@ typedef struct _WASR_TCStatus
 	float InertiaRatio2;
 	float InertiaRatio3;
 
-	// ---- 自动惯量比：SDO 读驱动器 0x2003:01（2026-11-25）----
+	// ---- 惯量比：SDO 自动读回（常开，2026-11-26 起不再需要 bAutoInertia）----
 	// 背景: 手填 R 要现场一台台对面板抄数, 换电机/换平台就得重填一遍, 很容易抄错。
-	//   而 IR_MON 每 100ms 已经在读这个对象了（m_drvMonRatio[slot]）, 只是没接线。
-	// bAutoInertia = 0 (默认): 用上面 InertiaRatioN 手填值, 行为与原来完全一致
-	// bAutoInertia = 1       : 每拍把读回的 0x2003:01/100 刷进 g_cfgFeed.fInertiaRatio[],
-	//                          优先于手填值
-	//   ★ 读不到（SDO 超时 / 站点表 ulSlaveAddr 与实际 EtherCAT Addr 不符）时自动退回
-	//     手填值 —— 不会静默用错数（Driver_Inertia_ratio 为 0 就说明没读到）。
+	//   而 IR_MON 每 100ms 已经在读 0x2003:01（m_drvMonRatio[slot]）。
+	// 现在的语义：
+	//   InertiaRatioN <= 0（默认）: 用 SDO 自动读回值（读不到保持编译初值兜底）
+	//   InertiaRatioN > 0        : 强制覆盖 = 手填值（标定新负载时注入用）
+	//   bAutoInertia             : **已废弃**（自动读常开），字段保留仅为布局兼容
 	//   ★ 为什么不用 201E:14(实时惯量比): 那是在线估算值, 随工况波动; 转矩前馈每拍用它
 	//     等于往转矩环注噪声, 容易激励振动。2003:01 是驱动器自己调增益用的那份, 稳定且同源。
-	// AutoInertiaAppliedN: 各轴**实际生效**的 R（只读回显）。与 InertiaRatioN 分开,
-	//   是因为"填的"和"实际用的"可能不同（读失败 → 退回手填）, 现场要能区分。
+	// AutoInertiaAppliedN: 各轴**实际生效**的 R（只读回显）。
+	//   现场核对：应等于驱动器面板 2003-01 显示值/100；对不上先查从站地址表
+	//   （站点表 ulSlaveAddr 与实际 EtherCAT Addr 不符时 SDO 永远读不到）。
 	unsigned char bAutoInertia;
 
 	// ---- 自动停：跑够 N 个凸轮周期自动停（2026-11-25）----
@@ -345,6 +351,25 @@ typedef struct _WASR_TCStatus
 	float AutoInertiaApplied1;
 	float AutoInertiaApplied2;
 	float AutoInertiaApplied3;
+
+	// ---- LMS 自动学速度前馈增益（2026-11-26，VelFfAdapt.h）----
+	// 背景: fVelFfGain 的最优值 = 1/a（a = 驱动器前馈有效系数），
+	//   换驱动器/换平台就得重新手扫一遍（实测 0.3/0.7/1.0/1.06 四档）。
+	//   本功能用每个凸轮周期同步段的误差均值做一次 LMS 更新，
+	//   约 10~20 圈自动收敛到最优增益（设计文档「前馈自适应方案设计.md」）。
+	// bAutoVelFfGain = 0 (默认): 手调（bLiveTuning=1 时 VelFfGain 生效，原行为不变）
+	//                  = 1      : LMS 接管 fVelFfGain（本开关独立生效，不需要 bLiveTuning），
+	//                             初值取 Status.VelFfGain（>0 时；乱填的大值会被限幅夹到
+	//                             1.5 兜底），VelFfGain<=0 时用当前生效值做种子，每圈自动更新。
+	//                             ★ 只学速度前馈：TorFfGain 判据是瞬态过冲，
+	//                               改凸轮曲线就失效，保持手动（「拧回来」旋钮）。
+	//                             ★ 重新学习 = 把本位置 0 再置 1（reset 用当前值做种子）。
+	// VelFfAdaptState（只读回显）: 0=未使能(手调) 1=学习中 2=已收敛冻结(保持增益执行)。
+	// AutoVelFfGain（只读回显）: 学习/手调当前生效的速度前馈增益，
+	//   FAE 看它从 1.0 慢慢靠向最优值（对拖上 ≈1.06）即知收敛。
+	unsigned char bAutoVelFfGain;
+	unsigned char VelFfAdaptState;
+	float AutoVelFfGain;
 } WASR_TCStatus, *PWASR_TCStatus;
 #pragma pack(pop)
 

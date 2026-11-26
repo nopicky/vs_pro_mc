@@ -38,6 +38,10 @@
 // 实验序列器 (含转矩扫频速度环 MiniSpdLoop.h)
 #include "SpeedTestSequencer.h"
 
+// LMS 自动学速度前馈增益 (2026-11-26): 纯数学模块, 不碰 PDO/全局,
+// 由 CycleUpdate 喂 CFeedSequencer 的监视量, 输出写 g_cfgFeed.fVelFfGain
+#include "VelFfAdapt.h"
+
 class CWASR_TC
 	: public ITComObject
 	, public ITcADI
@@ -234,4 +238,11 @@ protected:
 	ULONG   m_zeroCount;
 	// 上一次的 ExperimentType (-1 = 还没初始化过)
 	int m_lastExperimentType;
+	// ---- LMS 自动学速度前馈增益 (2026-11-26) ----
+	// 使能边沿检测: bAutoVelFfGain 0->1 时以当前生效增益为种子 reset 一次
+	bool m_bFeedVelAdaptWasOn;
+	// 学习状态上一拍值 (检测"学习中->已收敛"边沿, 只记一次日志)
+	uint8_t m_nFeedVelAdaptPrevState;
+	// 学习器本体 (VelFfAdapt.h: 每圈用同步段误差均值做一次 LMS 更新)
+	CVelFfAdapt m_feedVelAdapt;
 };

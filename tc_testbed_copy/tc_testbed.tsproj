@@ -696,7 +696,7 @@
 								<Name>Status</Name>
 								<Comment><![CDATA[状态]]></Comment>
 								<ContextId>1</ContextId>
-								<ByteSize>258</ByteSize>
+								<ByteSize>264</ByteSize>
 								<Symbol CreateSymbol="true">
 									<Name>Enable</Name>
 									<BitSize>8</BitSize>
@@ -1124,35 +1124,35 @@
 								</Symbol>
 								<Symbol CreateSymbol="true">
 									<Name>InertiaRatio0</Name>
-									<Comment TxtId=""><![CDATA[轴0 负载惯量比 R(=2003-01/100), <=0 沿用初值]]></Comment>
+									<Comment TxtId=""><![CDATA[轴0 负载惯量比 R(=2003-01/100), <=0 用SDO自动读回, >0 手填覆盖]]></Comment>
 									<BitSize>32</BitSize>
 									<BaseType GUID="{18071995-0000-0000-0000-00000000000D}">REAL</BaseType>
 									<BitOffs>1776</BitOffs>
 								</Symbol>
 								<Symbol CreateSymbol="true">
 									<Name>InertiaRatio1</Name>
-									<Comment TxtId=""><![CDATA[轴1 负载惯量比 R, <=0 沿用初值]]></Comment>
+									<Comment TxtId=""><![CDATA[轴1 负载惯量比 R, <=0 用SDO自动读回, >0 手填覆盖]]></Comment>
 									<BitSize>32</BitSize>
 									<BaseType GUID="{18071995-0000-0000-0000-00000000000D}">REAL</BaseType>
 									<BitOffs>1808</BitOffs>
 								</Symbol>
 								<Symbol CreateSymbol="true">
 									<Name>InertiaRatio2</Name>
-									<Comment TxtId=""><![CDATA[轴2 负载惯量比 R, <=0 沿用初值]]></Comment>
+									<Comment TxtId=""><![CDATA[轴2 负载惯量比 R, <=0 用SDO自动读回, >0 手填覆盖]]></Comment>
 									<BitSize>32</BitSize>
 									<BaseType GUID="{18071995-0000-0000-0000-00000000000D}">REAL</BaseType>
 									<BitOffs>1840</BitOffs>
 								</Symbol>
 								<Symbol CreateSymbol="true">
 									<Name>InertiaRatio3</Name>
-									<Comment TxtId=""><![CDATA[轴3 负载惯量比 R, <=0 沿用初值]]></Comment>
+									<Comment TxtId=""><![CDATA[轴3 负载惯量比 R, <=0 用SDO自动读回, >0 手填覆盖]]></Comment>
 									<BitSize>32</BitSize>
 									<BaseType GUID="{18071995-0000-0000-0000-00000000000D}">REAL</BaseType>
 									<BitOffs>1872</BitOffs>
 								</Symbol>
 								<Symbol CreateSymbol="true">
 									<Name>bAutoInertia</Name>
-									<Comment TxtId=""><![CDATA[1=SDO读2003:01自动填R(读不到退回手填), 0=用手填值]]></Comment>
+									<Comment TxtId=""><![CDATA[已废弃: 惯量比自动读常开(读不到用编译初值), InertiaRatioN>0 可手填覆盖]]></Comment>
 									<BitSize>8</BitSize>
 									<BaseType GUID="{18071995-0000-0000-0000-000000000002}">USINT</BaseType>
 									<BitOffs>1904</BitOffs>
@@ -1198,6 +1198,27 @@
 									<BitSize>32</BitSize>
 									<BaseType GUID="{18071995-0000-0000-0000-00000000000D}">REAL</BaseType>
 									<BitOffs>2032</BitOffs>
+								</Symbol>
+								<Symbol CreateSymbol="true">
+									<Name>bAutoVelFfGain</Name>
+									<Comment TxtId=""><![CDATA[1=LMS自动学fVelFfGain(独立生效, 初值取VelFfGain), 0=手调]]></Comment>
+									<BitSize>8</BitSize>
+									<BaseType GUID="{18071995-0000-0000-0000-000000000002}">USINT</BaseType>
+									<BitOffs>2064</BitOffs>
+								</Symbol>
+								<Symbol CreateSymbol="true">
+									<Name>VelFfAdaptState</Name>
+									<Comment TxtId=""><![CDATA[LMS状态 0=未使能 1=学习中 2=已收敛冻结, 只读]]></Comment>
+									<BitSize>8</BitSize>
+									<BaseType GUID="{18071995-0000-0000-0000-000000000002}">USINT</BaseType>
+									<BitOffs>2072</BitOffs>
+								</Symbol>
+								<Symbol CreateSymbol="true">
+									<Name>AutoVelFfGain</Name>
+									<Comment TxtId=""><![CDATA[当前生效的速度前馈增益(LMS学习或手调), 只读]]></Comment>
+									<BitSize>32</BitSize>
+									<BaseType GUID="{18071995-0000-0000-0000-00000000000D}">REAL</BaseType>
+									<BitOffs>2080</BitOffs>
 								</Symbol>
 							</DataArea>
 						</DataAreas>

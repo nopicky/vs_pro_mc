@@ -37,7 +37,8 @@ FEED_CONFIG_T g_cfgFeed = {
                                       别一上电就带转矩前馈，惯量标错会直接冲击机械 */
     {2.72, 2.73, 2.65, 2.74},      /* fInertiaRatio：4 台 VD5E 实测 2003-01 / 100
                                       (2026-11-24, 对拖机械连好、3E 不使能状态测)
-                                      Status.bAutoInertia=1 时会被 SDO 读回值覆盖 */
+                                      这里是兜底初值：使能后每拍被 SDO 读回值覆盖；
+                                      Status.InertiaRatioN > 0 时手填强制覆盖（2026-11-26） */
     0                              /* nAutoStopCycles：0 = 不限（靠 bFeedStart 手动停）
                                       与原来行为完全一致；>0 时跑够 N 整圈自动停 */
 };

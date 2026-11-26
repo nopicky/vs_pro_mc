@@ -262,6 +262,10 @@ CWASR_TC::CWASR_TC()
 	m_prevEnable = 0;
 	m_bPrevOpDrive = false;
 
+	// LMS 自动学速度前馈增益: 使能边沿检测初值 (构造即"未使能")
+	m_bFeedVelAdaptWasOn = false;
+	m_nFeedVelAdaptPrevState = 0;
+
 	// CoE SDO 工具: 只挂日志, 不建 ADS 端口 (第一次真正读写时才建)
 	m_coeSdo.SetTrace(&m_Trace);
 
@@ -1166,21 +1170,24 @@ HRESULT CWASR_TC::CycleUpdate(ITcTask* ipTask, ITcUnknown* ipCaller, ULONG_PTR c
 	// 序列器侧的 LeadTimeMs/LeadAccMs2/MaxFollowErrMm 由 SpeedTestSequencer::Update
 	// 每拍从 g_cfgFeed 刷进快照 (FeedSequencer 用的是 init 时的拷贝, 不读全局)。
 	if (m_Status.bLiveTuning != 0) {
-		g_cfgFeed.fVelFfGain      = (double)m_Status.VelFfGain;
+		// LMS 真正接管（bAutoVelFfGain=1 且在送纸凸轮实验）时 fVelFfGain 归学习器写
+		// （见下方 LMS 块），这里让路；Status.VelFfGain 只作学习种子（reset 时读一次）。
+		// ★ 让路条件必须和 LMS 块的 bAdaptOn 完全一致（含实验类型判断）——
+		//   否则"开着 bAutoVelFfGain 但不在凸轮实验"时，LMS 没接管、手调也被吞，
+		//   改 VelFfGain 静默无效，现场查不出来（2026-11-26 审查发现）。
+		const bool bLmsOwnsGain = (m_Status.bAutoVelFfGain != 0) &&
+		                          (m_Status.ExperimentType == ExperimentType_FeedCamTest);
+		if (!bLmsOwnsGain) {
+			g_cfgFeed.fVelFfGain      = (double)m_Status.VelFfGain;
+		}
 		g_cfgFeed.fVelFfAccGainMs = (double)m_Status.VelFfAccGainMs;
 		g_cfgFeed.fLeadAccMs2     = (double)m_Status.LeadAccMs2;
 		g_cfgFeed.fMaxFollowErrMm = (double)m_Status.MaxFollowErrMm;
 		g_cfgFeed.fLeadTimeMs     = (double)m_Status.LeadTimeMs;
 		// ---- 方案 C：转矩前馈 ----
 		g_cfgFeed.fTorFfGain      = (double)m_Status.TorFfGain;
-		// 惯量比用「<=0 视为未设置」而不是「0 就采用」：
-		//   数据区下载后初值就是 0，若直接采用会把 4 台全变成"纯电机惯量"，
-		//   T_ff 少掉 73% 却不报任何错，现场只会觉得"转矩前馈没效果"。
-		//   而 0 倍负载惯量比在真实送纸机构上不成立，所以 0 / 负值当作"没填"是安全的。
-		if (m_Status.InertiaRatio0 > 0.0f) { g_cfgFeed.fInertiaRatio[0] = (double)m_Status.InertiaRatio0; }
-		if (m_Status.InertiaRatio1 > 0.0f) { g_cfgFeed.fInertiaRatio[1] = (double)m_Status.InertiaRatio1; }
-		if (m_Status.InertiaRatio2 > 0.0f) { g_cfgFeed.fInertiaRatio[2] = (double)m_Status.InertiaRatio2; }
-		if (m_Status.InertiaRatio3 > 0.0f) { g_cfgFeed.fInertiaRatio[3] = (double)m_Status.InertiaRatio3; }
+		// 惯量比不在这里处理了（2026-11-26 起）：下方"SDO 自动读回 + 手填覆盖"块
+		// 统一负责，不再要求 bLiveTuning；手填 InertiaRatioN > 0 时无条件覆盖。
 	}
 
 	// ---- 自动停圈数（2026-11-25，**不挂在 bLiveTuning 下**）----
@@ -1189,16 +1196,28 @@ HRESULT CWASR_TC::CycleUpdate(ITcTask* ipTask, ITcUnknown* ipCaller, ULONG_PTR c
 	// 想恢复不限：写回 0 即可，下一拍立刻生效。
 	g_cfgFeed.nAutoStopCycles = (int)m_Status.AutoStopCycles;
 
-	// ---- 自动惯量比：SDO 读回 0x2003:01（2026-11-25）----
+	// ---- 惯量比：SDO 自动读回（常开）+ 手填覆盖（2026-11-26 简化）----
+	// 老的 bAutoInertia 开关废弃（字段保留不删，布局不变）：自动读是常态，
+	//   不需要先开一个开关才生效；95% 的现场就应该是"使能后自动读回来"。
 	// m_drvMonRatio[slot] 由 DriverMonitorRun 每 IR_MON_PERIOD_MS 读一次（单位 0.01，
 	//   已在 100..10000 范围校验过），这里只做"槽位 -> 轴号"的映射与单位换算。
 	// 为什么读 2003:01 而不是 201E:14(实时惯量比)：
 	//   2003:01 是驱动器自己调增益/前馈用的那一份，稳定且同源；201E:14 是在线估算，
 	//   随工况波动，每拍拿它算转矩前馈等于往转矩环注噪声。
-	// 安全回退：没读到（m_drvMonRatioGot=0）、值 < 100、或该轴没挂 ->
-	//   一律保持手填的 fInertiaRatio[]（上一个 bLiveTuning 块刚写进去的），
-	//   绝不用 0 或错的惯量去出力。
-	if (m_Status.bAutoInertia != 0) {
+	// 优先级（每拍重算，覆盖式）：
+	//   1) 手填 InertiaRatioN > 0 → 强制覆盖（标定新负载时注入用；
+	//      <=0 视为"没填"——数据区下载后初值就是 0，0 倍惯量在真实机构上不成立）；
+	//   2) 否则用 SDO 自动读到的值；
+	//   3) SDO 没读到（超时/站点表 ulSlaveAddr 与实际 EtherCAT Addr 不符）
+	//      → 保持 g_cfgFeed.fInertiaRatio[] 当前值（编译初值兜底）。
+	//   转矩前馈有 feedTorFfLim 限幅，惯量给错只是前馈力不准，无安全风险。
+	//   ★ 现场核对：AutoInertiaAppliedN 应等于驱动器面板 2003-01 的显示值 / 100，
+	//     对不上先查从站地址表，别以为自动读上了。
+	{
+		const float afManualRatio[SITE_AXIS_MAX] = {
+			m_Status.InertiaRatio0, m_Status.InertiaRatio1,
+			m_Status.InertiaRatio2, m_Status.InertiaRatio3
+		};
 		for (int a = 0; a < SITE_AXIS_MAX; a++) {
 			if (m_apDrive[a] == NULL) {
 				continue;
@@ -1207,6 +1226,9 @@ HRESULT CWASR_TC::CycleUpdate(ITcTask* ipTask, ITcUnknown* ipCaller, ULONG_PTR c
 			if ((nSlot >= 0) && (nSlot < SITE_SLOT_MAX) &&
 			    m_drvMonRatioGot[nSlot] && (m_drvMonRatio[nSlot] >= 100)) {
 				g_cfgFeed.fInertiaRatio[a] = (double)m_drvMonRatio[nSlot] / 100.0;
+			}
+			if (afManualRatio[a] > 0.0f) {
+				g_cfgFeed.fInertiaRatio[a] = (double)afManualRatio[a];
 			}
 		}
 	}
@@ -1262,11 +1284,81 @@ HRESULT CWASR_TC::CycleUpdate(ITcTask* ipTask, ITcUnknown* ipCaller, ULONG_PTR c
 			*apFollowErr[i]   = mon.afFollowErr[i] * fMmToUnit;
 			*apIdealErr[i]    = mon.afIdealErr[i] * fMmToUnit;
 		}
-		// 自动停圈数回显（只读）：本次启动已完成几个完整凸轮循环。
-		// 现场核对采集长度用：AutoStopCycles=10，这里跳到 10 就说明该停了。
-		// 重新启动（IDLE 里 bFeedStart 0→1）时内部清 0，所以是"本次启动"的计数。
-		m_Status.FeedCycleDone = (unsigned short)m_testSeq.feedSeq.getDoneCycles();
+	// 自动停圈数回显（只读）：本次启动已完成几个完整凸轮循环。
+	// 现场核对采集长度用：AutoStopCycles=10，这里跳到 10 就说明该停了。
+	// 重新启动（IDLE 里 bFeedStart 0→1）时内部清 0，所以是"本次启动"的计数。
+	m_Status.FeedCycleDone = (unsigned short)m_testSeq.feedSeq.getDoneCycles();
+
+	// ---- LMS 自动学 fVelFfGain（VelFfAdapt.h，2026-11-26）----
+	// 使能链: bAutoVelFfGain(本功能) && 送纸凸轮实验 —— 不要求 bLiveTuning。
+	//   为什么不再要总闸（2026-11-26 现场踩坑修正）："总闸"是给手动调参防误触
+	//   设计的（数据区全 0 会悄悄关掉前馈）；而 bAutoVelFfGain 本身就是显式开关，
+	//   默认 0 = 完全按原行为，再叠加一层 bLiveTuning 只会让人开了没反应、
+	//   VelFfAdaptState 恒 0 还查不出原因。
+	//   使能上升沿: 以 Status.VelFfGain(>0 时) 为种子 reset 一次学习，
+	//     乱填的大值（5/100）由 reset 内部限幅夹到 [0.5, 1.5] 兜底；
+	//     VelFfGain <= 0 时用当前生效增益做种子（编译初值或上次学成值）。
+	//   学习期间: g_cfgFeed.fVelFfGain 归本模块写（bLiveTuning 块已让路），
+	//     每完成一个凸轮周期用该圈同步段误差均值做一次 LMS 更新。
+	//   关闭后: 学到的值留在 g_cfgFeed.fVelFfGain 里继续生效
+	//     （与在线调参的"保持最后值"语义一致）；
+	//     想回手调：改 Status.VelFfGain 下一拍生效，或重新下载回编译初值。
+	//   重新学习: 把 bAutoVelFfGain 置 0 再置 1（reset 会重新取种子）。
+	{
+		const bool bAdaptOn = (m_Status.bAutoVelFfGain != 0) &&
+		                      (m_Status.ExperimentType == ExperimentType_FeedCamTest);
+		// 开关同步给学习器（关闭时状态归 OFF；reset 时会被重新打开）
+		m_feedVelAdapt.setEnable(bAdaptOn);
+		if (bAdaptOn && !m_bFeedVelAdaptWasOn) {
+			const double fSeed = (m_Status.VelFfGain > 0.0f) ?
+				(double)m_Status.VelFfGain : g_cfgFeed.fVelFfGain;
+			m_feedVelAdapt.reset(fSeed);
+			m_Trace.Log(tlAlways,
+				"FEED_LMS: enabled, seed gain=%g (learning axis %d)",
+				m_feedVelAdapt.getGain(), m_feedVelAdapt.getLearnAxis());
+		}
+		m_bFeedVelAdaptWasOn = bAdaptOn;
+
+		if (bAdaptOn) {
+			const int nAx = m_feedVelAdapt.getLearnAxis();
+			// 轴没挂 / mm 换算没建好时 mon 里误差恒 0，会把 theta 学成"假满量"。
+			// 这种情况宁可整圈不学，也不能拿假数据更新。
+			const bool bDataOk = (nAx >= 0) && (nAx < SITE_AXIS_MAX) &&
+			                     (m_apDrive[nAx] != NULL) &&
+			                     (m_testSeq.feedMmToUnit[nAx] > 0.0);
+			if (bDataOk) {
+				m_feedVelAdapt.tick(mon.nState == FEED_CAM_RUN,
+				                    m_testSeq.feedSeq.getDoneCycles(),
+				                    mon.afFollowErr[nAx],
+				                    mon.afVelFfMm[nAx],
+				                    mon.afAccAxisMm[nAx]);
+			}
+			g_cfgFeed.fVelFfGain = m_feedVelAdapt.getGain();
+			// 每拍把 LMS 当前增益回写 VelFfGain（2026-11-26）：
+			//   收敛后/中途关 LMS，切回手调（bLiveTuning=1）时手调块拿到的就是
+			//   学成值，不会退回旧种子；学习过程中 FAE 也能直接在熟悉的字段看进度。
+			//   代价：LMS 开着时 VelFfGain 是"半只读"，要换种子必须先关
+			//   bAutoVelFfGain、改完再开（重新学习 = 从新种子起步）。
+			m_Status.VelFfGain = (float)m_feedVelAdapt.getGain();
+			// 收敛瞬间记一条日志（学习中->冻结只发生一次）
+			const uint8_t nSt = (uint8_t)m_feedVelAdapt.getState();
+			if (nSt == 2 && m_nFeedVelAdaptPrevState == 1) {
+				m_Trace.Log(tlAlways,
+					"FEED_LMS: converged, gain=%g (theta=%g, %d cycles)",
+					m_feedVelAdapt.getGain(), m_feedVelAdapt.getTheta(),
+					m_feedVelAdapt.getCyclesLearned());
+			}
+			m_nFeedVelAdaptPrevState = nSt;
+		} else {
+			m_nFeedVelAdaptPrevState = 0;
+		}
+		// 回显: 关着时也显示"当前生效增益"，现场能直接对照手调值与学成值
+		m_Status.AutoVelFfGain = (float)(bAdaptOn ?
+			m_feedVelAdapt.getGain() : g_cfgFeed.fVelFfGain);
+		m_Status.VelFfAdaptState = bAdaptOn ?
+			(unsigned char)m_feedVelAdapt.getState() : (unsigned char)0;
 	}
+}
 
 	// 驱动侧运行模式 (输出): 8 = CSP, 9 = CSV, 10 = CST
 	m_Status.Driver_Modes_of_operation = (char)DriveModeCode(m_testSeq.driveMode);

@@ -71,7 +71,8 @@ typedef struct tagFEED_CONFIG_T {
                                    实测 4 台：2.72 / 2.73 / 2.65 / 2.74（±2%，机械对称性良好）
                                    ★ 必须在对拖机械连好的状态下测（VD3E 可不使能，但要连着轴）
                                    ★ 换辊/改负载后重测；与初值差超过 15% 就重新标 J_total
-                                   ★ Status.bAutoInertia=1 时本项被 SDO 读回值覆盖（2026-11-25） */
+                                   ★ Status.InertiaRatioN > 0 时本项被手填值覆盖；
+                                     <=0 时用 SDO 2003:01 自动读回值（常开，2026-11-26） */
 
     int    nAutoStopCycles;     /* 自动停圈数（0 = 不限，默认）
                                    跑够 N 个**完整凸轮循环**后自动撤 bFeedStart，停在圈末。
