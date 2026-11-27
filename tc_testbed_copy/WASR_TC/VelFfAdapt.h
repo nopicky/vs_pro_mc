@@ -99,6 +99,9 @@ public:
     /* 配置里的学习轴（挂载层拿它决定喂哪根轴的数据） */
     int getLearnAxis() const { return m_cfg.nLearnAxis; }
 
+    /* 位置环等效增益（转矩 LMS 的残差扣除要用：fVelPart = (1−θ̂·g)·v/Kv） */
+    double getKv() const { return m_cfg.fKv; }
+
     /* 诊断回显（可选，调试时看收敛过程） */
     double getTheta() const { return m_fTheta; }            /* 当前估计的有效系数 a */
     int    getCyclesLearned() const { return m_nCyclesLearned; } /* 已更新圈数 */

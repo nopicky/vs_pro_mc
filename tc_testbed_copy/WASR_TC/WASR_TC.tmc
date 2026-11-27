@@ -1013,6 +1013,21 @@
             <Comment TxtId=""><![CDATA[本次启动最大跟随偏差 mm, 只读(重启清零)]]></Comment>
             <BaseType GUID="{18071995-0000-0000-0000-00000000000d}">REAL</BaseType>
           </Symbol>
+          <Symbol CreateSymbol="true">
+            <Name>bAutoTorFfGain</Name>
+            <Comment TxtId=""><![CDATA[1=LMS自动学fTorFfGain(前置:速度增益已收敛/已定), 0=手调]]></Comment>
+            <BaseType GUID="{18071995-0000-0000-0000-000000000002}">USINT</BaseType>
+          </Symbol>
+          <Symbol CreateSymbol="true">
+            <Name>TorFfAdaptState</Name>
+            <Comment TxtId=""><![CDATA[转矩LMS状态 0=未使能 1=学习中 2=已收敛冻结, 只读]]></Comment>
+            <BaseType GUID="{18071995-0000-0000-0000-000000000002}">USINT</BaseType>
+          </Symbol>
+          <Symbol CreateSymbol="true">
+            <Name>AutoTorFfGain</Name>
+            <Comment TxtId=""><![CDATA[当前生效的转矩前馈增益(LMS学习或手调), 只读]]></Comment>
+            <BaseType GUID="{18071995-0000-0000-0000-00000000000d}">REAL</BaseType>
+          </Symbol>
         </DataArea>
       </DataAreas>
       <InterfacePointers>

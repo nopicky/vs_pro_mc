@@ -268,6 +268,9 @@ CWASR_TC::CWASR_TC()
 
 	// 主轴编码器: 未绑定（只有 profile 4 才会在 ApplySiteProfile 里绑上）
 	m_pMasterServo = NULL;
+	// 转矩 LMS: 使能边沿检测初值
+	m_bFeedTorAdaptWasOn = false;
+	m_nFeedTorAdaptPrevState = 0;
 
 	// CoE SDO 工具: 只挂日志, 不建 ADS 端口 (第一次真正读写时才建)
 	m_coeSdo.SetTrace(&m_Trace);
@@ -1205,16 +1208,23 @@ HRESULT CWASR_TC::CycleUpdate(ITcTask* ipTask, ITcUnknown* ipCaller, ULONG_PTR c
 
 	// ---- bLiveTuning 上升沿：LMS 自动让位给手动（2026-11-27）----
 	// 语义：用户开手动调参 = "我要自己动手了"。LMS 继续接管的话，手动改
-	//   VelFfGain 会被 LMS 的回写每拍吞掉（改成什么都被顶回来），现场以为没改上。
-	// 让位无跳变：LMS 学习期间每拍都在回写 VelFfGain，切换瞬间两边数值恒等。
-	//   中止学习成本低：想再学，把 bAutoVelFfGain 重新置 1 就从当前值继续。
+	//   VelFfGain/TorFfGain 会被 LMS 的回写每拍吞掉（改成什么都被顶回来）。
+	// 让位无跳变：LMS 学习期间每拍都在回写，切换瞬间两边数值恒等。
+	//   中止学习成本低：想再学，重新置开关就从当前值继续。
 	// 只在上升沿做一次：之后用户想 LMS 和手调并存（开着 bLiveTuning 重开 LMS）不拦。
-	if ((m_Status.bLiveTuning != 0) && (m_prevLiveTuning == 0) &&
-	    (m_Status.bAutoVelFfGain != 0)) {
-		m_Status.bAutoVelFfGain = 0;
-		m_Trace.Log(tlAlways,
-			"FEED_LMS: live tuning on, LMS released (gain=%g)",
-			g_cfgFeed.fVelFfGain);
+	if ((m_Status.bLiveTuning != 0) && (m_prevLiveTuning == 0)) {
+		if (m_Status.bAutoVelFfGain != 0) {
+			m_Status.bAutoVelFfGain = 0;
+			m_Trace.Log(tlAlways,
+				"FEED_LMS: live tuning on, vel-FF LMS released (gain=%g)",
+				g_cfgFeed.fVelFfGain);
+		}
+		if (m_Status.bAutoTorFfGain != 0) {
+			m_Status.bAutoTorFfGain = 0;
+			m_Trace.Log(tlAlways,
+				"FEED_LMS: live tuning on, tor-FF LMS released (gain=%g)",
+				g_cfgFeed.fTorFfGain);
+		}
 	}
 	m_prevLiveTuning = m_Status.bLiveTuning;
 
@@ -1241,7 +1251,13 @@ HRESULT CWASR_TC::CycleUpdate(ITcTask* ipTask, ITcUnknown* ipCaller, ULONG_PTR c
 		g_cfgFeed.fMaxFollowErrMm = (double)m_Status.MaxFollowErrMm;
 		g_cfgFeed.fLeadTimeMs     = (double)m_Status.LeadTimeMs;
 		// ---- 方案 C：转矩前馈 ----
-		g_cfgFeed.fTorFfGain      = (double)m_Status.TorFfGain;
+		// 转矩 LMS 真正接管时让路（让路条件与 LMS 块的 bAdaptOn 含实验类型判断一致，
+		// 与速度 LMS 同一约定）；Status.TorFfGain 此时只作学习种子。
+		const bool bTorLmsOwnsGain = (m_Status.bAutoTorFfGain != 0) &&
+		                             (m_Status.ExperimentType == ExperimentType_FeedCamTest);
+		if (!bTorLmsOwnsGain) {
+			g_cfgFeed.fTorFfGain      = (double)m_Status.TorFfGain;
+		}
 		// 惯量比不在这里处理了（2026-11-26 起）：下方"SDO 自动读回 + 手填覆盖"块
 		// 统一负责，不再要求 bLiveTuning；手填 InertiaRatioN > 0 时无条件覆盖。
 	}
@@ -1445,6 +1461,69 @@ HRESULT CWASR_TC::CycleUpdate(ITcTask* ipTask, ITcUnknown* ipCaller, ULONG_PTR c
 			m_feedVelAdapt.getGain() : g_cfgFeed.fVelFfGain);
 		m_Status.VelFfAdaptState = bAdaptOn ?
 			(unsigned char)m_feedVelAdapt.getState() : (unsigned char)0;
+	}
+
+	// ---- LMS 自动学 fTorFfGain（TorFfAdapt.h，2026-11-27，方案 A）----
+	// 与速度 LMS 同款封装/使能/回写约定，两条差异：
+	//   1) 前置条件：速度 LMS 已收敛冻结（VelFfAdaptState=2）或速度增益手动
+	//      定好（bAutoVelFfGain=0）——速度增益还在学的时候残差扣除是脏的，
+	//      转矩 LMS 等它收敛（bTorOn 不置位，TorFfAdaptState 保持 0）。
+	//   2) 特有红线 4：本圈 60B2 顶过限幅（|feedTorFf| ≥ 98% 限幅）整圈不学。
+	// 种子取 Status.TorFfGain（>0 时），学习期间每拍回写 TorFfGain。
+	{
+		const bool bVelSettled = (m_feedVelAdapt.getState() == 2) ||
+		                         (m_Status.bAutoVelFfGain == 0);
+		const bool bTorOn = (m_Status.bAutoTorFfGain != 0) &&
+		                    (m_Status.ExperimentType == ExperimentType_FeedCamTest) &&
+		                    bVelSettled;
+		m_feedTorAdapt.setEnable(bTorOn);
+		if (bTorOn && !m_bFeedTorAdaptWasOn) {
+			const double fSeed = (m_Status.TorFfGain > 0.0f) ?
+				(double)m_Status.TorFfGain : g_cfgFeed.fTorFfGain;
+			m_feedTorAdapt.reset(fSeed);
+			m_Trace.Log(tlAlways,
+				"FEED_LMS: tor-FF enabled, seed gain=%g (learning axis %d)",
+				m_feedTorAdapt.getGain(), m_feedTorAdapt.getLearnAxis());
+		}
+		m_bFeedTorAdaptWasOn = bTorOn;
+
+		if (bTorOn) {
+			const int nAx = m_feedTorAdapt.getLearnAxis();
+			const bool bDataOk = (nAx >= 0) && (nAx < SITE_AXIS_MAX) &&
+			                     (m_apDrive[nAx] != NULL) &&
+			                     (m_testSeq.feedMmToUnit[nAx] > 0.0);
+			if (bDataOk) {
+				// 残差扣除的速度项：(1−θ̂·g)·v/Kv（θ̂ 来自速度 LMS 当前估计）
+				const double fKv = m_feedVelAdapt.getKv();
+				const double fVelPart =
+					(1.0 - m_feedVelAdapt.getTheta() * g_cfgFeed.fVelFfGain) *
+					mon.afVelFfMm[nAx] / fKv;
+				// 特有红线 4 的判据：60B2 输出顶到限幅的 98%
+				const bool bSat = (m_testSeq.feedTorFfLim > 0.0) &&
+					(fabs(m_testSeq.feedTorFf[nAx]) >= 0.98 * m_testSeq.feedTorFfLim);
+				m_feedTorAdapt.tick(mon.nState == FEED_CAM_RUN,
+				                    m_testSeq.feedSeq.getDoneCycles(),
+				                    mon.afFollowErr[nAx], fVelPart,
+				                    mon.afAccAxisMm[nAx], bSat);
+			}
+			g_cfgFeed.fTorFfGain = m_feedTorAdapt.getGain();
+			m_Status.TorFfGain   = (float)m_feedTorAdapt.getGain();
+			// 收敛瞬间记一条日志
+			const uint8_t nStT = (uint8_t)m_feedTorAdapt.getState();
+			if (nStT == 2 && m_nFeedTorAdaptPrevState == 1) {
+				m_Trace.Log(tlAlways,
+					"FEED_LMS: tor-FF converged, gain=%g (theta=%g, %d cycles)",
+					m_feedTorAdapt.getGain(), m_feedTorAdapt.getTheta(),
+					m_feedTorAdapt.getCyclesLearned());
+			}
+			m_nFeedTorAdaptPrevState = nStT;
+		} else {
+			m_nFeedTorAdaptPrevState = 0;
+		}
+		m_Status.AutoTorFfGain = (float)(bTorOn ?
+			m_feedTorAdapt.getGain() : g_cfgFeed.fTorFfGain);
+		m_Status.TorFfAdaptState = bTorOn ?
+			(unsigned char)m_feedTorAdapt.getState() : (unsigned char)0;
 	}
 }
 

@@ -46,6 +46,10 @@
 // 纯数学模块, 每拍喂主轴槽位的 6064, 输出周期相位喂给实验序列器
 #include "MasterEnc.h"
 
+// LMS 自动学转矩前馈增益 (2026-11-27, 方案 A: 分时+残差扣除法):
+// 纯数学模块, 前置条件是速度增益已定（速度 LMS 收敛或手调）
+#include "TorFfAdapt.h"
+
 class CWASR_TC
 	: public ITComObject
 	, public ITcADI
@@ -256,4 +260,8 @@ protected:
 	ServoIO* m_pMasterServo;
 	// 相位换算器 (MasterEnc.h: 6064 → 凸轮周期相位, 纯数学)
 	CMasterEnc m_masterEnc;
+	// ---- LMS 自动学转矩前馈增益 (2026-11-27, 方案 A) ----
+	bool    m_bFeedTorAdaptWasOn;
+	uint8_t m_nFeedTorAdaptPrevState;
+	CTorFfAdapt m_feedTorAdapt;
 };

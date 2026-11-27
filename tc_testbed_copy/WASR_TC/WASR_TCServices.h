@@ -393,6 +393,23 @@ typedef struct _WASR_TCStatus
 	unsigned char MasterSource;
 	unsigned char FeedErrAlarm;
 	float FeedMaxFollowErr;
+
+	// ---- LMS 自动学转矩前馈增益（2026-11-27，方案 A：分时+残差扣除法）----
+	// bAutoTorFfGain = 0 (默认): 手调（bLiveTuning=1 时 TorFfGain 生效，原行为不变）
+	//                  = 1      : LMS 接管 fTorFfGain（独立生效，不需要 bLiveTuning）。
+	//                             前置：速度 LMS 已收敛冻结（VelFfAdaptState=2）
+	//                             或速度增益手动定好（bAutoVelFfGain=0）——
+	//                             速度增益还在学的时候转矩不学（残差扣除会失准）。
+	//                             初值取 Status.TorFfGain（>0 时；乱填大值限幅兜底）。
+	//                             ★ 特有红线：本圈 60B2 顶过限幅 → 整圈不学
+	//                               （顶限幅时误差不再随 TF 变化，学了会无限上调）。
+	// TorFfAdaptState（只读）: 0=未使能 1=学习中 2=已收敛冻结。
+	// AutoTorFfGain（只读）  : 学习/手调当前生效的转矩前馈增益。
+	// 学习期间每拍把 LMS 当前增益回写 TorFfGain（与速度 LMS 同款：
+	// 切换手调无跳变；要换种子先关再改再开）。
+	unsigned char bAutoTorFfGain;
+	unsigned char TorFfAdaptState;
+	float AutoTorFfGain;
 } WASR_TCStatus, *PWASR_TCStatus;
 #pragma pack(pop)
 
