@@ -42,6 +42,10 @@
 // 由 CycleUpdate 喂 CFeedSequencer 的监视量, 输出写 g_cfgFeed.fVelFfGain
 #include "VelFfAdapt.h"
 
+// 真实主轴编码器 → 凸轮周期相位 (2026-11-26 主轴编码器方案):
+// 纯数学模块, 每拍喂主轴槽位的 6064, 输出周期相位喂给实验序列器
+#include "MasterEnc.h"
+
 class CWASR_TC
 	: public ITComObject
 	, public ITcADI
@@ -197,6 +201,8 @@ protected:
 	bool m_bPrevOpDrive;
 	// 上一拍 Enable
 	uint8_t m_prevEnable;
+	// 上一拍 bLiveTuning（上升沿检测：开手动调参时 LMS 自动让位，2026-11-27）
+	uint8_t m_prevLiveTuning;
 	// 当前已应用的站点形态 (-1 = 还没应用过)
 	int m_nAppliedProfile;
 	// 位置实际值 (6064h) → 去抖差分测速 [rpm], 每槽位一份 (Status.SpdFb_PcCalc)
@@ -245,4 +251,9 @@ protected:
 	uint8_t m_nFeedVelAdaptPrevState;
 	// 学习器本体 (VelFfAdapt.h: 每圈用同步段误差均值做一次 LMS 更新)
 	CVelFfAdapt m_feedVelAdapt;
+	// ---- 主轴编码器 (2026-11-26 主轴编码器方案) ----
+	// 主轴槽位指针 (profile 4 的 Servo9; 其他 profile 为 NULL = 无主轴)
+	ServoIO* m_pMasterServo;
+	// 相位换算器 (MasterEnc.h: 6064 → 凸轮周期相位, 纯数学)
+	CMasterEnc m_masterEnc;
 };

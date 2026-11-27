@@ -95,4 +95,26 @@
 // 6064h 位置实际值 (验证清零是否真的生效)
 #define ABS_ZERO_POS_INDEX            0x6064
 
+// ---------------- 主轴编码器（2026-11-26 主轴编码器方案）----------------
+// 方案全文见《主轴编码器方案大纲.md》。一句话：凸轮相位源从"虚拟积分主轴"
+// 换成"读主轴 VD5E 的 6064"，凸轮算法一行不改（解缠内建）。
+//
+// 相位源切换：编译期宏（不动 tmc，台架/机台本来就是两个工程快照）。
+//   台架仿真 -> MASTER_SRC_VIRTUAL（默认，行为与之前完全一致）
+//   机台真实 -> MASTER_SRC_ENCODER（改这行重编译，Status.MasterSource 回显生效值）
+#define MASTER_SRC_VIRTUAL          0
+#define MASTER_SRC_ENCODER          1
+#define MASTER_SRC                  MASTER_SRC_ENCODER
+
+// 主轴槽位（profile 4 里 Servo9 = VD5E 主轴编码器）
+#define MASTER_SLOT                 9
+
+// 主轴编码器换算（FAE 2026-11-26 确认的机械参数）：
+//   电机 22齿 → 胶轮 27齿（Ø92.88，周长291.79mm）→ 电机 1 转 = 237.75mm 线长
+//   凸轮周期 1188.78mm = 电机整 5 转（严格整数比）
+// 丢帧阈值：单拍增量 > 1 整转 = 坏样本（400m/min 下正常单拍 ~3 万 counts）
+#define MASTER_ENC_COUNTS_PER_REV   8388608.0
+#define MASTER_ENC_MM_PER_REV       237.75
+#define MASTER_ENC_MAX_DELTA_CNT    8388608L
+
 #endif // WASR_CONTROLCONFIG_H_

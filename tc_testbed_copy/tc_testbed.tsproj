@@ -696,7 +696,7 @@
 								<Name>Status</Name>
 								<Comment><![CDATA[状态]]></Comment>
 								<ContextId>1</ContextId>
-								<ByteSize>264</ByteSize>
+								<ByteSize>282</ByteSize>
 								<Symbol CreateSymbol="true">
 									<Name>Enable</Name>
 									<BitSize>8</BitSize>
@@ -1219,6 +1219,48 @@
 									<BitSize>32</BitSize>
 									<BaseType GUID="{18071995-0000-0000-0000-00000000000D}">REAL</BaseType>
 									<BitOffs>2080</BitOffs>
+								</Symbol>
+								<Symbol CreateSymbol="true">
+									<Name>MasterPhaseMm</Name>
+									<Comment TxtId=""><![CDATA[主轴编码器相位 [0,1188.78) mm, 只读(虚拟模式恒0)]]></Comment>
+									<BitSize>32</BitSize>
+									<BaseType GUID="{18071995-0000-0000-0000-00000000000D}">REAL</BaseType>
+									<BitOffs>2112</BitOffs>
+								</Symbol>
+								<Symbol CreateSymbol="true">
+									<Name>MasterVelMmS</Name>
+									<Comment TxtId=""><![CDATA[主轴差分速度 mm/s, 只读(虚拟模式恒0)]]></Comment>
+									<BitSize>32</BitSize>
+									<BaseType GUID="{18071995-0000-0000-0000-00000000000D}">REAL</BaseType>
+									<BitOffs>2144</BitOffs>
+								</Symbol>
+								<Symbol CreateSymbol="true">
+									<Name>MasterPos6064</Name>
+									<Comment TxtId=""><![CDATA[主轴槽位6064原值 counts, 只读(手转正转应递增)]]></Comment>
+									<BitSize>32</BitSize>
+									<BaseType GUID="{18071995-0000-0000-0000-000000000009}">DINT</BaseType>
+									<BitOffs>2176</BitOffs>
+								</Symbol>
+								<Symbol CreateSymbol="true">
+									<Name>MasterSource</Name>
+									<Comment TxtId=""><![CDATA[主轴相位源实际生效 0=虚拟 1=编码器, 只读]]></Comment>
+									<BitSize>8</BitSize>
+									<BaseType GUID="{18071995-0000-0000-0000-000000000002}">USINT</BaseType>
+									<BitOffs>2208</BitOffs>
+								</Symbol>
+								<Symbol CreateSymbol="true">
+									<Name>FeedErrAlarm</Name>
+									<Comment TxtId=""><![CDATA[跟随偏差报警 0=正常 1=超一级继续跑 2=超二级已停送, 只读]]></Comment>
+									<BitSize>8</BitSize>
+									<BaseType GUID="{18071995-0000-0000-0000-000000000002}">USINT</BaseType>
+									<BitOffs>2216</BitOffs>
+								</Symbol>
+								<Symbol CreateSymbol="true">
+									<Name>FeedMaxFollowErr</Name>
+									<Comment TxtId=""><![CDATA[本次启动最大跟随偏差 mm, 只读(重启清零)]]></Comment>
+									<BitSize>32</BitSize>
+									<BaseType GUID="{18071995-0000-0000-0000-00000000000D}">REAL</BaseType>
+									<BitOffs>2224</BitOffs>
 								</Symbol>
 							</DataArea>
 						</DataAreas>
@@ -2694,10 +2736,10 @@
 						<CoeProfile ProfileNo="402"/>
 					</EtherCAT>
 				</Box>
-				<Box Id="3" BoxType="9099" BoxFlags="#x00000020">
+				<Box Id="3" Disabled="true" BoxType="9099" BoxFlags="#x00000020">
 					<Name>维控VD5L</Name>
 					<ImageId>1001</ImageId>
-					<EtherCAT EtherCatAddr="1001" SlaveType="2" AdsServerAddress="000000000000e903" PdiType="#x0e80" EtherCatAddrFixed="true" MboxDataLinkLayer="true" StateMBoxPolling="true" CycleMBoxPollingTime="0" CoeType="15" VendorId="#x00000eff" ProductCode="#x0d510001" RevisionNo="#x00000066" InfoDataAddr="true" InfoDataSoeDS401="true" InfoDataDcTimes="true" TimeoutStateChange1="2000" TimeoutStateChange2="9000" TimeoutMailbox2="2000" PortPhys="17" MaxSlotCount="256" MaxSlotGroupCount="1" SlotPdoIncrement="1" SlotIndexIncrement="16" Type="Wecon VD5 EtherCAT Servo V1.02" Desc="Wecon VD5 EtherCAT Servo V1.02" PortABoxInfo="#x00ffffff">
+					<EtherCAT EtherCatAddr="1001" SlaveType="2" AdsServerAddress="000000000000e903" PdiType="#x0e80" EtherCatAddrFixed="true" MboxDataLinkLayer="true" StateMBoxPolling="true" CycleMBoxPollingTime="0" CoeType="15" VendorId="#x00000eff" ProductCode="#x0d510001" RevisionNo="#x00000066" InfoDataAddr="true" InfoDataSoeDS401="true" InfoDataDcTimes="true" TimeoutStateChange1="2000" TimeoutStateChange2="9000" TimeoutMailbox2="2000" PortPhys="17" MaxSlotCount="256" MaxSlotGroupCount="1" SlotPdoIncrement="1" SlotIndexIncrement="16" Type="Wecon VD5 EtherCAT Servo V1.02" Desc="Wecon VD5 EtherCAT Servo V1.02" PortABoxInfo="#x01000004">
 						<SyncMan>001080002600010001000000240000018000001026010000</SyncMan>
 						<SyncMan>801080002200010002000000240000018000801022010000</SyncMan>
 						<SyncMan>00111b006400010003000000000000000900001164010000</SyncMan>
@@ -3201,10 +3243,10 @@
 						<CoeProfile ProfileNo="402"/>
 					</EtherCAT>
 				</Box>
-				<Box Id="8" Disabled="true" BoxType="9099" BoxFlags="#x00000020">
+				<Box Id="8" BoxType="9099" BoxFlags="#x00000020">
 					<Name>VD5E_1</Name>
 					<ImageId>1001</ImageId>
-					<EtherCAT SlaveType="2" PdiType="#x0e80" MboxDataLinkLayer="true" StateMBoxPolling="true" CycleMBoxPollingTime="0" CoeType="15" VendorId="#x00000eff" ProductCode="#x0d510001" RevisionNo="#x00000067" InfoDataAddr="true" InfoDataSoeDS401="true" InfoDataDcTimes="true" TimeoutStateChange1="2000" TimeoutStateChange2="9000" TimeoutMailbox2="2000" PortPhys="17" MaxSlotCount="256" MaxSlotGroupCount="1" SlotPdoIncrement="1" SlotIndexIncrement="16" Type="Wecon VD5 EtherCAT Servo V1.03" Desc="Wecon VD5 EtherCAT Servo V1.03" PortABoxInfo="#x01000002">
+					<EtherCAT SlaveType="2" PdiType="#x0e80" MboxDataLinkLayer="true" StateMBoxPolling="true" CycleMBoxPollingTime="0" CoeType="15" VendorId="#x00000eff" ProductCode="#x0d510001" RevisionNo="#x00000067" InfoDataAddr="true" InfoDataSoeDS401="true" InfoDataDcTimes="true" TimeoutStateChange1="2000" TimeoutStateChange2="9000" TimeoutMailbox2="2000" PortPhys="17" MaxSlotCount="256" MaxSlotGroupCount="1" SlotPdoIncrement="1" SlotIndexIncrement="16" Type="Wecon VD5 EtherCAT Servo V1.03" Desc="Wecon VD5 EtherCAT Servo V1.03" PortABoxInfo="#x00ffffff">
 						<SyncMan>001080002600010001000000240000018000001026010000</SyncMan>
 						<SyncMan>801080002200010002000000240000018000801022010000</SyncMan>
 						<SyncMan>00111d006400010003000000000000000900001164010000</SyncMan>
@@ -3337,7 +3379,7 @@
 						<CoeProfile ProfileNo="402"/>
 					</EtherCAT>
 				</Box>
-				<Box Id="9" Disabled="true" BoxType="9099" BoxFlags="#x00000020">
+				<Box Id="9" BoxType="9099" BoxFlags="#x00000020">
 					<Name>VD5E_2</Name>
 					<ImageId>1001</ImageId>
 					<EtherCAT SlaveType="2" PdiType="#x0e80" MboxDataLinkLayer="true" StateMBoxPolling="true" CycleMBoxPollingTime="0" CoeType="15" VendorId="#x00000eff" ProductCode="#x0d510001" RevisionNo="#x00000067" InfoDataAddr="true" InfoDataSoeDS401="true" InfoDataDcTimes="true" TimeoutStateChange1="2000" TimeoutStateChange2="9000" TimeoutMailbox2="2000" PortPhys="17" MaxSlotCount="256" MaxSlotGroupCount="1" SlotPdoIncrement="1" SlotIndexIncrement="16" Type="Wecon VD5 EtherCAT Servo V1.03" Desc="Wecon VD5 EtherCAT Servo V1.03" PortABoxInfo="#x01000008">
@@ -3473,7 +3515,7 @@
 						<CoeProfile ProfileNo="402"/>
 					</EtherCAT>
 				</Box>
-				<Box Id="10" Disabled="true" BoxType="9099" BoxFlags="#x00000020">
+				<Box Id="10" BoxType="9099" BoxFlags="#x00000020">
 					<Name>VD5E_3</Name>
 					<ImageId>1001</ImageId>
 					<EtherCAT SlaveType="2" PdiType="#x0e80" MboxDataLinkLayer="true" StateMBoxPolling="true" CycleMBoxPollingTime="0" CoeType="15" VendorId="#x00000eff" ProductCode="#x0d510001" RevisionNo="#x00000067" InfoDataAddr="true" InfoDataSoeDS401="true" InfoDataDcTimes="true" TimeoutStateChange1="2000" TimeoutStateChange2="9000" TimeoutMailbox2="2000" PortPhys="17" MaxSlotCount="256" MaxSlotGroupCount="1" SlotPdoIncrement="1" SlotIndexIncrement="16" Type="Wecon VD5 EtherCAT Servo V1.03" Desc="Wecon VD5 EtherCAT Servo V1.03" PortABoxInfo="#x01000009">
@@ -3609,10 +3651,146 @@
 						<CoeProfile ProfileNo="402"/>
 					</EtherCAT>
 				</Box>
-				<Box Id="11" Disabled="true" BoxType="9099" BoxFlags="#x00000020">
+				<Box Id="11" BoxType="9099" BoxFlags="#x00000020">
 					<Name>VD5E_4</Name>
 					<ImageId>1001</ImageId>
 					<EtherCAT SlaveType="2" PdiType="#x0e80" MboxDataLinkLayer="true" StateMBoxPolling="true" CycleMBoxPollingTime="0" CoeType="15" VendorId="#x00000eff" ProductCode="#x0d510001" RevisionNo="#x00000067" InfoDataAddr="true" InfoDataSoeDS401="true" InfoDataDcTimes="true" TimeoutStateChange1="2000" TimeoutStateChange2="9000" TimeoutMailbox2="2000" PortPhys="17" MaxSlotCount="256" MaxSlotGroupCount="1" SlotPdoIncrement="1" SlotIndexIncrement="16" Type="Wecon VD5 EtherCAT Servo V1.03" Desc="Wecon VD5 EtherCAT Servo V1.03" PortABoxInfo="#x0100000a">
+						<SyncMan>001080002600010001000000240000018000001026010000</SyncMan>
+						<SyncMan>801080002200010002000000240000018000801022010000</SyncMan>
+						<SyncMan>00111d006400010003000000000000000900001164010000</SyncMan>
+						<SyncMan>001415002000010004000000000000000f00001420010000</SyncMan>
+						<Fmmu>0000000000000000001100020100000001000000000000000000000000000000</Fmmu>
+						<Fmmu>0000000000000000001400010100000002000000000000000000000000000000</Fmmu>
+						<Fmmu>00000000000000000d0800010100000003000000000000000000000000000000</Fmmu>
+						<SuTask>#x02010020</SuTask>
+						<DcData>0003000000000000000000000000000001000000000000000000000000000000</DcData>
+						<DcMode>4443000000000000000000000000000044432d53796e6368726f6e000000000000000000000000000000000000000000000000000000000000000000000000030100000000000000000000000000000000000000000000000000000000000000</DcMode>
+						<DcMode>467265652052756e0000000000000000467265652052756e000000000000000000000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000</DcMode>
+						<MBoxUserCmdData>02000300090000000700000003000000000000000000000000000000000000002060600001000000084f70206d6f646500</MBoxUserCmdData>
+						<Pdo Name="TxPDO" Index="#x1a00" Flags="#x0000">
+							<ExcludePdo>#x1b01</ExcludePdo>
+							<Entry Name="Error code" Index="#x603f">
+								<Type>UINT</Type>
+							</Entry>
+							<Entry Name="Status word" Index="#x6041">
+								<Type>UINT</Type>
+							</Entry>
+							<Entry Name="Position actual value" Index="#x6064">
+								<Type>DINT</Type>
+							</Entry>
+							<Entry Name="Modes of operation display" Index="#x6061">
+								<Type>SINT</Type>
+							</Entry>
+							<Entry Name="Touch probe status" Index="#x60b9">
+								<Type>UINT</Type>
+							</Entry>
+							<Entry Name="Touch probe position1 positive value" Index="#x60ba">
+								<Type>DINT</Type>
+							</Entry>
+							<Entry Name="Touch probe position2 positive value" Index="#x60bc">
+								<Type>DINT</Type>
+							</Entry>
+						</Pdo>
+						<Pdo Name="TxPDO" Index="#x1b01" Flags="#x0000" SyncMan="3">
+							<ExcludePdo>#x1a00</ExcludePdo>
+							<Entry Name="Error code" Index="#x603f">
+								<Type>UINT</Type>
+							</Entry>
+							<Entry Name="Status word" Index="#x6041">
+								<Type>UINT</Type>
+							</Entry>
+							<Entry Name="Position actual value" Index="#x6064">
+								<Type>DINT</Type>
+							</Entry>
+							<Entry Name="Modes of operation display" Index="#x6061">
+								<Type>SINT</Type>
+							</Entry>
+							<Entry Name="Torque actual value" Index="#x6077">
+								<Type>INT</Type>
+							</Entry>
+							<Entry Name="Following error actual value" Index="#x60f4">
+								<Type>DINT</Type>
+							</Entry>
+							<Entry Name="Velocity actual value" Index="#x606c">
+								<Type>DINT</Type>
+							</Entry>
+							<Entry Name="Torque demand" Index="#x6074">
+								<Type>INT</Type>
+							</Entry>
+						</Pdo>
+						<Pdo Name="RxPDO" Index="#x1600" InOut="1" Flags="#x0000">
+							<ExcludePdo>#x1701</ExcludePdo>
+							<ExcludePdo>#x1702</ExcludePdo>
+							<Entry Name="ControlWord" Index="#x6040">
+								<Type>UINT</Type>
+							</Entry>
+							<Entry Name="Target position" Index="#x607a">
+								<Type>DINT</Type>
+							</Entry>
+							<Entry Name="Touch probe function" Index="#x60b8">
+								<Type>UINT</Type>
+							</Entry>
+							<Entry Name="Modes of operation" Index="#x6060">
+								<Type>SINT</Type>
+							</Entry>
+						</Pdo>
+						<Pdo Name="RxPDO" Index="#x1701" InOut="1" Flags="#x0000">
+							<ExcludePdo>#x1600</ExcludePdo>
+							<ExcludePdo>#x1702</ExcludePdo>
+							<Entry Name="Control word" Index="#x6040">
+								<Type>UINT</Type>
+							</Entry>
+							<Entry Name="Modes of operation" Index="#x6060">
+								<Type>SINT</Type>
+							</Entry>
+							<Entry Name="Target position" Index="#x607a">
+								<Type>DINT</Type>
+							</Entry>
+							<Entry Name="Touch probe function" Index="#x60b8">
+								<Type>UINT</Type>
+							</Entry>
+						</Pdo>
+						<Pdo Name="RxPDO" Index="#x1702" InOut="1" Flags="#x0000" SyncMan="2">
+							<ExcludePdo>#x1600</ExcludePdo>
+							<ExcludePdo>#x1701</ExcludePdo>
+							<Entry Name="Control word" Index="#x6040">
+								<Type>UINT</Type>
+							</Entry>
+							<Entry Name="Modes of operation" Index="#x6060">
+								<Type>SINT</Type>
+							</Entry>
+							<Entry Name="Target torque" Index="#x6071">
+								<Type>INT</Type>
+							</Entry>
+							<Entry Name="Target position" Index="#x607a">
+								<Type>DINT</Type>
+							</Entry>
+							<Entry Name="Touch probe function" Index="#x60b8">
+								<Type>UINT</Type>
+							</Entry>
+							<Entry Name="Target velocity" Index="#x60ff">
+								<Type>DINT</Type>
+							</Entry>
+							<Entry Name="Motor revolutions" Index="#x6091" Sub="#x01">
+								<Type>UDINT</Type>
+							</Entry>
+							<Entry Name="Shaft revolutions" Index="#x6091" Sub="#x02">
+								<Type>UDINT</Type>
+							</Entry>
+							<Entry Name="Velocity offset" Index="#x60b1">
+								<Type>DINT</Type>
+							</Entry>
+							<Entry Name="Torque offset" Index="#x60b2">
+								<Type>INT</Type>
+							</Entry>
+						</Pdo>
+						<CoeProfile ProfileNo="402"/>
+					</EtherCAT>
+				</Box>
+				<Box Id="12" BoxType="9099" BoxFlags="#x00000020">
+					<Name>VD5E_5</Name>
+					<ImageId>1001</ImageId>
+					<EtherCAT SlaveType="2" PdiType="#x0e80" MboxDataLinkLayer="true" StateMBoxPolling="true" CycleMBoxPollingTime="0" CoeType="15" VendorId="#x00000eff" ProductCode="#x0d510001" RevisionNo="#x00000067" InfoDataAddr="true" InfoDataSoeDS401="true" InfoDataDcTimes="true" TimeoutStateChange1="2000" TimeoutStateChange2="9000" TimeoutMailbox2="2000" PortPhys="17" MaxSlotCount="256" MaxSlotGroupCount="1" SlotPdoIncrement="1" SlotIndexIncrement="16" Type="Wecon VD5 EtherCAT Servo V1.03" Desc="Wecon VD5 EtherCAT Servo V1.03" PortABoxInfo="#x0100000b">
 						<SyncMan>001080002600010001000000240000018000001026010000</SyncMan>
 						<SyncMan>801080002200010002000000240000018000801022010000</SyncMan>
 						<SyncMan>00111d006400010003000000000000000900001164010000</SyncMan>
@@ -3815,6 +3993,22 @@
 				<Link VarA="VD5E_4^TxPDO^Torque actual value" VarB="Inputs^Servo8^Torque_actual_value"/>
 				<Link VarA="VD5E_4^TxPDO^Torque demand" VarB="Inputs^Servo8^Torque_demand"/>
 				<Link VarA="VD5E_4^TxPDO^Velocity actual value" VarB="Inputs^Servo8^Velocity_actual_value"/>
+				<Link VarA="VD5E_5^RxPDO^Control word" VarB="Outputs^Servo9^Controlword"/>
+				<Link VarA="VD5E_5^RxPDO^Modes of operation" VarB="Outputs^Servo9^Modes_of_operation"/>
+				<Link VarA="VD5E_5^RxPDO^Motor revolutions" VarB="Outputs^Servo9^Motor_revolutions"/>
+				<Link VarA="VD5E_5^RxPDO^Shaft revolutions" VarB="Outputs^Servo9^Shaft_revolutions"/>
+				<Link VarA="VD5E_5^RxPDO^Target position" VarB="Outputs^Servo9^Target_position"/>
+				<Link VarA="VD5E_5^RxPDO^Target torque" VarB="Outputs^Servo9^Target_torque"/>
+				<Link VarA="VD5E_5^RxPDO^Target velocity" VarB="Outputs^Servo9^Target_velocity"/>
+				<Link VarA="VD5E_5^RxPDO^Torque offset" VarB="Outputs^Servo9^Torque_offset"/>
+				<Link VarA="VD5E_5^RxPDO^Velocity offset" VarB="Outputs^Servo9^Velocity_offset"/>
+				<Link VarA="VD5E_5^TxPDO^Error code" VarB="Inputs^Servo9^Error_code"/>
+				<Link VarA="VD5E_5^TxPDO^Following error actual value" VarB="Inputs^Servo9^Following_error_actual_value"/>
+				<Link VarA="VD5E_5^TxPDO^Position actual value" VarB="Inputs^Servo9^Position_actual_value"/>
+				<Link VarA="VD5E_5^TxPDO^Status word" VarB="Inputs^Servo9^Status_word"/>
+				<Link VarA="VD5E_5^TxPDO^Torque actual value" VarB="Inputs^Servo9^Torque_actual_value"/>
+				<Link VarA="VD5E_5^TxPDO^Torque demand" VarB="Inputs^Servo9^Torque_demand"/>
+				<Link VarA="VD5E_5^TxPDO^Velocity actual value" VarB="Inputs^Servo9^Velocity_actual_value"/>
 				<Link VarA="维控VD3E_1^RxPDO^ControlWord" VarB="Outputs^Servo1^Controlword"/>
 				<Link VarA="维控VD3E_1^RxPDO^Modes of operation" VarB="Outputs^Servo1^Modes_of_operation"/>
 				<Link VarA="维控VD3E_1^RxPDO^Motor revolutions" VarB="Outputs^Servo1^Motor_revolutions"/>

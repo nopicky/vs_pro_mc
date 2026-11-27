@@ -35,6 +35,8 @@
 #define SLOT_ROLE_NONE     0
 #define SLOT_ROLE_DRIVE    1
 #define SLOT_ROLE_LOAD     2
+#define SLOT_ROLE_MASTER   3   /* 主轴编码器：不跑 CiA402、输出全 0、只读 6064
+                                  （2026-11-26 主轴编码器方案，见《主轴编码器方案大纲.md》） */
 
 /* 驱动器监视 (SDO 惯量比/刚性等级) 对象口径 */
 #define SLOT_MON_WECON     0   /* 维控: 0x2003:01 惯量比 / 0x2003:02 刚性 */
@@ -62,7 +64,8 @@ typedef struct _SITE_PROFILE_T
 #define SITE_PROFILE_DRAG_4AX     1   /* 对拖: 4 个 VD3E 驱动轴 (Servo1..4) */
 #define SITE_PROFILE_DRAG_VD5E    2   /* 对拖: 4 个 VD5E 驱动轴 23bit (Servo5..8), 3E 保留作负载 */
 #define SITE_PROFILE_VD5E_ONLY    3   /* 机台: 仅 4 个 VD5E 驱动轴 (Servo5..8), 3E 不接 */
-#define SITE_PROFILE_COUNT        4
+#define SITE_PROFILE_VD5E_MASTER  4   /* 机台: 4 个 VD5E 驱动轴 + 1 个 VD5E 主轴编码器 (Servo9) */
+#define SITE_PROFILE_COUNT        5
 
 /* 工程里的链接是固定映射（一次接好, 切场景只改从站启停 + SiteProfile）:
      Servo0 = 维控VD5L   Servo1~4 = 维控VD3E_1~4   Servo5~8 = 维控VD5E_1~4

@@ -370,6 +370,29 @@ typedef struct _WASR_TCStatus
 	unsigned char bAutoVelFfGain;
 	unsigned char VelFfAdaptState;
 	float AutoVelFfGain;
+
+	// ---- 主轴编码器（2026-11-26 主轴编码器方案，见《主轴编码器方案大纲.md》）----
+	// 相位源由编译期宏 MASTER_SRC 决定（WASR_ControlConfig.h）：
+	//   0=虚拟积分主轴（台架默认）/ 1=主轴 VD5E 6064（机台真实主轴）。
+	// MasterSource   : **实际生效**来源 0=虚拟 1=编码器（只读；
+	//                  切了真实但没配主轴槽位会自动回退虚拟，这里如实显示 0）。
+	// MasterPos6064  : 主轴槽位 6064 原值 [counts]（P1/P2 验收用：
+	//                  手转正转必须递增；没配主轴槽位时恒 0）。
+	// MasterPhaseMm  : 换算后的凸轮周期相位 [0, 1188.78) mm（虚拟模式下恒 0，
+	//                  那时看 FeedMasterPhase 即可）。
+	// MasterVelMmS   : 主轴差分速度 [mm/s]（显示用，未滤波）。
+	// ---- 两级跳闸（2026-11-26，FAE 拍板：偏差大也要继续运行，真故障才停送）----
+	// FeedErrAlarm     : 0=正常 / 1=超一级阈值(fMaxFollowErrMm)继续跑(纯报警) /
+	//                    2=超二级阈值(fMaxFollowErrStopMm)已停送（本轮走完不续送）。
+	//                    ★ 虚拟主轴下一级仍保留"冻结主轴"老行为（虚轴开环会发散），
+	//                      只有真实主轴下才是纯报警——代码按 MASTER_SRC 分支。
+	// FeedMaxFollowErr : 本次启动以来 |跟随偏差| 最大值 [mm]（只读，重新启动清零）。
+	float MasterPhaseMm;
+	float MasterVelMmS;
+	long  MasterPos6064;
+	unsigned char MasterSource;
+	unsigned char FeedErrAlarm;
+	float FeedMaxFollowErr;
 } WASR_TCStatus, *PWASR_TCStatus;
 #pragma pack(pop)
 

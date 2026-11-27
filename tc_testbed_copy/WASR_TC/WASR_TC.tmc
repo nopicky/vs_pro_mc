@@ -983,6 +983,36 @@
             <Comment TxtId=""><![CDATA[当前生效的速度前馈增益(LMS学习或手调), 只读]]></Comment>
             <BaseType GUID="{18071995-0000-0000-0000-00000000000d}">REAL</BaseType>
           </Symbol>
+          <Symbol CreateSymbol="true">
+            <Name>MasterPhaseMm</Name>
+            <Comment TxtId=""><![CDATA[主轴编码器相位 [0,1188.78) mm, 只读(虚拟模式恒0)]]></Comment>
+            <BaseType GUID="{18071995-0000-0000-0000-00000000000d}">REAL</BaseType>
+          </Symbol>
+          <Symbol CreateSymbol="true">
+            <Name>MasterVelMmS</Name>
+            <Comment TxtId=""><![CDATA[主轴差分速度 mm/s, 只读(虚拟模式恒0)]]></Comment>
+            <BaseType GUID="{18071995-0000-0000-0000-00000000000d}">REAL</BaseType>
+          </Symbol>
+          <Symbol CreateSymbol="true">
+            <Name>MasterPos6064</Name>
+            <Comment TxtId=""><![CDATA[主轴槽位6064原值 counts, 只读(手转正转应递增)]]></Comment>
+            <BaseType GUID="{18071995-0000-0000-0000-000000000009}">DINT</BaseType>
+          </Symbol>
+          <Symbol CreateSymbol="true">
+            <Name>MasterSource</Name>
+            <Comment TxtId=""><![CDATA[主轴相位源实际生效 0=虚拟 1=编码器, 只读]]></Comment>
+            <BaseType GUID="{18071995-0000-0000-0000-000000000002}">USINT</BaseType>
+          </Symbol>
+          <Symbol CreateSymbol="true">
+            <Name>FeedErrAlarm</Name>
+            <Comment TxtId=""><![CDATA[跟随偏差报警 0=正常 1=超一级继续跑 2=超二级已停送, 只读]]></Comment>
+            <BaseType GUID="{18071995-0000-0000-0000-000000000002}">USINT</BaseType>
+          </Symbol>
+          <Symbol CreateSymbol="true">
+            <Name>FeedMaxFollowErr</Name>
+            <Comment TxtId=""><![CDATA[本次启动最大跟随偏差 mm, 只读(重启清零)]]></Comment>
+            <BaseType GUID="{18071995-0000-0000-0000-00000000000d}">REAL</BaseType>
+          </Symbol>
         </DataArea>
       </DataAreas>
       <InterfacePointers>

@@ -266,6 +266,9 @@ CWASR_TC::CWASR_TC()
 	m_bFeedVelAdaptWasOn = false;
 	m_nFeedVelAdaptPrevState = 0;
 
+	// 主轴编码器: 未绑定（只有 profile 4 才会在 ApplySiteProfile 里绑上）
+	m_pMasterServo = NULL;
+
 	// CoE SDO 工具: 只挂日志, 不建 ADS 端口 (第一次真正读写时才建)
 	m_coeSdo.SetTrace(&m_Trace);
 
@@ -286,16 +289,24 @@ CWASR_TC::CWASR_TC()
 	}
 
 	// 模块级默认值: 站点形态 + 实验类型
-	m_Status.SiteProfile    = SITE_PROFILE_LOCAL_1AX;
+	// (2026-11-27 机台档默认值: profile 4 = 4驱动轴+主轴编码器; 台架切别的再改)
+	m_Status.SiteProfile    = SITE_PROFILE_VD5E_MASTER;
 	ApplySiteProfile(m_Status.SiteProfile);
 	m_Status.ExperimentType = ExperimentType_FeedCamTest;
 	// 驱动侧默认 CSV(9)
 	m_Status.Driver_Modes_of_operation = 9;
+	// 机台档默认（2026-11-27）：
+	//   AutoStopCycles=50 → 跑 50 整圈自动停（兼周期性清零窗口，配合 LMS 收敛圈数）
+	//   bAutoVelFfGain=1  → LMS 上电即学（种子: VelFfGain=0 → 用当前生效增益起步）
+	m_Status.AutoStopCycles  = 50;
+	m_Status.bAutoVelFfGain  = 1;
+	// bLiveTuning 上升沿检测初值
+	m_prevLiveTuning = 0;
 	// Sig* 初值在第一次 CycleUpdate 按 ExperimentType 写入
 	m_lastExperimentType = -1;
 	m_Status.SigFreq     = 0.0f;
 	m_Status.SigAmp      = 0.0f;
-	m_Status.SigOffset   = 0.0f;
+	m_Status.SigOffset   = 0.0f; 0.0f;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -392,6 +403,8 @@ void CWASR_TC::ApplySiteProfile(unsigned char ucProfile)
 		m_apDrive[i] = NULL;
 		m_apLoad[i]  = NULL;
 	}
+	// 主轴编码器: 先清空, 站点表里有 MASTER 槽位才重新绑定
+	m_pMasterServo = NULL;
 
 	for (int i = 0; i < SITE_SLOT_MAX; i++) {
 		ServoIO* pServo = m_apServo[i];
@@ -415,6 +428,17 @@ void CWASR_TC::ApplySiteProfile(unsigned char ucProfile)
 			pServo->Status.TorCmd_PcSend   = 0.0f;
 			pServo->Status.TorCmd_ServoRecv= 0.0f;
 			pServo->Status.TorFb           = 0.0f;
+			continue;
+		}
+
+		if (pSlot->ucRole == SLOT_ROLE_MASTER) {
+			// 主轴编码器 (2026-11-26): 输出清零(只读输入), 不跑 CiA402,
+			// 不进驱动/负载数组, 只绑指针给相位换算用。
+			// 相位读的是 6064 原始 counts（MasterEnc 自己换算），
+			// 不需要驱动器侧的速度/惯量参数，所以 FillServoParams 也跳过。
+			memset(pServo->Outputs, 0, sizeof(ServoOutputs));
+			m_aucCia402Step[i] = 0;
+			m_pMasterServo = pServo;
 			continue;
 		}
 
@@ -447,6 +471,23 @@ void CWASR_TC::ApplySiteProfile(unsigned char ucProfile)
 	m_nDriveAxisCount = (uint8_t)nDrive;
 	m_nLoadAxisCount  = (uint8_t)nLoad;
 	m_Status.AxisCount = m_nDriveAxisCount;
+
+	// 主轴编码器换算参数（2026-11-26）：周期行程跟随工艺配置
+	// （fMasterCircum 是凸轮周期的唯一来源，不在这里抄第二份）。
+	// 切了真实主轴却没配主轴槽位 = 配置错误，大声报警并回退虚拟主轴。
+	{
+		MASTER_ENC_CFG_T encCfg;
+		encCfg.fCountsPerRev   = MASTER_ENC_COUNTS_PER_REV;
+		encCfg.fMmPerRev       = MASTER_ENC_MM_PER_REV;
+		encCfg.fCycleLenMm     = g_cfgFeed.fMasterCircum;
+		encCfg.fMaxDeltaCounts = MASTER_ENC_MAX_DELTA_CNT;
+		m_masterEnc.init(&encCfg);
+		if ((MASTER_SRC == MASTER_SRC_ENCODER) && (m_pMasterServo == NULL)) {
+			m_Trace.Log(tlAlways,
+				"WASR_TC: MASTER_SRC=ENCODER but no master slot in profile %d, "
+				"fallback to VIRTUAL master", (int)ucProfile);
+		}
+	}
 	// 兼容旧界面: Driver_Servo_number = 驱动轴0 的槽位号 (只显示, 实际由站点表决定)
 	m_Status.Driver_Servo_number = (unsigned char)nFirstDriveSlot;
 	m_nAppliedProfile = (int)ucProfile;
@@ -998,10 +1039,10 @@ void CWASR_TC::ApplyExperimentDefaults(ExperimentType_T type)
 		break;
 
 	case ExperimentType_FeedCamTest:
-		// 送纸凸轮: SigOffset = 主轴线速度 [m/min] (默认 30 慢速首测),
-		// 送纸启停用 Status.bFeedStart (1=送, 0=停), SigFreq 回读凸轮相位
-		// SigAmp 在这个实验里不用 (以前借它当 Start 触发, 已废弃)
-		off = 30.0f;
+		// 送纸凸轮: SigOffset = 主轴线速度 [m/min] (默认 280, 2026-11-27 机台档;
+		// 首测想慢就自己改小), 送纸启停用 Status.bFeedStart (1=送, 0=停),
+		// SigFreq 回读凸轮相位; SigAmp 借作跳闸回显 (见 SpeedTestSequencer)
+		off = 280.0f;
 		break;
 
 	case ExperimentType_Manual:
@@ -1162,6 +1203,21 @@ HRESULT CWASR_TC::CycleUpdate(ITcTask* ipTask, ITcUnknown* ipCaller, ULONG_PTR c
 	// 挂到 Status 后可运行中开关 (仍在 Enable=0 时改更稳妥)。
 	g_cfgFeed.bLoadSideEnable = (m_Status.bLoadSideEnable != 0);
 
+	// ---- bLiveTuning 上升沿：LMS 自动让位给手动（2026-11-27）----
+	// 语义：用户开手动调参 = "我要自己动手了"。LMS 继续接管的话，手动改
+	//   VelFfGain 会被 LMS 的回写每拍吞掉（改成什么都被顶回来），现场以为没改上。
+	// 让位无跳变：LMS 学习期间每拍都在回写 VelFfGain，切换瞬间两边数值恒等。
+	//   中止学习成本低：想再学，把 bAutoVelFfGain 重新置 1 就从当前值继续。
+	// 只在上升沿做一次：之后用户想 LMS 和手调并存（开着 bLiveTuning 重开 LMS）不拦。
+	if ((m_Status.bLiveTuning != 0) && (m_prevLiveTuning == 0) &&
+	    (m_Status.bAutoVelFfGain != 0)) {
+		m_Status.bAutoVelFfGain = 0;
+		m_Trace.Log(tlAlways,
+			"FEED_LMS: live tuning on, LMS released (gain=%g)",
+			g_cfgFeed.fVelFfGain);
+	}
+	m_prevLiveTuning = m_Status.bLiveTuning;
+
 	// ---- 在线调参: Status -> g_cfgFeed (2026-11-24) ----
 	// 目的: 调补偿参数不必再改代码重编译, 写 ADS 变量下一拍就生效。
 	// bLiveTuning=0 (默认) 时整段跳过, 保持 FeedSequencer.cpp 里的编译期初值。
@@ -1240,6 +1296,33 @@ HRESULT CWASR_TC::CycleUpdate(ITcTask* ipTask, ITcUnknown* ipCaller, ULONG_PTR c
 	m_Status.AutoInertiaApplied2 = (float)g_cfgFeed.fInertiaRatio[2];
 	m_Status.AutoInertiaApplied3 = (float)g_cfgFeed.fInertiaRatio[3];
 
+	// ---- 主轴相位源（2026-11-26 主轴编码器方案）----
+	// 编译期二选一（WASR_ControlConfig.h MASTER_SRC）：
+	//   VIRTUAL(默认)：虚拟积分主轴（台架仿真，行为与之前完全一致）
+	//   ENCODER     ：主轴槽位 6064 → MasterEnc 周期相位（机台真实主轴）
+	// 没配主轴槽位却切了真实主轴：回退虚拟主轴（ApplySiteProfile 已报警），
+	//   宁可降级运行，也不能拿恒 0 的相位当主轴。
+#if (MASTER_SRC == MASTER_SRC_ENCODER)
+	if (m_pMasterServo != NULL) {
+		const long nMasterPos = m_pMasterServo->Inputs->Position_actual_value;
+		m_testSeq.feedExtMasterPhase = m_masterEnc.tick(nMasterPos, (double)m_dtSec);
+		m_testSeq.feedUseExtMaster   = true;
+	} else {
+		m_testSeq.feedUseExtMaster = false;
+	}
+#else
+	m_testSeq.feedUseExtMaster = false;
+#endif
+	// 回显（只读）：**实际生效**来源（回退虚拟时显示 0，不显示编译值）+
+	// 主轴相位/速度/6064 原值（虚拟模式下 MasterEnc 不参与，恒 0，
+	// 那时看 FeedMasterPhase 即可）
+	m_Status.MasterSource  = m_testSeq.feedUseExtMaster ?
+		(unsigned char)1 : (unsigned char)0;
+	m_Status.MasterPos6064 = (m_pMasterServo != NULL) ?
+		m_pMasterServo->Inputs->Position_actual_value : 0;
+	m_Status.MasterPhaseMm = (float)m_masterEnc.getPhaseMm();
+	m_Status.MasterVelMmS  = (float)m_masterEnc.getVelMmS();
+
 	// 送纸凸轮换算 (feedMmToUnit[]) 只由 InitControl 写: 构造/换形态/首拍/
 	// Enable 上升沿各一次。这里不再每拍重算一遍 —— 同一公式写两处,
 	// 改一处忘另一处就会算错, 且算错了没有任何报错
@@ -1288,6 +1371,11 @@ HRESULT CWASR_TC::CycleUpdate(ITcTask* ipTask, ITcUnknown* ipCaller, ULONG_PTR c
 	// 现场核对采集长度用：AutoStopCycles=10，这里跳到 10 就说明该停了。
 	// 重新启动（IDLE 里 bFeedStart 0→1）时内部清 0，所以是"本次启动"的计数。
 	m_Status.FeedCycleDone = (unsigned short)m_testSeq.feedSeq.getDoneCycles();
+
+	// 两级跳闸回显（2026-11-26）：报警等级 + 本次启动最大跟随偏差。
+	// 序列器侧每拍算好，这里只做搬运（不借用 SigAmp）。
+	m_Status.FeedErrAlarm     = m_testSeq.feedErrAlarm;
+	m_Status.FeedMaxFollowErr = m_testSeq.feedMaxFollowErrMm;
 
 	// ---- LMS 自动学 fVelFfGain（VelFfAdapt.h，2026-11-26）----
 	// 使能链: bAutoVelFfGain(本功能) && 送纸凸轮实验 —— 不要求 bLiveTuning。
@@ -1611,9 +1699,10 @@ void CWASR_TC::CiA402_Update()
 		}
 	}
 
-	// 没接设备的槽位: 输出必须保持 0 (未链接槽位输入恒 0, 不能留上次的 Controlword)
+	// 没接设备/主轴编码器槽位: 输出必须保持 0
+	// (未链接槽位输入恒 0, 不能留上次的 Controlword; 主轴只读输入不使能)
 	for (int i = 0; i < SITE_SLOT_MAX; i++) {
-		if (m_aucRole[i] == SLOT_ROLE_NONE) {
+		if (m_aucRole[i] == SLOT_ROLE_NONE || m_aucRole[i] == SLOT_ROLE_MASTER) {
 			m_apServo[i]->Outputs->Controlword = 0;
 			m_aucCia402Step[i] = 0;
 		}

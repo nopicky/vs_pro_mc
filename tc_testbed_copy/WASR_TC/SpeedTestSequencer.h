@@ -214,6 +214,14 @@ struct SpeedTestSequencer
     // 每轴位置指令进 posCmdOut[0..3], 由挂载层按槽位下发
     CFeedSequencer feedSeq;         // 送纸工艺状态机 (含 4 轴凸轮)
     CVirtualMaster feedMaster;      // 虚拟主轴
+    // ---- 真实主轴编码器（2026-11-26 主轴编码器方案）----
+    // 相位源二选一（WASR_ControlConfig.h 的 MASTER_SRC 编译期宏决定）：
+    //   feedUseExtMaster=false: 虚拟积分主轴（台架仿真，feedMaster.tick 老路径）
+    //   feedUseExtMaster=true : 挂载层每拍把 MasterEnc 算好的周期相位写进
+    //                           feedExtMasterPhase，本层直接取用（不调 feedMaster）
+    // 本层不碰 6064/PDO，挂载层不碰凸轮 —— 主轴来源对凸轮算法透明。
+    bool   feedUseExtMaster = false;
+    double feedExtMasterPhase = 0.0;  // 真实主轴周期相位 [mm]，挂载层每拍填
     CLoadProfiler  feedLoad;        // 负载谱 (v1 占位, bLoadSideEnable=false 不用)
     // mm→指令单位 换算系数, 每轴一份 (轴电机不同则不同, 0 = 未挂载)
     double feedMmToUnit[SITE_AXIS_MAX];
@@ -249,6 +257,15 @@ struct SpeedTestSequencer
     //   解除冻结的那一拍整体 init 一次 (posBase 归零 / 状态机回 IDLE / 相位重新起算)
     //   这里给默认值: Init 之前若被调用, 宁可按"冻结"处理 (安全侧)
     bool   feedStalled = false;
+
+    // ---- 两级跳闸（2026-11-26，FAE 拍板"偏差大也要继续运行"）----
+    // 一级（fMaxFollowErrMm）：虚拟主轴下冻结主轴（老行为，防虚轴发散）；
+    //   真实主轴下只报警（feedErrAlarm=1），不停送。
+    // 二级（fMaxFollowErrStopMm）：报警 + 撤 bFeedStart，本轮自然走完不续送。
+    // 挂载层（WASR_TC）每拍把这两个值抄进 Status 回显。
+    uint8_t feedErrAlarm = 0;          // 0=正常 / 1=超一级继续跑 / 2=超二级已停送(含位置超限)
+    float   feedMaxFollowErrMm = 0.0f; // 本次启动最大 |跟随偏差| [mm]（重启清零）
+    bool    feedStartWasOn = false;    // 上一拍 bFeedStart（上升沿清最大值用）
 
     // ---- 送纸凸轮保护 (2026-11-23: 跟随偏差跳闸 + 主轴限速) ----
     // 为什么要有: 虚拟主轴是纯积分器 (VirtualMaster::tick 只做 phase += v*dt),

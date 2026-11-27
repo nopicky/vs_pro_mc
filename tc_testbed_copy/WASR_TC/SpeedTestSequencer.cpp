@@ -1121,9 +1121,19 @@ void SpeedTestSequencer::Update(ExperimentType_T experiment,
         // 自动停圈数：同补偿量一样每拍刷，在线改立即生效（0 = 不限，与原来一致）
         feedSeq.setAutoStopCycles(g_cfgFeed.nAutoStopCycles);
 
-        // 虚拟主轴积分 + 状态机推进 (4 轴指令 [mm])
-        feedMaster.tick(dtSec);
-        feedSeq.tick(feedMaster.getPhase(), dtSec, pAct, feedCmdMm);
+        // 主轴相位源（2026-11-26 主轴编码器方案）：
+        //   虚拟（默认）：feedMaster 积分，老路径一行不动；
+        //   真实：挂载层每拍把 MasterEnc 算好的周期相位写在 feedExtMasterPhase，
+        //         直接取用（不调 feedMaster，物理主轴不需要"启动/停止"）。
+        //   feedSeq 的解缠对两种来源都兼容（它就是按"编码器循环值"设计的）。
+        double fMasterPhase;
+        if (feedUseExtMaster) {
+            fMasterPhase = feedExtMasterPhase;
+        } else {
+            feedMaster.tick(dtSec);
+            fMasterPhase = feedMaster.getPhase();
+        }
+        feedSeq.tick(fMasterPhase, dtSec, pAct, feedCmdMm);
 
         // ---- 自动停：跑够 N 个完整凸轮循环就撤销启动位 ----
         // FeedSequencer 内部已经据圈数走了 STOPPING（第 N 圈走完当场停），
@@ -1209,17 +1219,29 @@ void SpeedTestSequencer::Update(ExperimentType_T experiment,
                 }
             }
 
-            // ---- 跟随偏差跳闸 (最后一道防线) ----
-            // 背景: 虚拟主轴只做 phase += v*dt, 不看电机跟不跟得上。电机被拖住/卡住时,
-            //   指令照样按线速度往前, 偏差无界发散 (实测 572km), 而驱动器可能一直是
-            //   Operation Enabled、面板不报错 —— 光看 statusWord 完全看不出来。
-            // 动作: 撤 bFeedStart(回 0) + 停主轴(相位冻住)。指令不再推进, 电机追上被
-            //   冻住的指令后偏差自然收敛, 不会一使能就以最大加速度去追几公里。
-            // 只在 CAM_RUN 判: 其余状态指令本来不推进, 判了只会误跳;
-            //   冻结期间监视量是陈旧的, 也要跳过。
+            // ---- 两级跳闸（2026-11-26 语义调整，FAE 拍板"偏差大也要继续运行"）----
+            // 一级（fMaxFollowErrMm）：
+            //   虚拟主轴下 = 冻结主轴（老行为：虚轴开环积分，电机跟不上偏差无界发散，
+            //     实测 572km）；
+            //   真实主轴下 = 只报警（feedErrAlarm=1），继续送 —— 物理主轴停不了也不该停。
+            // 二级（fMaxFollowErrStopMm）：报警 + 撤 bFeedStart，本轮自然走完不续送。
+            // 位置超限（607A 顶 int32 上限）不分主轴来源，一律按二级停送处理（硬伤）。
             // 复位: 用户把 bFeedStart 重新置 1, 但要求此刻偏差已回到阈值内 ——
             //   否则一秒内又跳, 会变成"按一下抖一下"的假动作。
             if (!feedStalled) {
+                // 每拍统计已挂载轴的最大 |跟随偏差|：回显与两级判据共用
+                double fMaxAbsErr = 0.0;
+                for (int i = 0; i < SITE_AXIS_MAX; i++) {
+                    if (feedMmToUnit[i] > 0.0) {
+                        double fAbs = fabs(mon.afFollowErr[i]);
+                        if (fAbs > fMaxAbsErr) { fMaxAbsErr = fAbs; }
+                    }
+                }
+                if ((mon.nState == FEED_CAM_RUN) &&
+                    (fMaxAbsErr > (double)feedMaxFollowErrMm)) {
+                    feedMaxFollowErrMm = (float)fMaxAbsErr;
+                }
+
                 if (!feedTrip) {
                     for (int i = 0; i < SITE_AXIS_MAX; i++) {
                         if (feedMmToUnit[i] <= 0.0) {
@@ -1233,23 +1255,32 @@ void SpeedTestSequencer::Update(ExperimentType_T experiment,
                         double fPosCmd = feedActPos0[i] + feedCmdMm[i] * feedMmToUnit[i];
                         bool bPosOver = (fabs(fPosCmd) >= FEED_POS_LIMIT_UNIT);
 
-                        // 条件 2: 跟随偏差超阈值 (只在 CAM_RUN 判, 其余状态指令不推进)
-                        bool bErrOver =
+                        // 条件 2: 二级阈值（本轮走完停送）
+                        bool bErrStop =
+                            (g_cfgFeed.fMaxFollowErrStopMm > 0.0) &&
+                            (mon.nState == FEED_CAM_RUN) &&
+                            (fabs(mon.afFollowErr[i]) > g_cfgFeed.fMaxFollowErrStopMm);
+
+                        // 条件 3: 一级阈值 —— 虚拟主轴下跳闸（老行为）；
+                        //   真实主轴下只报警（下面 feedErrAlarm 置 1，不进这里）
+                        bool bErrL1 =
                             (g_cfgFeed.fMaxFollowErrMm > 0.0) &&
                             (mon.nState == FEED_CAM_RUN) &&
+                            (!feedUseExtMaster) &&
                             (fabs(mon.afFollowErr[i]) > g_cfgFeed.fMaxFollowErrMm);
 
-                        if (bPosOver || bErrOver) {
+                        if (bPosOver || bErrStop || bErrL1) {
                             feedTrip      = 1;
                             feedTripAxis  = (uint8_t)i;
                             feedTripCode  = bPosOver ? 2 : 1;
                             // 位置超限时记目标位置(量级 2.1e9, 一眼能区分),
                             // 偏差超限时记偏差 mm —— 两者都回显到 SigAmp 便于区分
-                            feedTripErrMm = bErrOver ? mon.afFollowErr[i] : fPosCmd;
+                            feedTripErrMm = bPosOver ? fPosCmd : mon.afFollowErr[i];
                             if (feedStart != NULL) {
                                 *feedStart = 0;              // 撤销启动位
                             }
                             feedMaster.stop();               // 主轴停止积分
+                                                           // (真实主轴下是无效操作, 无妨)
                             break;
                         }
                     }
@@ -1274,6 +1305,27 @@ void SpeedTestSequencer::Update(ExperimentType_T experiment,
                         *feedStart = 0;
                     }
                 }
+
+                // feedErrAlarm 每拍更新（回显用，不驱动任何动作）：
+                //   跳闸（二级停送或位置超限）= 2；
+                //   未跳闸但超一级 = 1（真实主轴下"报警但继续跑"的实况）；
+                //   其余 = 0。
+                if (feedTrip) {
+                    feedErrAlarm = 2;
+                } else if ((g_cfgFeed.fMaxFollowErrMm > 0.0) &&
+                           (mon.nState == FEED_CAM_RUN) &&
+                           (fMaxAbsErr > g_cfgFeed.fMaxFollowErrMm)) {
+                    feedErrAlarm = 1;
+                } else {
+                    feedErrAlarm = 0;
+                }
+
+                // bFeedStart 上升沿清最大偏差统计（新一轮重新计）
+                bool bStartNow = (feedStart != NULL) && (*feedStart != 0);
+                if (bStartNow && !feedStartWasOn) {
+                    feedMaxFollowErrMm = 0.0f;
+                }
+                feedStartWasOn = bStartNow;
             }
         }
         SetSpdCmd(spdCmd, 0.0f);   // CSP 下速度指令不用

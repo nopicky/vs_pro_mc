@@ -122,6 +122,7 @@
     <ClCompile Include="CamProfile.cpp" />
     <ClCompile Include="FeedSequencer.cpp" />
     <ClCompile Include="VelFfAdapt.cpp" />
+    <ClCompile Include="MasterEnc.cpp" />
     <ClCompile Include="MotorSpec.cpp" />
     <ClCompile Include="SiteConfig.cpp" />
     <ClCompile Include="CoeSdo.cpp" />
@@ -146,6 +147,7 @@
     <ClInclude Include="FeedConfig.h" />
     <ClInclude Include="FeedSequencer.h" />
     <ClInclude Include="VelFfAdapt.h" />
+    <ClInclude Include="MasterEnc.h" />
     <ClInclude Include="LoadProfiler.h" />
     <ClInclude Include="VirtualMaster.h" />
     <ClInclude Include="CoeSdo.h" />

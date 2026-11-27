@@ -32,6 +32,9 @@
 #define SITE_SLOT_DRV23(addr)      SITE_SLOT_DRV_M(addr, MOTOR_WE130_23B)
 // 槽位: 对拖负载轴 (CST 恒转矩), 配 WE130M 17bit (VD3E)。VD5E 对拖时 Servo1~4 用它
 #define SITE_SLOT_LD(addr)         { SLOT_ROLE_LOAD,  MOTOR_WE130M_17B, SLOT_MON_WECON, (addr) }
+// 槽位: 主轴编码器 (2026-11-26 主轴编码器方案)：只读 6064 当凸轮相位源,
+//   不跑 CiA402、输出全 0。电机参数按 VD5E 23bit 登记（监视口径一致）
+#define SITE_SLOT_MST(addr)        { SLOT_ROLE_MASTER, MOTOR_WE130_23B, SLOT_MON_WECON, (addr) }
 
 // 站点形态表
 //   槽位顺序 = IO 结构里 Servo0..Servo11, 与 XAE 里 PDO 链接顺序对应
@@ -140,6 +143,33 @@ const SITE_PROFILE_T g_aSiteProfile[SITE_PROFILE_COUNT] =
             SITE_SLOT_DRV23(1003),   // Servo7 = VD5E_3 驱动轴2
             SITE_SLOT_DRV23(1004),   // Servo8 = VD5E_4 驱动轴3
             SITE_SLOT_OFF(1009),     // Servo9 预留
+            SITE_SLOT_OFF(1010),     // Servo10 预留
+            SITE_SLOT_OFF(1011)      // Servo11 预留
+        }
+    },
+
+    // ---------------------------------------------------------------- 4
+    // 机台 4 驱动轴 + 主轴编码器（2026-11-26 主轴编码器方案，profile 3 基础上加主轴）
+    //   Servo5..8 = 4 个 VD5E 驱动轴 (23bit), Servo9 = VD5E 主轴编码器 (只读 6064)
+    //   Servo1..4 = NONE (机台上没有对拖负载)
+    // 用法: 启用 4 台驱动 VD5E + 第 5 台主轴 VD5E、禁用 VD5L 和 VD3E
+    // 地址: 5 台 VD5E 同时启用时自动地址顺排 1001~1005（P1 现场核对，
+    //   主轴挂在第 4 台驱动后面，物理顺序即地址顺序）
+    {
+        "VD5E_4Axis_MasterEnc_23B",
+        { SITE_MM_PER_REV_ROLLER, SITE_MM_PER_REV_ROLLER,
+          SITE_MM_PER_REV_ROLLER, SITE_MM_PER_REV_ROLLER },
+        {
+            SITE_SLOT_OFF(1001),     // Servo0 = VD5L 不接
+            SITE_SLOT_OFF(1002),     // Servo1 = 不接 (无 3E)
+            SITE_SLOT_OFF(1003),     // Servo2 = 不接
+            SITE_SLOT_OFF(1004),     // Servo3 = 不接
+            SITE_SLOT_OFF(1005),     // Servo4 = 不接
+            SITE_SLOT_DRV23(1001),   // Servo5 = VD5E_1 驱动轴0
+            SITE_SLOT_DRV23(1002),   // Servo6 = VD5E_2 驱动轴1
+            SITE_SLOT_DRV23(1003),   // Servo7 = VD5E_3 驱动轴2
+            SITE_SLOT_DRV23(1004),   // Servo8 = VD5E_4 驱动轴3
+            SITE_SLOT_MST(1005),     // Servo9 = VD5E_5 主轴编码器 (只读 6064)
             SITE_SLOT_OFF(1010),     // Servo10 预留
             SITE_SLOT_OFF(1011)      // Servo11 预留
         }
